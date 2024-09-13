@@ -8,6 +8,17 @@
 #include <string>
 #include <QTcpSocket>
 #include "structH.h"
+#include <QDesktopServices>
+#include <QMessageBox>
+#include <QVector>
+#include <QString>
+#include <QStringList>
+#include <QMap>
+#include <algorithm>
+
+#include "./ui_mainwindow.h"
+#include "xlsxdatavalidation.h"
+#include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
 using namespace std;
 
@@ -59,6 +70,8 @@ class MainWindow : public QMainWindow {
         void GetConstructConfig();
         void SaveConstructConfig();
         QLabel *createHyperlinkLabel(const QString &text, const QString &url);
+        void ShowAllComponents();
+        void ShowSomeComponents(const QVector<int> &exacIndex, const QVector<int> &fuzzyIndex);
         void loadData();
         void addButtonToTable(int row, int col, const QString &color);
 
