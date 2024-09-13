@@ -1,6 +1,9 @@
 
 #define BOOST_NUMPY_STATIC_LIB
-#include "PythonWork.h"
+
+#include <QApplication>
+#include <QCoreApplication>
+#include <QDir>
 
 #include "mainwindow.h"
 #include "iostream"

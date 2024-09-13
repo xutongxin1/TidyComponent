@@ -97,7 +97,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/bat_version ${bat_version})
 #准备构建无线调试器
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(
-        WirelessMonitor
+        TidyComponent
         VERSION ${PROJECT_VERSION}
         LANGUAGES CXX)
 
@@ -146,7 +146,8 @@ add_subdirectory(thirdLib)
 #endif ()
 target_include_directories(${PROJECT_NAME} PUBLIC ./components)
 target_include_directories(${PROJECT_NAME} PUBLIC ./config)
-target_include_directories(${PROJECT_NAME} PUBLIC ../thirdLib/CppQtFluentUi888/FluControls/)
+target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/CppQtFluentUi888/FluControls/)
+target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/QXlsx/QXlsx/header)
 
 
 #if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -168,12 +169,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC ../thirdLib/CppQtFluentUi888/F
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
     target_link_libraries(
-            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
             Qt6::Network qmetarialComponents Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 else ()
     target_link_libraries(
-            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
             Qt6::Network Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 endif ()
@@ -211,8 +212,8 @@ add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
 
 
 configure_file(
-        "${RepeaterWidgetPath}/VersionConfig.h.in"
-        "${RepeaterWidgetPath}/VersionConfig.h"
+        "${CMAKE_SOURCE_DIR}/VersionConfig.h.in"
+        "${CMAKE_SOURCE_DIR}/VersionConfig.h"
 )
 
 include(GNUInstallDirs)

@@ -1,70 +1,70 @@
 #ifndef MAIN__MAINWINDOW_H_
 #define MAIN__MAINWINDOW_H_
 
+#include <qlabel.h>
 #include <QMainWindow>
-#include "qcustomplot.h"
-#include "qtmaterialdrawer.h"
+
 #include "ConfigClass.h"
-#include "qtmaterialtabs.h"
-#include "SideBarButton/SideBarButton.h"
 #include <string>
 #include <QTcpSocket>
 #include "structH.h"
-#include "qtmaterialsnackbar.h"
 
 using namespace std;
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+
+namespace Ui {
+class MainWindow;
+}
+
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
- Q_OBJECT
+        Q_OBJECT
 
- public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    public:
+    struct component_record {
+        QString name;
+        QString color;
+        QString jlcid;
+        QString tbLink;
+        QString value;
+        QString package;
+        QVector<QString> aliases;
+    };
+        explicit MainWindow(QWidget *parent = nullptr);
+        double calculateSimilarity(const QString &a, const QString &b);
+        static bool isExactMatch(const component_record &record, const QStringList &searchWords);
+        QVector<component_record> findClosestRecords(
+            const QVector<component_record> &recordsVector,
+            const QString &searchString);
 
-    ~MainWindow() override;
+        void search();
+        void importExcelToJson();
+        void exportJsonToExcel();
 
-    vector<vector<WindowsInfo>> devices_windows_info_;//设备下窗口信息
-    vector<DevicesInfo> devices_info_;//设备信息
-
- public slots:
-    void ReceiveOrderExchangeWindow(int device_num, int windows_num);
-    void ReceiveOrderShowSnackbar (const QString& message);
- private:
-    int now_device_;
-    int now_windows_;
-    Ui::MainWindow *ui_;
-    QCustomPlot *custom_plot_;
-    QtMaterialDrawer *m_drawer_;
-    QtMaterialSnackbar *snackbar_ = new QtMaterialSnackbar(this);
-    SideBarButton *device_select_[100];//侧边栏设备按钮指针
-    QTimer *new_window_create_timer_ = new QTimer(this);
-    ToNewWidget parent_info_;//用于从父窗口传入到子窗口的所有信息的结构体
-    std::vector<ConfigClass *> config_device_ini_;
-    int device_count_;
-    ConfigClass *config_main_ini_;
+        ~MainWindow() override;
 
 
-//    void ErrorHandle(const QString &reason);
 
-    void DeviceWindowsInit();
+        QVector<component_record> recordsVector;
 
-    void DeviceExchange(int device_num);
+    private:
+        Ui::MainWindow *ui_;
 
-    void DeviceWindowsExchange(int device_num, int windows_num = 1, bool is_init = false);
+        std::vector<ConfigClass *> config_device_ini_;
+        int device_count_;
+        ConfigClass *config_main_ini_;
 
-//    void NewWindowCreate();
-    void GetConstructConfig();
-    void SaveConstructConfig();
+        void GetConstructConfig();
+        void SaveConstructConfig();
+        QLabel *createHyperlinkLabel(const QString &text, const QString &url);
+        void loadData();
+        void addButtonToTable(int row, int col, const QString &color);
 
-    void ConnectSingal(RepeaterWidget *tmp_widget) const;
+        void InitConfig();
 
-    void InitConfig();
-
-    QString version_;
-
+        QString version_;
 };
 
 #endif // MAIN__MAINWINDOW_H_

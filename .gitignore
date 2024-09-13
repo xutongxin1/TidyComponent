@@ -108,3 +108,7 @@ cmake-build-release-visual-studio/
 cmake-build-mingw/
 
 cmake-build-652/
+
+res/
+
+StyleSheet/

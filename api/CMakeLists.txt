@@ -1,5 +1,5 @@
 add_subdirectory(TCPHandle)
-
+add_subdirectory(ConfigClass)
 
 #IF (WIN32)
 #    MESSAGE(STATUS "Now is windows")
