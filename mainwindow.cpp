@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include <QIcon>
+
 
 int record_DeviceNum = 0, record_WinNum = 0;
 
@@ -43,34 +45,29 @@ void MainWindow::SaveConstructConfig() {
 
 
 
-void MainWindow::addButtonToTable(int row, int col, const QString &color) {
-    // // 创建按钮
-    // DropDownToolButton *button = new DropDownToolButton(this);
-    // // connect(button, &QPushButton::clicked, [this, row, button]() { handleButtonClicked(row, button); });
-    //
-    // // 将十六进制颜色字符串转换为RGB
-    // int r = color.mid(0, 2).toInt(nullptr, 16);
-    // int g = color.mid(2, 2).toInt(nullptr, 16);
-    // int b = color.mid(4, 2).toInt(nullptr, 16);
-    // QString newBackgroundRgba = QString("background: rgba(%1, %2, %3, 0.7);").arg(r).arg(g).arg(b);
-    //
-    // // 设置按钮样式
-    // button->setStyleSheet(button->styleSheet().replace("background: rgba(255, 255, 255, 0.7);", newBackgroundRgba));
-    //
-    // // 添加按钮到单元格
-    // ui->tableWidget->setCellWidget(row, col, button);
-    //
-    // // 创建菜单（如果需要）
-    // QMenu *menu = new QMenu(button);
-    // QAction *sendAction = new QAction("Send", this);
-    // QAction *saveAction = new QAction("Save", this);
-    // connect(sendAction, &QAction::triggered, this, []() { qDebug() << "已发送"; });
-    // connect(saveAction, &QAction::triggered, this, []() { qDebug() << "已保存"; });
-    // menu->addAction(sendAction);
-    // menu->addAction(saveAction);
-    //
-    // // 将菜单关联到按钮
-    // button->setMenu(menu);
+void MainWindow::addButtonToTable(int row,int col, const QString &color) {
+    // 创建按钮
+    auto button = new FluDropDownButton(this);
+    // connect(button, &QPushButton::clicked, [this, row, button]() { handleButtonClicked(row, button); });
+
+    // 将十六进制颜色字符串转换为RGB
+    int r = color.mid(0, 2).toInt(nullptr, 16);
+    int g = color.mid(2, 2).toInt(nullptr, 16);
+    int b = color.mid(4, 2).toInt(nullptr, 16);
+    QString newBackgroundRgba = QString("background: rgba(%1, %2, %3, 0.7);").arg(r).arg(g).arg(b);
+
+    // 设置按钮样式
+    button->setStyleSheet(button->styleSheet().replace("background: rgba(255, 255, 255, 0.7);", newBackgroundRgba));
+
+    button->setIcon(QIcon(FluIconUtils::getFluentIcon(FluAwesomeType::Mail)));
+    button->addIconTextItem(QIcon(FluIconUtils::getFluentIcon(FluAwesomeType::Send)), "Send");
+    button->addIconTextItem(QIcon(FluIconUtils::getFluentIcon(FluAwesomeType::MailReply)), "Reply");
+    button->addIconTextItem(QIcon(FluIconUtils::getFluentIcon(FluAwesomeType::MailReplyAll)), "Reply All");
+
+    // 添加按钮到单元格
+    ui_->tableWidget->setCellWidget(row, col, button);
+
+
 }
 
 void MainWindow::InitConfig() {

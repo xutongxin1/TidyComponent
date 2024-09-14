@@ -30,39 +30,39 @@ void MainWindow::ShowAllComponents() {
     ui_->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed); // 锁定第一列宽度
 
     int row = 0; // 初始化行数
-    for (const component_record &record : recordsVector) {
+    for (const auto &[name, color, jlcid, tbLink, value, package, aliases] : recordsVector) {
 
 
-        ui_->tableWidget->setItem(row, 1, new QTableWidgetItem(record.name));
+        ui_->tableWidget->setItem(row, 1, new QTableWidgetItem(name));
 
         // 设置控制按钮
-        addButtonToTable(row, 0, record.color);
+        addButtonToTable(row, 0, color);
 
         // 处理JLCID
-        if (record.jlcid.isEmpty()) {
+        if (jlcid.isEmpty()) {
             ui_->tableWidget->setItem(row, 2, new QTableWidgetItem(""));
         } else {
-            QString url = QString("https://so.szlcsc.com/global.html?k=%1").arg(record.jlcid);
-            QLabel *label = createHyperlinkLabel(record.jlcid, url);
+            QString url = QString("https://so.szlcsc.com/global.html?k=%1").arg(jlcid);
+            QLabel *label = createHyperlinkLabel(jlcid, url);
             ui_->tableWidget->setCellWidget(row, 2, label);
         }
 
         // 处理TBLink
-        if (record.tbLink.isEmpty()) {
-            QString url = QString("https://shop131282813.taobao.com/search.htm?keyword=%1").arg(record.name);
+        if (tbLink.isEmpty()) {
+            QString url = QString("https://shop131282813.taobao.com/search.htm?keyword=%1").arg(name);
             QLabel *label = createHyperlinkLabel("尝试优信搜索", url);
             ui_->tableWidget->setCellWidget(row, 3, label);
         } else {
-            QLabel *label = createHyperlinkLabel(record.tbLink, record.tbLink);
+            QLabel *label = createHyperlinkLabel(tbLink, tbLink);
             ui_->tableWidget->setCellWidget(row, 3, label);
         }
 
         // 设置其余单元格数据
-        ui_->tableWidget->setItem(row, 4, new QTableWidgetItem(record.value));
-        ui_->tableWidget->setItem(row, 5, new QTableWidgetItem(record.package));
+        ui_->tableWidget->setItem(row, 4, new QTableWidgetItem(value));
+        ui_->tableWidget->setItem(row, 5, new QTableWidgetItem(package));
 
         for (int col = 6; col <= 14; ++col) {
-            ui_->tableWidget->setItem(row, col, new QTableWidgetItem(record.aliases[col - 6]));
+            ui_->tableWidget->setItem(row, col, new QTableWidgetItem(aliases[col - 6]));
         }
 
         ++row; // 移动到下一行

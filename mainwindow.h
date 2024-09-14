@@ -16,6 +16,7 @@
 #include <QMap>
 #include <algorithm>
 #include <QtConcurrent/qtconcurrentrun.h>
+#include "FluDropDownButton.h"
 
 #include "./ui_mainwindow.h"
 #include "xlsxdatavalidation.h"
@@ -75,7 +76,7 @@ class MainWindow : public QMainWindow {
         void ShowAllComponents();
         void ShowSomeComponents();
         void loadData();
-        void addButtonToTable(int row, int col, const QString &color);
+        void addButtonToTable(int row,int col, const QString &color);
 
         void InitConfig();
 
