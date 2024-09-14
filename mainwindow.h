@@ -15,6 +15,7 @@
 #include <QStringList>
 #include <QMap>
 #include <algorithm>
+#include <QtConcurrent/qtconcurrentrun.h>
 
 #include "./ui_mainwindow.h"
 #include "xlsxdatavalidation.h"
@@ -34,19 +35,19 @@ class MainWindow : public QMainWindow {
         Q_OBJECT
 
     public:
-    struct component_record {
-        QString name;
-        QString color;
-        QString jlcid;
-        QString tbLink;
-        QString value;
-        QString package;
-        QVector<QString> aliases;
-    };
+        struct component_record {
+            QString name;
+            QString color;
+            QString jlcid;
+            QString tbLink;
+            QString value;
+            QString package;
+            QVector<QString> aliases;
+        };
         explicit MainWindow(QWidget *parent = nullptr);
-        double calculateSimilarity(const QString &a, const QString &b);
+        static double calculateSimilarity(const QString &a, const QString &b);
         static bool isExactMatch(const component_record &record, const QStringList &searchWords);
-        QVector<component_record> findClosestRecords(
+        void findClosestRecords(
             const QVector<component_record> &recordsVector,
             const QString &searchString);
 
@@ -56,9 +57,10 @@ class MainWindow : public QMainWindow {
 
         ~MainWindow() override;
 
-
-
         QVector<component_record> recordsVector;
+
+        QVector<int> exacIndex;// 精确结果
+        QVector<int> fuzzyIndex;// 模糊结果
 
     private:
         Ui::MainWindow *ui_;
@@ -69,9 +71,9 @@ class MainWindow : public QMainWindow {
 
         void GetConstructConfig();
         void SaveConstructConfig();
-        QLabel *createHyperlinkLabel(const QString &text, const QString &url);
+        static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         void ShowAllComponents();
-        void ShowSomeComponents(const QVector<int> &exacIndex, const QVector<int> &fuzzyIndex);
+        void ShowSomeComponents();
         void loadData();
         void addButtonToTable(int row, int col, const QString &color);
 

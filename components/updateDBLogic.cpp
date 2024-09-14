@@ -44,6 +44,11 @@ void MainWindow::loadData() {
     }
 
     ShowAllComponents();//显示所有元器件
+    // (void) QtConcurrent::run(
+    //        [&] {
+    //
+    //        });
+
 }
 
 

@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainW
     connect(ui_->btn_import, &QPushButton::clicked, this, &MainWindow::importExcelToJson);
 
     connect(ui_->input_search, &QLineEdit::returnPressed, this, &MainWindow::search);
+    connect(ui_->input_search, &QLineEdit::editingFinished, this, &MainWindow::search);
 
     ui_->label_nowSearch->hide();
 }
