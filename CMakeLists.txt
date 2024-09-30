@@ -147,6 +147,7 @@ add_subdirectory(thirdLib)
 target_include_directories(${PROJECT_NAME} PUBLIC ./components)
 target_include_directories(${PROJECT_NAME} PUBLIC ./config)
 target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/CppQtFluentUi888/FluControls/)
+target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/ElaWidgetTools/src/include)
 target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/QXlsx/QXlsx/header)
 
 
@@ -171,10 +172,10 @@ if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
-            Qt6::Network qmetarialComponents Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
+            Qt6::Network elawidgettools Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 else ()
     target_link_libraries(
-            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
+            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls elawidgettools QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
             Qt6::Network Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 endif ()

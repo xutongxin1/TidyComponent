@@ -18,6 +18,7 @@ QLabel *MainWindow::createHyperlinkLabel(const QString &text, const QString &url
 
     return label;
 }
+
 void MainWindow::ShowAllComponents() {
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -36,7 +37,7 @@ void MainWindow::ShowAllComponents() {
         ui_->tableWidget->setItem(row, 1, new QTableWidgetItem(name));
 
         // 设置控制按钮
-        addButtonToTable(row, 0, color);
+        // addButtonToTable(row, 0, color);
 
         // 处理JLCID
         if (jlcid.isEmpty()) {

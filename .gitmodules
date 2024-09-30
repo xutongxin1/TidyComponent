@@ -4,3 +4,6 @@
 [submodule "thirdLib/QXlsx"]
 	path = thirdLib/QXlsx
 	url = https://github.com/QtExcel/QXlsx.git
+[submodule "thirdLib/ElaWidgetTools"]
+	path = thirdLib/ElaWidgetTools
+	url = https://github.com/Liniyous/ElaWidgetTools.git
