@@ -19,10 +19,15 @@
 #include "FluDropDownButton.h"
 
 #include "./ui_mainwindow.h"
+#include "ComponentTableModel.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
 using namespace std;
+
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8")
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -36,20 +41,13 @@ class MainWindow : public QMainWindow {
         Q_OBJECT
 
     public:
-        struct component_record {
-            QString name;
-            QString color;
-            QString jlcid;
-            QString tbLink;
-            QString value;
-            QString package;
-            QVector<QString> aliases;
-        };
+        ComponentTableModel model;
+
         explicit MainWindow(QWidget *parent = nullptr);
         static double calculateSimilarity(const QString &a, const QString &b);
-        static bool isExactMatch(const component_record &record, const QStringList &searchWords);
+        static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
         void findClosestRecords(
-            const QVector<component_record> &recordsVector,
+            const QVector<component_record_struct> &recordsVector,
             const QString &searchString);
 
         void search();
@@ -58,7 +56,7 @@ class MainWindow : public QMainWindow {
 
         ~MainWindow() override;
 
-        QVector<component_record> recordsVector;
+        // QVector<component_record_struct> recordsVector;
 
         QVector<int> exacIndex;// 精确结果
         QVector<int> fuzzyIndex;// 模糊结果
@@ -73,8 +71,8 @@ class MainWindow : public QMainWindow {
         void GetConstructConfig();
         void SaveConstructConfig();
         static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
-        void ShowAllComponents();
-        void ShowSomeComponents();
+        // void ShowAllComponents();
+        // void ShowSomeComponents();
         void loadData();
         void addButtonToTable(int row,int col, const QString &color);
 

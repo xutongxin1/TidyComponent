@@ -26,7 +26,7 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,5">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,3">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -108,7 +108,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QTableWidget" name="tableWidget"/>
+     <widget class="ElaTableView" name="tableView"/>
     </item>
    </layout>
   </widget>
@@ -118,6 +118,11 @@
    <class>FluPushButton</class>
    <extends>QPushButton</extends>
    <header location="global">FluPushButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ElaTableView</class>
+   <extends>QTableView</extends>
+   <header location="global">ElaTableView.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -57,7 +57,7 @@ double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
 }
 
 // 检查所有词是否都在记录字段中出现
-bool MainWindow::isExactMatch(const component_record &record, const QStringList &searchWords) {
+bool MainWindow::isExactMatch(const component_record_struct &record, const QStringList &searchWords) {
     int matchCount = 0;
 
     for (const auto &word : searchWords) {
@@ -86,7 +86,7 @@ bool MainWindow::isExactMatch(const component_record &record, const QStringList 
 }
 
 // 查找最接近的记录
-void MainWindow::findClosestRecords(const QVector<component_record> &recordsVector, const QString &searchString) {
+void MainWindow::findClosestRecords(const QVector<component_record_struct> &component_record, const QString &searchString) {
     auto start = std::chrono::high_resolution_clock::now();
 
     //清空记录
@@ -97,7 +97,7 @@ void MainWindow::findClosestRecords(const QVector<component_record> &recordsVect
     QStringList searchWords = searchString.split(' ', Qt::SkipEmptyParts);
 
     int index = 0;
-    for (const auto &record : recordsVector) {
+    for (const auto &record : component_record) {
         // 首先进行精确匹配检查
         if (isExactMatch(record, searchWords)) {
             exacIndex.append(index);
@@ -139,22 +139,22 @@ void MainWindow::findClosestRecords(const QVector<component_record> &recordsVect
 void MainWindow::search() {
     QString searchString = ui_->input_search->text();
     if(searchString.isEmpty()) {
-        ShowAllComponents();
+        // ShowAllComponents();
         return;
     }
-    findClosestRecords(recordsVector, searchString);
+    findClosestRecords(model.component_record, searchString);
 
     for (const auto &record : exacIndex) {
-        qDebug() << "精确结果: " << recordsVector[record].name << ", " << recordsVector[record].value << ", " <<
-            recordsVector[record].package;
+        qDebug() << "精确结果: " << model.component_record[record].name << ", " << model.component_record[record].value << ", " <<
+            model.component_record[record].package;
     }
 
     for (const auto &record : fuzzyIndex) {
-        qDebug() << "模糊结果: " << recordsVector[record].name << ", " << recordsVector[record].value << ", " <<
-            recordsVector[record].package;
+        qDebug() << "模糊结果: " << model.component_record[record].name << ", " << model.component_record[record].value << ", " <<
+            model.component_record[record].package;
     }
     qDebug() << "搜索结束";
 
     //显示搜索结果
-    ShowSomeComponents();
+    // ShowSomeComponents();
 }

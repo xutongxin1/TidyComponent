@@ -25,7 +25,7 @@ void MainWindow::loadData() {
         QJsonObject info = recordJson.value("Info").toObject();
 
         // 创建一个 Record 对象并填充数据
-        component_record record;
+        component_record_struct record;
         record.name = name;
         record.color = info.value("Color").toString();
         record.jlcid = info.value("JLCID").toString();
@@ -40,10 +40,10 @@ void MainWindow::loadData() {
         }
 
         // 将 Record 对象添加到 QVector 中
-        recordsVector.append(record);
+        model.component_record.append(record);
     }
 
-    ShowAllComponents();//显示所有元器件
+    // ShowAllComponents();//显示所有元器件
     // (void) QtConcurrent::run(
     //        [&] {
     //
