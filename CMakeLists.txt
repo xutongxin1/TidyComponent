@@ -131,7 +131,7 @@ file(GLOB QRC "*.qrc")
 #file(GLOB_RECURSE Resource "./thirdLib/qmetarial/resources.qrc")
 file(GLOB_RECURSE SOURCES ${SOURCES} "./config/*.ini")
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     add_executable(${PROJECT_NAME} WIN32 ${HEADER} ${RSOURCE} ${UI} ${QRC} ${Resource})
 else ()
     add_executable(${PROJECT_NAME} ${HEADER} ${RSOURCE} ${UI} ${QRC} ${Resource})
@@ -168,7 +168,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/QXlsx/QXlsx/header)
 #    endif ()
 #endif ()
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer

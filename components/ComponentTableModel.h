@@ -6,6 +6,8 @@
 #define COMPONENTTABLEMODEL_H
 #include <QAbstractTableModel>
 
+#include "ColorDelegate.h"
+
 struct component_record_struct {
     QString name;
     QString color;
@@ -85,7 +87,25 @@ class ComponentTableModel : public QAbstractTableModel {
                     // 对齐方式
                     return Qt::AlignCenter;
                     break;
-
+                // case Qt::DecorationRole:
+                //     if (index.column() == 0) {
+                //         QColor color(component_record[item.dataIndex].color);
+                //         if (color.isValid()) {
+                //             QPixmap pixmap(16, 16);
+                //             pixmap.fill(color);
+                //             return pixmap;
+                //         } else {
+                //             return QVariant();
+                //         }
+                //     }
+                case Qt::BackgroundRole:
+                    if (index.column() == 0) {
+                        // qDebug() << "Qt::BackgroundRole called at row" << index.row() << "column" << index.column();
+                        // return QBrush(QColor("#"+component_record[item.dataIndex].color));
+                        return QBrush(QColor(component_record[item.dataIndex].color));
+                    } else {
+                        return QVariant();
+                    }
                 default:
                     return QVariant();
             }
@@ -98,7 +118,6 @@ class ComponentTableModel : public QAbstractTableModel {
                     if (orientation == Qt::Horizontal && section >= 0 && section <= columnCount())
                         return titles.at(section);
                     break;
-
                 default:
                     break;
             }
@@ -106,45 +125,68 @@ class ComponentTableModel : public QAbstractTableModel {
             return QAbstractItemModel::headerData(section, orientation, role);
         }
 
-        //    编辑相关函数
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const override {
-            return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
+        Qt::ItemFlags flags(const QModelIndex &index) const override {
+            if (!index.isValid())
+                return Qt::NoItemFlags;
+
+            Qt::ItemFlags flags = QAbstractTableModel::flags(index);
+
+            // 设置所有单元格为可编辑
+            flags |= Qt::ItemIsEditable;
+
+            return flags;
         }
 
-        // //    修改核心函数
-        // virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
-        //     if (role != Qt::EditRole || !index.isValid() || index.row() >= rowCount() || index.column() >=
-        //         columnCount())
-        //         return false;
-        //
-        //     bool ok = false;
-        //     switch (index.column()) {
-        //         case 0: // 书名
-        //             component_record[index.row()].name = value.toString();
-        //             break;
-        //
-        //         case 1: // 出版社
-        //             component_record[index.row()].publisher = value.toString();
-        //             break;
-        //
-        //         case 2: // 类型
-        //             component_record[index.row()].type = value.toString();
-        //             break;
-        //
-        //         case 3: // 价格，并做简单输入判断
-        //             value.toDouble(&ok);
-        //             if (ok) component_record[index.row()].price = value.toDouble(&ok);
-        //             else return false;
-        //             break;
-        //
-        //         default:
-        //             return false;
-        //             break;
-        //     }
-        //
-        //     emit dataChanged(index, index);
-        //     return true;
-        // }
+        virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
+            if (value.toString().isEmpty()) {
+                // 数据不能为空，返回 false 表示修改失败
+                return false;
+            }
+
+            if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
+                return false;
+
+            if (role == Qt::EditRole) {
+                switch (index.column()) {
+                    case 0:
+                        component_record[index.row()].color = value.toString();
+                        break;
+                    case 1:
+                        component_record[index.row()].name = value.toString();
+                        break;
+                    case 2:
+                        component_record[index.row()].value = value.toString();
+                        break;
+                    case 3:
+                        component_record[index.row()].package = value.toString();
+                        break;
+                    case 4:
+                        component_record[index.row()].jlcid = value.toString();
+                        break;
+                    default:
+                        if (index.column() >= 5 && index.column() <= 14) {
+                            int aliasIndex = index.column() - 5;
+                            // Ensure the aliases vector is large enough
+                            if (aliasIndex >= component_record[index.row()].aliases.size()) {
+                                component_record[index.row()].aliases.resize(aliasIndex + 1);
+                            }
+                            component_record[index.row()].aliases[aliasIndex] = value.toString();
+                        } else {
+                            return false;
+                        }
+                        break;
+                }
+
+                // Notify the view that the data has changed
+                emit dataChanged(index, index, {role});
+
+                // Indicate that the data was successfully set
+                return true;
+            }
+
+            // For other roles, return false
+            return false;
+        }
 
     private:
         //    行修改函数：添加多行和删除多行
@@ -255,9 +297,13 @@ class ComponentTableModel : public QAbstractTableModel {
         // 存储要显示的项目列表
         QVector<DisplayItem> displayItems;
         void updateData() {
+            auto start = std::chrono::high_resolution_clock::now();
             beginResetModel();
             updateDisplayItems();
             endResetModel();
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+            qDebug() << "渲染用时: " << duration << " ms\n";
         }
 };
 

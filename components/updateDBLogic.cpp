@@ -40,7 +40,8 @@ void MainWindow::loadData() {
         }
 
         // 将 Record 对象添加到 QVector 中
-        model.component_record.append(record);
+        for (int i = 1; i <= 20; ++i);
+            model.component_record.append(record);
     }
 
     // ShowAllComponents();//显示所有元器件
@@ -48,9 +49,7 @@ void MainWindow::loadData() {
     //        [&] {
     //
     //        });
-
 }
-
 
 void MainWindow::importExcelToJson() {
     // 打开 Excel 文件

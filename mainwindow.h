@@ -58,8 +58,8 @@ class MainWindow : public QMainWindow {
 
         // QVector<component_record_struct> recordsVector;
 
-        QVector<int> exacIndex;// 精确结果
-        QVector<int> fuzzyIndex;// 模糊结果
+        // QVector<int> exacIndex;// 精确结果
+        // QVector<int> fuzzyIndex;// 模糊结果
 
     private:
         Ui::MainWindow *ui_;

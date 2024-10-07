@@ -1,0 +1,26 @@
+{
+    "_default": {
+        "1": {
+            "Name": "220pF",
+            "Info": {
+                "JLCID": "C1603",
+                "tbLink": "https://item.taobao.com/item.htm?spm=a21n57.1.item.7.2456523cFP2CrE&priceTId=213e373a17216556394281519e6369&utparam=%7B%22aplus_abtest%22:%22596d95556f1be34ca72340c11c2ac197%22%7D&id=522554423145&ns=1&abbucket=13",
+                "value": "220pF",
+                "package": "C0603",
+                "Alias1": "1号零件盒",
+                "Alias2": "",
+                "Alias3": "",
+                "Alias4": "",
+                "Alias5": "",
+                "Alias6": "",
+                "Alias7": "",
+                "Alias8": "",
+                "Alias9": "",
+                "Alias10": "",
+                "MAC": "25419226168392",
+                "INAddr": "101",
+                "Color": "ff0000"
+            }
+        }
+    }
+}

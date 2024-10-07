@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QIcon>
 
+#include "ColorDelegate.h"
 
 int record_DeviceNum = 0, record_WinNum = 0;
 
@@ -8,16 +9,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainW
     ui_->setupUi(this);
 
     // 禁用tableView修改
-    ui_->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
+    // ui_->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui_->tableView->setEditTriggers(QAbstractItemView::DoubleClicked  | QAbstractItemView::SelectedClicked);
     // 初始化导入数据
     loadData();
-
+    model.showAll=true;
     ui_->tableView->setModel(&model);
-    model.updateData();
 
+    // 为第 0 列设置自定义委托
+    ColorDelegate *colorDelegate = new ColorDelegate(this);
+    ui_->tableView->setItemDelegateForColumn(0, colorDelegate);
+
+    model.updateData();
     //选中时一行整体选中
-    ui_->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    // ui_->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     // 绑定导入导出按钮
     connect(ui_->btn_export, &QPushButton::clicked, this, &MainWindow::exportJsonToExcel);
     connect(ui_->btn_import, &QPushButton::clicked, this, &MainWindow::importExcelToJson);
