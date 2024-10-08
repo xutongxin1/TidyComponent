@@ -6,4 +6,4 @@
 	url = https://github.com/QtExcel/QXlsx.git
 [submodule "thirdLib/ElaWidgetTools"]
 	path = thirdLib/ElaWidgetTools
-	url = https://github.com/Liniyous/ElaWidgetTools.git
+	url = https://github.com/xutongxin1/ElaWidgetTools.git
