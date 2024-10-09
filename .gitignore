@@ -76,8 +76,6 @@ cmake-build-debug-mingw-1/
 
 cmake-build-debug-qt51211/
 
-.idea/
-
 cmake-build-debug-mingw/
 
 cmake-build-debug/
@@ -114,3 +112,5 @@ res/
 StyleSheet/
 
 cmake-build-relwithdebinfo/
+
+cmake-build-ubuntu/
