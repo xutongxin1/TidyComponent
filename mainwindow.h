@@ -18,8 +18,11 @@
 #include <QtConcurrent/qtconcurrentrun.h>
 #include "FluDropDownButton.h"
 
-#include "./ui_mainwindow.h"
+// #include "./ui_mainwindow.h"
 #include "ComponentTableModel.h"
+#include "ElaContentDialog.h"
+#include "ElaTableView.h"
+#include "ElaWindow.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
@@ -37,12 +40,13 @@ class MainWindow;
 
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
+class MainWindow : public ElaWindow {
         Q_OBJECT
 
     public:
         ComponentTableModel model;
 
+        void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
         static double calculateSimilarity(const QString &a, const QString &b);
         static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
@@ -62,8 +66,9 @@ class MainWindow : public QMainWindow {
         // QVector<int> fuzzyIndex;// 模糊结果
 
     private:
-        Ui::MainWindow *ui_;
-
+        // Ui::MainWindow *ui_;
+        ElaContentDialog *_closeDialog{nullptr};
+        ElaTableView *tableView;
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;
@@ -74,7 +79,7 @@ class MainWindow : public QMainWindow {
         // void ShowAllComponents();
         // void ShowSomeComponents();
         void loadData();
-        void addButtonToTable(int row,int col, const QString &color);
+        void addButtonToTable(int row, int col, const QString &color);
 
         void InitConfig();
 

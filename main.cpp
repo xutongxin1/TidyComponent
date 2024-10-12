@@ -5,6 +5,7 @@
 #include <QCoreApplication>
 #include <QDir>
 
+#include "ElaApplication.h"
 #include "mainwindow.h"
 #include "iostream"
 
@@ -66,6 +67,7 @@ int main(int argc, char *argv[]) {
     qInstallMessageHandler(LogMessageHandler);//安装日志驱动
 
     QApplication a(argc, argv);
+    eApp->init();
     MainWindow w;
     w.show();
 
