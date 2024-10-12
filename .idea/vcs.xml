@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/thirdLib/CppQtFluentUi888" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/thirdLib/ElaWidgetTools" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/thirdLib/QXlsx" vcs="Git" />
   </component>
 </project>

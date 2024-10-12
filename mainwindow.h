@@ -21,7 +21,9 @@
 // #include "./ui_mainwindow.h"
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
+#include "ElaPivot.h"
 #include "ElaTableView.h"
+#include "ElaTabWidget.h"
 #include "ElaWindow.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
@@ -69,6 +71,9 @@ class MainWindow : public ElaWindow {
         // Ui::MainWindow *ui_;
         ElaContentDialog *_closeDialog{nullptr};
         ElaTableView *tableView;
+        ElaPivot *_pivot{nullptr};
+        ElaTabWidget *_tabWidget{nullptr};
+
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;

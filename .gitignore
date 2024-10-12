@@ -114,3 +114,7 @@ StyleSheet/
 cmake-build-relwithdebinfo/
 
 cmake-build-ubuntu/
+
+.idea/QtSettings.xml
+
+.idea/deployment.xml
