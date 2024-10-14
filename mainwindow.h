@@ -21,9 +21,12 @@
 // #include "./ui_mainwindow.h"
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
+#include "ElaListView.h"
 #include "ElaPivot.h"
+#include "ElaSuggestBox.h"
 #include "ElaTableView.h"
 #include "ElaTabWidget.h"
+#include "ElaToolButton.h"
 #include "ElaWindow.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
@@ -47,6 +50,7 @@ class MainWindow : public ElaWindow {
 
     public:
         ComponentTableModel model;
+        ElaToolButton * _resetSearchButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -56,7 +60,7 @@ class MainWindow : public ElaWindow {
             const QVector<component_record_struct> &recordsVector,
             const QString &searchString);
 
-        void search();
+        void search(const QString& searchText);
         void importExcelToJson();
         void exportJsonToExcel();
 
@@ -73,7 +77,11 @@ class MainWindow : public ElaWindow {
         ElaTableView *tableView;
         ElaPivot *_pivot{nullptr};
         ElaTabWidget *_tabWidget{nullptr};
+        ElaListView *_iconView;
 
+        ElaToolButton *_enterEditButton{nullptr};
+        ElaSuggestBox *_searchBox{nullptr};
+        ElaToolButton *_importSearchButton;
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;

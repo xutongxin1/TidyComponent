@@ -136,7 +136,7 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     std::cout << "搜索用时: " << duration << " ms\n";
 }
 
-void MainWindow::search() {
+void MainWindow::search(const QString& searchText) {
     // QString searchString = ui_->input_search->text();
     QString searchString = "test";
     if(searchString.isEmpty()) {
