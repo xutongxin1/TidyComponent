@@ -41,7 +41,7 @@ void MainWindow::loadData() {
 
         // 将 Record 对象添加到 QVector 中
         for (int i = 1; i <= 20; ++i);
-            model.component_record.append(record);
+            model->component_record.append(record);
     }
 
     // ShowAllComponents();//显示所有元器件

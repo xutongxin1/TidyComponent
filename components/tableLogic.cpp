@@ -90,8 +90,8 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     auto start = std::chrono::high_resolution_clock::now();
 
     //清空记录
-    model.exacIndex.clear();
-    model.fuzzyIndex.clear();
+    model->exacIndex.clear();
+    model->fuzzyIndex.clear();
 
     QMultiMap<double, int> similarityMap;
     QStringList searchWords = searchString.split(' ', Qt::SkipEmptyParts);
@@ -100,7 +100,7 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     for (const auto &record : component_record) {
         // 首先进行精确匹配检查
         if (isExactMatch(record, searchWords)) {
-            model.exacIndex.append(index);
+            model->exacIndex.append(index);
         } else {
             // 计算模糊相似度
             double totalSimilarity = 0.0;
@@ -126,7 +126,7 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
 
     while (it != similarityMap.begin() && count < 5) {
         --it;
-        model.fuzzyIndex.append(it.value());
+        model->fuzzyIndex.append(it.value());
         count++;
     }
 
@@ -136,17 +136,17 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     std::cout << "搜索用时: " << duration << " ms\n";
 }
 
-void MainWindow::search(const QString& searchText) {
+void MainWindow::search() {
     // QString searchString = ui_->input_search->text();
     QString searchString = "test";
     if(searchString.isEmpty()) {
-        model.showAll=true;
-        model.updateData();
+        model->showAll=true;
+        model->updateData();
         // ShowAllComponents();
         return;
     }
-    model.showAll=false;
-    findClosestRecords(model.component_record, searchString);
+    model->showAll=false;
+    findClosestRecords(model->component_record, searchString);
 
     // for (const auto &record : model.exacIndex) {
     //     qDebug() << "精确结果: " << model.component_record[record].name << ", " << model.component_record[record].value << ", " <<
@@ -159,7 +159,7 @@ void MainWindow::search(const QString& searchText) {
     // }
     // qDebug() << "搜索结束";
 
-    model.updateData();
+    model->updateData();
     //显示搜索结果
     // ShowSomeComponents();
 }

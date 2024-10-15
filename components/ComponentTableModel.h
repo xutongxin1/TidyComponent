@@ -100,9 +100,10 @@ class ComponentTableModel : public QAbstractTableModel {
                 //     }
                 case Qt::BackgroundRole:
                     if (index.column() == 0) {
-                        // qDebug() << "Qt::BackgroundRole called at row" << index.row() << "column" << index.column();
-                        // return QBrush(QColor("#"+component_record[item.dataIndex].color));
-                        return QBrush(QColor(component_record[item.dataIndex].color));
+                        if (item.type == DisplayItem::Data)
+                            return QBrush(QColor(component_record[item.dataIndex].color));
+                        else
+                            return QVariant();
                     } else {
                         return QVariant();
                     }

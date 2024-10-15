@@ -1,14 +1,18 @@
 #include "mainwindow.h"
+
+#include <QHeaderView>
 #include <QIcon>
 #include <qsplitter.h>
 
 #include "ColorDelegate.h"
 #include "ElaDockWidget.h"
+#include "ElaLineEdit.h"
 #include "ElaScrollPageArea.h"
 
 int record_DeviceNum = 0, record_WinNum = 0;
 
 MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
+    model = new ComponentTableModel();
     tableView = new ElaTableView(this);
     //初始化ElaUI
     initElaWindow();
@@ -18,22 +22,26 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     // 初始化导入数据
     loadData();
-    model.showAll = true;
-    tableView->setModel(&model);
+    model->showAll = true;
+    tableView->setModel(model);
 
     // 为第 0 列设置自定义委托
     ColorDelegate *colorDelegate = new ColorDelegate(this);
-    tableView->setItemDelegateForColumn(0, colorDelegate);
+    tableView->setItemDelegateForColumn(0,colorDelegate);
 
-    model.updateData();
+    model->updateData();
     //选中时一行整体选中
 
     // 绑定导入导出按钮
     // connect(ui_->btn_export, &QPushButton::clicked, this, &MainWindow::exportJsonToExcel);
     // connect(ui_->btn_import, &QPushButton::clicked, this, &MainWindow::importExcelToJson);
     //
-    // connect(_searchBox, &QLineEdit::onSearchEditTextEdit, this, &MainWindow::search);
-    // connect(_searchBox, &QLineEdit::editingFinished, this, &MainWindow::search);
+    connect(_searchBox, &QLineEdit::textChanged, this, &MainWindow::search);
+    connect(_searchBox, &QLineEdit::editingFinished, this, [&] {
+        if (_searchBox->text().isEmpty()) {
+            search(); //防止刷新两次
+        }
+    });
 
     // ui_->label_nowSearch->hide();
 }
@@ -78,7 +86,6 @@ void MainWindow::initElaWindow() {
     // _pivot->appendPivot("正在下载");
     // _pivot->setCurrentIndex(0);
 
-
     _tabWidget = new ElaTabWidget(this);
     _tabWidget->setFixedHeight(150);
 
@@ -90,19 +97,19 @@ void MainWindow::initElaWindow() {
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
     _enterEditButton->setText("进入编辑模式");
     _enterEditButton->setElaIcon(ElaIconType::Wrench);
-    _enterEditButton->setIconSize(QSize(35,35));
-    _enterEditButton->setFixedSize(100,75);
+    _enterEditButton->setIconSize(QSize(35, 35));
+    _enterEditButton->setFixedSize(100, 75);
 
-    ElaScrollPageArea* homeArea = new ElaScrollPageArea(this);
+    ElaScrollPageArea *homeArea = new ElaScrollPageArea(this);
     homeArea->setMinimumHeight(0);
     homeArea->setMaximumHeight(QWIDGETSIZE_MAX);
-    QHBoxLayout* homeAreaLayout = new QHBoxLayout(homeArea);
+    QHBoxLayout *homeAreaLayout = new QHBoxLayout(homeArea);
     homeAreaLayout->addWidget(_enterEditButton);
     homeAreaLayout->addStretch();
     //搜索栏
-    _searchBox=new ElaSuggestBox(this);
-    _searchBox->setFixedSize(500,85);
-    _searchBox->setFixedHeight(85);
+    _searchBox = new ElaLineEdit(this);
+    _searchBox->setFixedSize(500, 45);
+    _searchBox->setFixedHeight(45);
     _searchBox->setPlaceholderText("今天要来点什么元器件呢？");
 
     _resetSearchButton = new ElaToolButton(this);
@@ -112,8 +119,8 @@ void MainWindow::initElaWindow() {
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
     _resetSearchButton->setText("搜索复位");
     _resetSearchButton->setElaIcon(ElaIconType::FilterSlash);
-    _resetSearchButton->setIconSize(QSize(35,35));
-    _resetSearchButton->setFixedSize(100,75);
+    _resetSearchButton->setIconSize(QSize(35, 35));
+    _resetSearchButton->setFixedSize(100, 75);
 
     _importSearchButton = new ElaToolButton(this);
     _importSearchButton->setIsTransparent(false);
@@ -122,13 +129,13 @@ void MainWindow::initElaWindow() {
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
     _importSearchButton->setText("导入BOM表\n进行搜索");
     _importSearchButton->setElaIcon(ElaIconType::FileImport);
-    _importSearchButton->setIconSize(QSize(35,35));
-    _importSearchButton->setFixedSize(130,75);
+    _importSearchButton->setIconSize(QSize(35, 35));
+    _importSearchButton->setFixedSize(130, 75);
 
-    ElaScrollPageArea* searchArea = new ElaScrollPageArea(this);
+    ElaScrollPageArea *searchArea = new ElaScrollPageArea(this);
     searchArea->setMinimumHeight(0);
     searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
-    QHBoxLayout* searchAreaLayout = new QHBoxLayout(searchArea);
+    QHBoxLayout *searchAreaLayout = new QHBoxLayout(searchArea);
     searchAreaLayout->addWidget(_searchBox);
     searchAreaLayout->addWidget(_resetSearchButton);
     searchAreaLayout->addWidget(_importSearchButton);
@@ -139,17 +146,23 @@ void MainWindow::initElaWindow() {
     // _tabWidget->addTab(page4, "元器件操作");
     // _tabWidget->addTab(page3, "编辑模式");
 
-
     _tabWidget->setTabsClosable(false);
-
-
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(_tabWidget);
     splitter->addWidget(tableView);
 
     addPageNode("HOME", splitter, ElaIconType::House);
+
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    // tableView->setTextElideMode(Qt::ElideNone);
+    // connect(model, &ComponentTableModel::dataChanged, tableView, &ElaTableView::resizeRowsToContents);
+    // connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, [=](int index, int /*oldSize*/, int /*newSize*/) {
+    //     qDebug()<<tableView->styleSheet();
+    //     tableView->setWordWrap(true);
+    //     tableView->resizeRowsToContents();
+    // });
 }
 void MainWindow::GetConstructConfig() {
 }

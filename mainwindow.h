@@ -21,6 +21,7 @@
 // #include "./ui_mainwindow.h"
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
+#include "ElaLineEdit.h"
 #include "ElaListView.h"
 #include "ElaPivot.h"
 #include "ElaSuggestBox.h"
@@ -49,7 +50,7 @@ class MainWindow : public ElaWindow {
         Q_OBJECT
 
     public:
-        ComponentTableModel model;
+        ComponentTableModel * model;
         ElaToolButton * _resetSearchButton;
 
         void initElaWindow();
@@ -60,7 +61,7 @@ class MainWindow : public ElaWindow {
             const QVector<component_record_struct> &recordsVector,
             const QString &searchString);
 
-        void search(const QString& searchText);
+        void search();
         void importExcelToJson();
         void exportJsonToExcel();
 
@@ -80,7 +81,7 @@ class MainWindow : public ElaWindow {
         ElaListView *_iconView;
 
         ElaToolButton *_enterEditButton{nullptr};
-        ElaSuggestBox *_searchBox{nullptr};
+        ElaLineEdit *_searchBox{nullptr};
         ElaToolButton *_importSearchButton;
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
