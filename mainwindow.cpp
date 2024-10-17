@@ -72,16 +72,17 @@ void MainWindow::initElaWindow() {
     ElaDockWidget *infoDockWidget = new ElaDockWidget(this);
     infoDockWidget->setWindowTitle("元件信息");
     infoDockWidget->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
+
     // logDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     // logDockWidget->titleBarWidget()->hide();
     this->addDockWidget(Qt::RightDockWidgetArea, infoDockWidget);
     resizeDocks({infoDockWidget}, {600}, Qt::Vertical);
+    resizeDocks({infoDockWidget}, {600}, Qt::Horizontal);
     ElaScrollPageArea *infoDockhArea = new ElaScrollPageArea(this);
     infoDockhArea->setMinimumHeight(0);
     infoDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QVBoxLayout *infoDockLayout = new QVBoxLayout(infoDockhArea);
-    _testBox = new ElaLineEdit(this);
-    infoDockLayout->addWidget(_testBox);
+
     infoDockLayout->addStretch();
     infoDockWidget->setWidget(infoDockhArea);
     //_pivot界面
@@ -112,6 +113,7 @@ void MainWindow::initElaWindow() {
     homeArea->setMinimumHeight(0);
     homeArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *homeAreaLayout = new QHBoxLayout(homeArea);
+    homeAreaLayout->setContentsMargins(0, 0, 0, 0);
     homeAreaLayout->addWidget(_enterEditButton);
     homeAreaLayout->addStretch();
     //搜索栏
@@ -140,9 +142,9 @@ void MainWindow::initElaWindow() {
     _importSearchButton->setIconSize(QSize(35, 35));
     _importSearchButton->setFixedSize(130, 75);
 
-    ElaScrollPageArea *searchArea = new ElaScrollPageArea(this);
-    searchArea->setMinimumHeight(0);
-    searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
+    QWidget *searchArea = new QWidget(this);
+    // searchArea->setMinimumHeight(0);
+    // searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *searchAreaLayout = new QHBoxLayout(searchArea);
     searchAreaLayout->addWidget(_searchBox);
     searchAreaLayout->addWidget(_resetSearchButton);

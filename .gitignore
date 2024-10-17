@@ -118,3 +118,5 @@ cmake-build-ubuntu/
 .idea/QtSettings.xml
 
 .idea/deployment.xml
+
+.idea/misc.xml
