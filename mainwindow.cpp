@@ -69,13 +69,21 @@ void MainWindow::initElaWindow() {
     moveToCenter();
 
     // 停靠窗口
-    // ElaDockWidget *logDockWidget = new ElaDockWidget(this);
-    // logDockWidget->setWidget(tableView);
+    ElaDockWidget *infoDockWidget = new ElaDockWidget(this);
+    infoDockWidget->setWindowTitle("元件信息");
+    infoDockWidget->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
     // logDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     // logDockWidget->titleBarWidget()->hide();
-    // this->addDockWidget(Qt::BottomDockWidgetArea, logDockWidget);
-    // resizeDocks({logDockWidget}, {600}, Qt::Vertical);
-
+    this->addDockWidget(Qt::RightDockWidgetArea, infoDockWidget);
+    resizeDocks({infoDockWidget}, {600}, Qt::Vertical);
+    ElaScrollPageArea *infoDockhArea = new ElaScrollPageArea(this);
+    infoDockhArea->setMinimumHeight(0);
+    infoDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
+    QVBoxLayout *infoDockLayout = new QVBoxLayout(infoDockhArea);
+    _testBox = new ElaLineEdit(this);
+    infoDockLayout->addWidget(_testBox);
+    infoDockLayout->addStretch();
+    infoDockWidget->setWidget(infoDockhArea);
     //_pivot界面
     // _pivot = new ElaPivot(this);
     // _pivot->setPivotSpacing(8);
