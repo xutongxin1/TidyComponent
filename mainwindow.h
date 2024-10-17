@@ -24,6 +24,7 @@
 #include "ElaLineEdit.h"
 #include "ElaListView.h"
 #include "ElaPivot.h"
+#include "ElaPromotionCard.h"
 #include "ElaSuggestBox.h"
 #include "ElaTableView.h"
 #include "ElaTabWidget.h"
@@ -50,8 +51,8 @@ class MainWindow : public ElaWindow {
         Q_OBJECT
 
     public:
-        ComponentTableModel * model;
-        ElaToolButton * _resetSearchButton;
+        ComponentTableModel *model;
+        ElaToolButton *_resetSearchButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -79,6 +80,7 @@ class MainWindow : public ElaWindow {
         ElaPivot *_pivot{nullptr};
         ElaTabWidget *_tabWidget{nullptr};
         ElaListView *_iconView;
+        ElaPromotionCard *_promotionCard{nullptr};
 
         ElaToolButton *_enterEditButton{nullptr};
         ElaLineEdit *_searchBox{nullptr};

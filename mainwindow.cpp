@@ -2,12 +2,15 @@
 
 #include <QHeaderView>
 #include <QIcon>
+#include <qimagereader.h>
 #include <qsplitter.h>
 
 #include "ColorDelegate.h"
 #include "ElaDockWidget.h"
 #include "ElaLineEdit.h"
 #include "ElaScrollPageArea.h"
+#include "GetFileRequestHandler.h"
+#include "GetRequestHandler.h"
 
 int record_DeviceNum = 0, record_WinNum = 0;
 
@@ -43,6 +46,23 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         }
     });
 
+    getRequest("https://whyta.cn/api/tx/one?key=cc8cba0a7069",
+           [](QString data) {
+               // 处理成功的响应数据（QString）
+               qDebug() << "Success:" << data;
+           },
+           [](QNetworkReply::NetworkError error) {
+               // 处理失败的错误信息
+               qDebug() << "Error:" << error;
+           });
+    getFileRequest("https://image.wufazhuce.com/FoQd7_KQgo8QBCt_a8OjmjG6ZamD",
+               [](QString filePath) {
+                   qDebug() << "File downloaded to:" << filePath;
+               },
+               nullptr,
+               "123.jpg",
+               "C:/Path/Install-Test");
+
     // ui_->label_nowSearch->hide();
 }
 
@@ -50,6 +70,7 @@ MainWindow::~MainWindow() {
     // delete ui_;
 }
 void MainWindow::initElaWindow() {
+    resize(1200, 740);
     setWindowIcon(QIcon(":/include/Image/Cirno.jpg"));
     setWindowTitle("Component Search");
     setUserInfoCardVisible(false);
@@ -77,7 +98,7 @@ void MainWindow::initElaWindow() {
     // logDockWidget->titleBarWidget()->hide();
     this->addDockWidget(Qt::RightDockWidgetArea, infoDockWidget);
     resizeDocks({infoDockWidget}, {600}, Qt::Vertical);
-    resizeDocks({infoDockWidget}, {600}, Qt::Horizontal);
+    resizeDocks({infoDockWidget}, {400}, Qt::Horizontal);
     ElaScrollPageArea *infoDockhArea = new ElaScrollPageArea(this);
     infoDockhArea->setMinimumHeight(0);
     infoDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
@@ -96,9 +117,31 @@ void MainWindow::initElaWindow() {
     // _pivot->setCurrentIndex(0);
 
     _tabWidget = new ElaTabWidget(this);
-    _tabWidget->setFixedHeight(150);
+    _tabWidget->setFixedHeight(350);
+
+    //修改切换时效果
+    connect(_tabWidget,&ElaTabWidget::currentChanged,this,[=](int index){
+        if(index==1){
+            _tabWidget->setFixedHeight(350);//每日一言
+        }
+        else {
+            _tabWidget->setFixedHeight(150);//其他窗口
+        }
+    });
 
     //首页栏
+    QImageReader reader("C:/Path/Install-Test/123.jpg");
+    reader.setAutoTransform(true);
+    const QImage img = reader.read();
+
+    _promotionCard = new ElaPromotionCard(this);
+    _promotionCard->setFixedSize(img.size().width()*350.0/img.size().height(),350);
+    _promotionCard->setCardPixmap(QPixmap("C:/Path/Install-Test/123.jpg"));
+    _promotionCard->setCardTitle("每日一言");
+    // _promotionCard->setPromotionTitle("SONG~");
+    // _promotionCard->setTitle("STYX HELIX");
+    _promotionCard->setSubTitle("我们被自己的生活、兴趣和挑选的所有安慰品维系着，但是我们不能只拥有这些东西");
+
     _enterEditButton = new ElaToolButton(this);
     _enterEditButton->setIsTransparent(false);
     _enterEditButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -114,6 +157,7 @@ void MainWindow::initElaWindow() {
     homeArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *homeAreaLayout = new QHBoxLayout(homeArea);
     homeAreaLayout->setContentsMargins(0, 0, 0, 0);
+    homeAreaLayout->addWidget(_promotionCard);
     homeAreaLayout->addWidget(_enterEditButton);
     homeAreaLayout->addStretch();
     //搜索栏
