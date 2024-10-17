@@ -138,7 +138,7 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
 
 void MainWindow::search() {
     // QString searchString = ui_->input_search->text();
-    QString searchString = "test";
+    QString searchString = _searchBox->text();
     if(searchString.isEmpty()) {
         model->showAll=true;
         model->updateData();

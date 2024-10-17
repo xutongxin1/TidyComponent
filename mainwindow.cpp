@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     tableView->setItemDelegateForColumn(0,colorDelegate);
 
     model->updateData();
-    //选中时一行整体选中
+
 
     // 绑定导入导出按钮
     // connect(ui_->btn_export, &QPushButton::clicked, this, &MainWindow::exportJsonToExcel);
@@ -154,7 +154,7 @@ void MainWindow::initElaWindow() {
 
     addPageNode("HOME", splitter, ElaIconType::House);
 
-    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//选中时一行整体选中
 
     // tableView->setTextElideMode(Qt::ElideNone);
     // connect(model, &ComponentTableModel::dataChanged, tableView, &ElaTableView::resizeRowsToContents);
