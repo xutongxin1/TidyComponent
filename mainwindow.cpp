@@ -30,10 +30,9 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
 
     // 为第 0 列设置自定义委托
     ColorDelegate *colorDelegate = new ColorDelegate(this);
-    tableView->setItemDelegateForColumn(0,colorDelegate);
+    tableView->setItemDelegateForColumn(0, colorDelegate);
 
     model->updateData();
-
 
     // 绑定导入导出按钮
     // connect(ui_->btn_export, &QPushButton::clicked, this, &MainWindow::exportJsonToExcel);
@@ -46,22 +45,52 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         }
     });
 
+    //获取
     getRequest("https://whyta.cn/api/tx/one?key=cc8cba0a7069",
-           [](QString data) {
-               // 处理成功的响应数据（QString）
-               qDebug() << "Success:" << data;
-           },
-           [](QNetworkReply::NetworkError error) {
-               // 处理失败的错误信息
-               qDebug() << "Error:" << error;
-           });
-    getFileRequest("https://image.wufazhuce.com/FoQd7_KQgo8QBCt_a8OjmjG6ZamD",
-               [](QString filePath) {
-                   qDebug() << "File downloaded to:" << filePath;
+               [&](QString data) {
+                   // 处理成功的响应数据（QString）
+                   // qDebug() << "Success:" << data;
+                   QJsonDocument jsonDoc = QJsonDocument::fromJson(data.toUtf8());
+                   if (jsonDoc.isNull() || !jsonDoc.isObject()) {
+                       qWarning() << "JSON解析失败";
+                       return -1;
+                   }
+
+                   // 获取顶层对象
+                   QJsonObject jsonObj = jsonDoc.object();
+                   QJsonObject resultObj = jsonObj.value("result").toObject();
+
+                   // 提取字段
+                   QString word = resultObj.value("word").toString();
+                   QString imgurl = resultObj.value("imgurl").toString();
+                   if (word.isEmpty() || imgurl.isEmpty())
+                       qWarning() << "无法解析每日一言";
+                   // 输出字段
+                   // qDebug() << "Word:" << word;
+                   // qDebug() << "Image URL:" << imgurl;
+                   // qDebug() << "系统缓存目录路径:" << QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
+                   getFileRequest(imgurl,
+                                  [&](QString filePath) {
+                                      qDebug() << "File downloaded to:" << filePath;
+                                      QImageReader reader(filePath);
+                                      reader.setAutoTransform(true);
+                                      const QImage img = reader.read();
+                                      _promotionCard->setFixedSize(img.size().width() * 350.0 / img.size().height(),
+                                                                   350);
+                                      _promotionCard->setCardPixmap(QPixmap(filePath));
+                                  },
+                                  [](QNetworkReply::NetworkError error) {
+                                      // 处理失败的错误信息
+                                      qWarning() << "无法获取每日一言 " << error;
+                                  },
+                                  "Daily.jpg",
+                                  QStandardPaths::standardLocations(QStandardPaths::CacheLocation)[0]);
+                   _promotionCard->setSubTitle(word);
                },
-               nullptr,
-               "123.jpg",
-               "C:/Path/Install-Test");
+               [](QNetworkReply::NetworkError error) {
+                   // 处理失败的错误信息
+                   qWarning() << "无法获取每日一言 " << error;
+               });
 
     // ui_->label_nowSearch->hide();
 }
@@ -92,7 +121,7 @@ void MainWindow::initElaWindow() {
     // 停靠窗口
     ElaDockWidget *infoDockWidget = new ElaDockWidget(this);
     infoDockWidget->setWindowTitle("元件信息");
-    infoDockWidget->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
+    infoDockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
     // logDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     // logDockWidget->titleBarWidget()->hide();
@@ -120,27 +149,21 @@ void MainWindow::initElaWindow() {
     _tabWidget->setFixedHeight(350);
 
     //修改切换时效果
-    connect(_tabWidget,&ElaTabWidget::currentChanged,this,[=](int index){
-        if(index==1){
-            _tabWidget->setFixedHeight(350);//每日一言
-        }
-        else {
-            _tabWidget->setFixedHeight(150);//其他窗口
+    connect(_tabWidget, &ElaTabWidget::currentChanged, this, [=](int index) {
+        if (index == 0) {
+            _tabWidget->setFixedHeight(350); //每日一言
+        } else {
+            _tabWidget->setFixedHeight(150); //其他窗口
         }
     });
 
     //首页栏
-    QImageReader reader("C:/Path/Install-Test/123.jpg");
-    reader.setAutoTransform(true);
-    const QImage img = reader.read();
 
     _promotionCard = new ElaPromotionCard(this);
-    _promotionCard->setFixedSize(img.size().width()*350.0/img.size().height(),350);
-    _promotionCard->setCardPixmap(QPixmap("C:/Path/Install-Test/123.jpg"));
+
     _promotionCard->setCardTitle("每日一言");
     // _promotionCard->setPromotionTitle("SONG~");
     // _promotionCard->setTitle("STYX HELIX");
-    _promotionCard->setSubTitle("我们被自己的生活、兴趣和挑选的所有安慰品维系着，但是我们不能只拥有这些东西");
 
     _enterEditButton = new ElaToolButton(this);
     _enterEditButton->setIsTransparent(false);
@@ -210,7 +233,7 @@ void MainWindow::initElaWindow() {
 
     addPageNode("HOME", centerWidget, ElaIconType::House);
 
-    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//选中时一行整体选中
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中时一行整体选中
 
     // tableView->setTextElideMode(Qt::ElideNone);
     // connect(model, &ComponentTableModel::dataChanged, tableView, &ElaTableView::resizeRowsToContents);
