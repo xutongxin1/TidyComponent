@@ -148,11 +148,13 @@ void MainWindow::initElaWindow() {
 
     _tabWidget->setTabsClosable(false);
 
-    QSplitter *splitter = new QSplitter(Qt::Vertical);
-    splitter->addWidget(_tabWidget);
-    splitter->addWidget(tableView);
+    QWidget *centerWidget = new QWidget(this);
+    QVBoxLayout *centerVBoxLayout = new QVBoxLayout(centerWidget);
+    centerVBoxLayout->addWidget(_tabWidget);
+    centerVBoxLayout->addWidget(tableView);
+    centerVBoxLayout->setContentsMargins(0, 0, 0, 0);
 
-    addPageNode("HOME", splitter, ElaIconType::House);
+    addPageNode("HOME", centerWidget, ElaIconType::House);
 
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//选中时一行整体选中
 
