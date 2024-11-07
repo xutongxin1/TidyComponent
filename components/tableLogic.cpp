@@ -63,7 +63,7 @@ bool MainWindow::isExactMatch(const component_record_struct &record, const QStri
     for (const auto &word : searchWords) {
         bool found = false;
         if (record.name.contains(word, Qt::CaseInsensitive) ||
-            record.value.contains(word, Qt::CaseInsensitive) ||
+            record.discription.contains(word, Qt::CaseInsensitive) ||
             record.package.contains(word, Qt::CaseInsensitive)) {
             found = true;
         } else {
@@ -105,7 +105,7 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
             // 计算模糊相似度
             double totalSimilarity = 0.0;
             totalSimilarity += calculateSimilarity(record.name, searchString);
-            totalSimilarity += calculateSimilarity(record.value, searchString);
+            totalSimilarity += calculateSimilarity(record.discription, searchString);
             totalSimilarity += calculateSimilarity(record.package, searchString);
 
             for (const auto &alias : record.aliases) {

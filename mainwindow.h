@@ -53,6 +53,8 @@ class MainWindow : public ElaWindow {
     public:
         ComponentTableModel *model;
         ElaToolButton *_resetSearchButton;
+        ElaToolButton * _addComponentButton;
+        ElaToolButton * _delComponentButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);

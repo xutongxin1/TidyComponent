@@ -13,12 +13,12 @@ struct component_record_struct {
     QString color;
     QString jlcid;
     QString tbLink;
-    QString value;
+    QString discription;
     QString package;
     QVector<QString> aliases;
 };
 const QStringList titles = {
-    "显示", "名称", "值", "封装", "立创编号", "别名1", "别名2", "别名3", "别名4",
+    "显示状态", "名称", "描述", "封装", "立创编号", "别名1", "别名2", "别名3", "别名4",
     "别名5", "别名6", "别名7", "别名8", "别名9", "别名10"
 };
 
@@ -36,7 +36,6 @@ class ComponentTableModel : public QAbstractTableModel {
         }
 
         int columnCount(const QModelIndex &/*parent*/ = QModelIndex()) const override {
-            //        书本属性值数量
             return titles.size();
         }
 
@@ -62,7 +61,7 @@ class ComponentTableModel : public QAbstractTableModel {
                             case 1:
                                 return record.name;
                             case 2:
-                                return record.value;
+                                return record.discription;
                             case 3:
                                 return record.package;
                             case 4:
@@ -156,7 +155,7 @@ class ComponentTableModel : public QAbstractTableModel {
                         component_record[index.row()].name = value.toString();
                         break;
                     case 2:
-                        component_record[index.row()].value = value.toString();
+                        component_record[index.row()].discription = value.toString();
                         break;
                     case 3:
                         component_record[index.row()].package = value.toString();

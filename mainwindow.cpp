@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
                    // qDebug() << "系统缓存目录路径:" << QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
                    getFileRequest(imgurl,
                                   [&](QString filePath) {
-                                      qDebug() << "File downloaded to:" << filePath;
+                                      // qDebug() << "File downloaded to:" << filePath;
                                       QImageReader reader(filePath);
                                       reader.setAutoTransform(true);
                                       const QImage img = reader.read();
@@ -183,6 +183,7 @@ void MainWindow::initElaWindow() {
     homeAreaLayout->addWidget(_promotionCard);
     homeAreaLayout->addWidget(_enterEditButton);
     homeAreaLayout->addStretch();
+
     //搜索栏
     _searchBox = new ElaLineEdit(this);
     _searchBox->setFixedSize(500, 45);
@@ -218,10 +219,43 @@ void MainWindow::initElaWindow() {
     searchAreaLayout->addWidget(_importSearchButton);
     searchAreaLayout->addStretch();
 
+
+
+    _addComponentButton = new ElaToolButton(this);
+    _addComponentButton->setIsTransparent(false);
+    _addComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _addComponentButton->setBorderRadius(8);
+    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    _addComponentButton->setText("添加元器件");
+    _addComponentButton->setElaIcon(ElaIconType::Plus);
+    _addComponentButton->setIconSize(QSize(35, 35));
+    _addComponentButton->setFixedSize(100, 75);
+
+    // _delComponentButton = new ElaToolButton(this);
+    // _delComponentButton->setIsTransparent(false);
+    // _delComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    // _delComponentButton->setBorderRadius(8);
+    // //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    // _delComponentButton->setText("删除元器件");
+    // _delComponentButton->setElaIcon(ElaIconType::FilterSlash);
+    // _delComponentButton->setIconSize(QSize(35, 35));
+    // _delComponentButton->setFixedSize(100, 75);
+
+
+    QWidget *editArea = new QWidget(this);
+    // searchArea->setMinimumHeight(0);
+    // searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
+    QHBoxLayout *editAreaLayout = new QHBoxLayout(editArea);
+    editAreaLayout->addWidget(_addComponentButton);
+    // editAreaLayout->addWidget(_delComponentButton);
+    editAreaLayout->addStretch();
+
+
     _tabWidget->addTab(homeArea, "首页");
     _tabWidget->addTab(searchArea, "搜索");
+    _tabWidget->addTab(editArea, "编辑模式");
     // _tabWidget->addTab(page4, "元器件操作");
-    // _tabWidget->addTab(page3, "编辑模式");
+
 
     _tabWidget->setTabsClosable(false);
 

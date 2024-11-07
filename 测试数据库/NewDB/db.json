@@ -1,0 +1,23 @@
+{
+  "_default": {
+    "1": {
+      "Name": "STM32F103C8T6",
+      "JLCID": "C8734",
+      "discription": "主流增强型ARM Cortex-M3 MCU，具有64 KB Flash、72 MHz CPU",
+      "package": "LQFP-48(7x7)",
+      "Alias1": "ST(意法半导体)",
+      "Alias2": "",
+      "Alias3": "",
+      "Alias4": "",
+      "Alias5": "",
+      "Alias6": "",
+      "Alias7": "",
+      "Alias8": "",
+      "Alias9": "",
+      "Alias10": "",
+      "MAC": "25419226168392",
+      "INAddr": "101",
+      "Color": "ff0000"
+    }
+  }
+}
