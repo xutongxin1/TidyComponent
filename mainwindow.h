@@ -15,23 +15,34 @@
 #include <QStringList>
 #include <QMap>
 #include <algorithm>
+#include <QImageReader>
 #include <QtConcurrent/qtconcurrentrun.h>
 #include "FluDropDownButton.h"
 
 // #include "./ui_mainwindow.h"
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
+#include "ElaDockWidget.h"
 #include "ElaLineEdit.h"
 #include "ElaListView.h"
 #include "ElaPivot.h"
+#include "ElaProgressBar.h"
 #include "ElaPromotionCard.h"
+#include "ElaPromotionView.h"
+#include "ElaScrollPageArea.h"
 #include "ElaSuggestBox.h"
 #include "ElaTableView.h"
 #include "ElaTabWidget.h"
+#include "ElaText.h"
 #include "ElaToolButton.h"
 #include "ElaWindow.h"
+#include "FluBusyProgressRing.h"
+#include "FluProgressRing.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
+
+#define CONFIGPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
+#define INFOPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 
 using namespace std;
 
@@ -53,8 +64,34 @@ class MainWindow : public ElaWindow {
     public:
         ComponentTableModel *model;
         ElaToolButton *_resetSearchButton;
-        ElaToolButton * _addComponentButton;
-        ElaToolButton * _delComponentButton;
+        ElaToolButton *_addComponentButton;
+        ElaToolButton *_delComponentButton;
+        ElaScrollPageArea *_infoDockhArea;
+        ElaScrollPageArea *_addComponentDockhArea;
+        ElaLineEdit *_addComponent_EditBox;
+        ElaDockWidget *_infoDockWidget;
+        ElaProgressBar *_addComponent_ProgressBar;
+        ElaProgressBar *_addComponentLoadingProgressBar;
+        FluProgressRing *_addComponent_DownloadProgressRing;
+        ElaText *_addComponent_WaitText;
+        ElaToolButton *_addComponentButtonNext;
+        ElaToolButton *_addComponentButtonCancel;
+        FluBusyProgressRing *_addComponent_busyRing;
+        ElaText *_addComponent_EditBoxText;
+        ElaText *_addComponent_CheckInfoText;
+        ElaText *_addComponent_DownloadText;
+        ElaText *_addComponent_OpenText;
+        bool isAddingComponent;
+        int _addComponentStep;
+        QString _AddingComponent_CID;
+        ElaText *_addComponent_CheckInfoWidget_Text;
+        QWidget *_addComponent_CheckInfoWidget;
+        ElaPromotionCard *_addComponent_CheckInfoWidget_Card1;
+        ElaPromotionCard *_addComponent_CheckInfoWidget_Card2;
+        ElaPromotionCard *_addComponent_CheckInfoWidget_Card3;
+        ElaPromotionView *_promotionView;
+        QTimer * _addComponent_timer;
+        int _addComponent_timeLeft;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -91,6 +128,7 @@ class MainWindow : public ElaWindow {
         int device_count_;
         ConfigClass *config_main_ini_;
 
+        void AddComponentLogic();
         void GetConstructConfig();
         void SaveConstructConfig();
         static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
@@ -100,8 +138,14 @@ class MainWindow : public ElaWindow {
         void addButtonToTable(int row, int col, const QString &color);
 
         void InitConfig();
-
+        void getDailySection() const;
+        void AddComponentLogic_1();
+        void AddComponentLogic_2();
+        void AddComponentLogic_3();
+        void AddComponentLogic_4();
+        void initAddComponentLogic();
         QString version_;
+        component_record_struct *_addingComponentObj;
 };
 
 #endif // MAIN__MAINWINDOW_H_

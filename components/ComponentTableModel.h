@@ -12,10 +12,17 @@ struct component_record_struct {
     QString name;
     QString color;
     QString jlcid;
-    QString tbLink;
+    float weight=0.0f;
     QString discription;
+    QString more_data;
     QString package;
+    QString pdf_url;
+    QString pdf_name;
     QVector<QString> aliases;
+    QVector<QString> png_FileUrl;
+    QVector<QString> sch_svg_FileUrl;
+    QVector<QString> pcb_svg_FileUrl;
+    QString pdf_FileUrl;
 };
 const QStringList titles = {
     "显示状态", "名称", "描述", "封装", "立创编号", "别名1", "别名2", "别名3", "别名4",

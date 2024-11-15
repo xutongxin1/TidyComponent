@@ -27,7 +27,6 @@ void MainWindow::loadData() {
         record.name = name;
         record.color = info.value("Color").toString();
         record.jlcid = info.value("JLCID").toString();
-        record.tbLink = info.value("tbLink").toString();
         record.discription = info.value("discription").toString();
         record.package = info.value("package").toString();
 

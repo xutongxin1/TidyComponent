@@ -21,7 +21,14 @@
 //
 //     return static_cast<double>(common) / (wordsA.size() + wordsB.size() - common);
 // }
+void MainWindow::AddComponentLogic() {
 
+
+    //完成元器件添加
+    // _infoDockhArea->show();
+    // _addComponentDockhArea->hide();
+    // _infoDockWidget->setWindowTitle("元件信息");
+}
 // 计算两个字符串的Levenshtein距离
 double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
     if (a.isEmpty() || b.isEmpty()) return 0.0;

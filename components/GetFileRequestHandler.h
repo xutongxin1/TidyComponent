@@ -51,11 +51,11 @@ class GetFileRequestHandler : public QObject {
 
     public:
         GetFileRequestHandler(const QString &url,
-                              std::function<void(QString)> onSuccess,
-                              std::function<void(QNetworkReply::NetworkError)> onError = nullptr,
+                              const std::function<void(QString)> &onSuccess = nullptr,
+                              const std::function<void(QNetworkReply::NetworkError)> &onError = nullptr,
                               const QString &fileName = QString(),
                               const QString &directory = QString(),
-                              std::function<void(qint64, qint64)> onProgress = nullptr,
+                              const std::function<void(qint64, qint64)> &onProgress = nullptr,
                               QObject *parent = nullptr)
             : QObject(parent), m_onSuccess(onSuccess), m_onError(onError), m_onProgress(onProgress) {
             // 创建网络访问管理器
@@ -82,7 +82,9 @@ class GetFileRequestHandler : public QObject {
                         file.write(data);
                         file.close();
                         // 调用成功的回调函数，传递文件路径
-                        m_onSuccess(m_savePath);
+                        if (m_onSuccess) {
+                            m_onSuccess(m_savePath);
+                        }
                     } else {
                         // 如果无法写入文件，调用错误回调
                         if (m_onError) {
@@ -106,8 +108,6 @@ class GetFileRequestHandler : public QObject {
                 });
             }
         }
-
-        std::function<void(qint64, qint64)> m_onProgress;
 
     private:
         QString generateSavePath(const QString &url, const QString &fileName, const QString &directory) {
@@ -134,17 +134,19 @@ class GetFileRequestHandler : public QObject {
 
         std::function<void(QString)> m_onSuccess; // 成功回调，传递文件路径
         std::function<void(QNetworkReply::NetworkError)> m_onError;
+        std::function<void(qint64, qint64)> m_onProgress;
         QString m_savePath; // 保存文件的路径
 };
 
 // 定义 getFileRequest 函数
 inline void getFileRequest(const QString &url,
-                           std::function<void(QString)> onSuccess,
-                           std::function<void(QNetworkReply::NetworkError)> onError = nullptr,
+                           const std::function<void(QString)> &onSuccess = nullptr,
+                           const std::function<void(QNetworkReply::NetworkError)> &onError = nullptr,
                            const QString &fileName = QString(),
-                           const QString &directory = QString()) {
+                           const QString &directory = QString(),
+                           const std::function<void(qint64, qint64)> &onProgress = nullptr) {
     // 创建请求处理器
-    new GetFileRequestHandler(url, onSuccess, onError, fileName, directory);
+    new GetFileRequestHandler(url, onSuccess, onError, fileName, directory, onProgress);
 }
 
 #endif //GETFILEREQUEST_H
