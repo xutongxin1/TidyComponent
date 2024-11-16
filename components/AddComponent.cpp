@@ -122,36 +122,53 @@ void MainWindow::AddComponentLogic_1() {
     }
     // _addComponent_EditBox->setText(CID);
     //TODO: 检查现在是否有该器件
-
+    if (isExistingComponent(_AddingComponent_CID)) {
+        cancelAddComponentLogic(); //退出逻辑
+        ShowWarningInfo("该元器件已经存在");
+        return;
+    }
     getRequest("http://127.0.0.1:8000/item/" + _AddingComponent_CID, [&](const QJsonObject &jsonObj) {
-        // qDebug() << jsonObj;
+                   // qDebug() << jsonObj;
 
-        extractComponentData(_AddingComponent_CID, jsonObj, *_addingComponentObj);
-        // component_record_struct component1;
-        _addComponent_CheckInfoWidget->show();
-        _addComponent_busyRing->hide();
-        _addComponent_CheckInfoWidget_Text->setText(
-            "<b>元器件名称：</b>" + _addingComponentObj->name + "<br><b>元器件编号：</b>" + _AddingComponent_CID +
-            "<br><b>元器件描述：</b>"
-            + _addingComponentObj->discription +
-            "<br><b>元器件封装：</b>" + _addingComponentObj->package);
-        for (int j = 0; j < _addingComponentObj->png_FileUrl.size(); j++) {
-            if (j == 0) {
-                _addComponent_CheckInfoWidget_Card1->
-                    setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-            } else if (j == 1) {
-                _addComponent_CheckInfoWidget_Card2->
-                    setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-            } else if (j == 2) {
-                _addComponent_CheckInfoWidget_Card3->
-                    setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-            }
-        }
-        _promotionView->setFixedHeight(420);
-        _addComponent_ProgressBar->setValue(60);
-        _addComponentButtonNext->setEnabled(true);
-        _addComponentStep = 2;
-    });
+                   extractComponentData(_AddingComponent_CID, jsonObj, *_addingComponentObj);
+                   // component_record_struct component1;
+
+                   _addComponent_busyRing->hide();
+                   _addComponent_CheckInfoWidget_Text->setText(
+                       "<b>元器件名称：</b>" + _addingComponentObj->name + "<br><b>元器件编号：</b>" + _AddingComponent_CID +
+                       "<br><b>元器件描述：</b>"
+                       + _addingComponentObj->discription +
+                       "<br><b>元器件封装：</b>" + _addingComponentObj->package);
+                   for (int j = 0; j < _addingComponentObj->png_FileUrl.size(); j++) {
+                       if (j == 0) {
+                           _addComponent_CheckInfoWidget_Card1->
+                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                       } else if (j == 1) {
+                           _addComponent_CheckInfoWidget_Card2->
+                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                       } else if (j == 2) {
+                           _addComponent_CheckInfoWidget_Card3->
+                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                       }
+                   }
+                   _addComponent_CheckInfoWidget->show();
+                   // _promotionView->show();
+
+                   // _promotionView->setCurrentIndex(0);
+                   _addComponent_ProgressBar->setValue(60);
+                   _addComponentButtonNext->setEnabled(true);
+                   _addComponentStep = 2;
+               }, [&](QNetworkReply::NetworkError error) {
+                   if (error == QNetworkReply::NetworkError::InternalServerError) {
+                       ShowErrorInfo("服务端错误，请联系服务器管理员");
+                   }
+                   // qWarning() << "无法获取元器件信息 " << error;
+                   ShowErrorInfo("？");
+                   cancelAddComponentLogic();
+               }, [&] {
+                   ShowErrorInfo("请求超时，请检查网络连接");
+                   cancelAddComponentLogic();
+               });
     _addComponent_ProgressBar->setValue(40);
     _addComponentButtonNext->setEnabled(false);
     // _addComponentStep = 2;
@@ -198,10 +215,12 @@ void MainWindow::AddComponentLogic_4() {
     //清理现场
     _addComponent_WaitText->setText("已完成添加向导");
     _addComponent_ProgressBar->setValue(100);
-
+    _addComponent_CancelButton->setEnabled(false);
+    ShowSuccessInfo("添加元器件成功");
     //TODO: 上传数据
-    model->component_record.append(*_addingComponentObj);
+    addComponentToLib(*_addingComponentObj);
     model->updateData();
+    SaveData(); //触发保存
     delete _addingComponentObj;
     _addingComponentObj = nullptr;
     QTimer::singleShot(2000, [&]() {
@@ -212,12 +231,31 @@ void MainWindow::AddComponentLogic_4() {
         _infoDockhArea->show();
         _infoDockWidget->setWindowTitle("元器件信息");
         _infoDockWidget->setWidget(_infoDockhArea);
-        resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
+        // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
         resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     });
     _addComponentStep = 1;
 }
+void MainWindow::cancelAddComponentLogic() {
+    _addComponent_ProgressBar->setValue(20);
+    _addComponent_timer->stop();
+    _addComponentButton->setEnabled(true);
+    _addComponentDockhArea->hide();
+    _infoDockhArea->show();
+    _infoDockWidget->setWindowTitle("元器件信息");
+    _infoDockWidget->setWidget(_infoDockhArea);
+    // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
+    resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
+    _addComponentStep = 1;
+    if (_addingComponentObj != nullptr) {
+        delete _addingComponentObj;
+        _addingComponentObj = nullptr;
+    }
+}
 void MainWindow::initAddComponentLogic() {
+    connect(_addComponent_CancelButton, &ElaToolButton::clicked, this, [&] {
+        cancelAddComponentLogic();
+    });
     connect(_addComponentButton, &ElaToolButton::clicked, this, [&] {
         _addComponentDockhArea->show();
         _infoDockhArea->hide();
@@ -231,12 +269,13 @@ void MainWindow::initAddComponentLogic() {
         _addComponent_OpenText->hide();
         _addComponent_EditBox->show();
         _addComponent_EditBoxText->show();
-        resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
+        // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
         resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
         _addComponent_ProgressBar->setValue(20);
 
         isAddingComponent = true;
         _addComponentStep = 1;
+        _addComponent_CancelButton->setEnabled(true);
         _addComponentButton->setEnabled(false);
         _addComponent_EditBox->clear();
         _addComponent_EditBox->setFocus();
@@ -283,6 +322,7 @@ void MainWindow::initAddComponentLogic() {
         if (_addComponent_timeLeft == 0) {
             qDebug() << "计时结束!";
             _addComponent_timer->stop(); // 停止计时器
+            cancelAddComponentLogic();
         }
     });
 }

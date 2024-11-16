@@ -8,6 +8,8 @@
 #include "ColorDelegate.h"
 #include "ElaDockWidget.h"
 #include "ElaLineEdit.h"
+#include "ElaMessageBar.h"
+#include "ElaMessageButton.h"
 #include "ElaProgressBar.h"
 #include "ElaPromotionView.h"
 #include "ElaScrollPageArea.h"
@@ -126,7 +128,7 @@ void MainWindow::initElaWindow() {
     _addComponent_WaitText->setTextPixelSize(20);
 
     //信息渲染
-    _addComponent_CheckInfoWidget=new QWidget(this);
+    _addComponent_CheckInfoWidget = new QWidget(this);
     QVBoxLayout *_addComponent_CheckInfoLayout = new QVBoxLayout(_addComponent_CheckInfoWidget);
     _addComponent_CheckInfoLayout->setContentsMargins(0, 0, 0, 0);
     _addComponent_CheckInfoWidget_Text = new ElaText(" ", this);
@@ -148,12 +150,17 @@ void MainWindow::initElaWindow() {
     _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card3);
     // _promotionView->setCardCollapseWidth(420);
     _promotionView->setCardExpandWidth(420);
+    _promotionView->setFixedHeight(420);
+    _addComponent_CheckInfoWidget_Card1->resize(_addComponent_CheckInfoWidget_Card1->width(), 393);
+    _addComponent_CheckInfoWidget_Card2->resize(_addComponent_CheckInfoWidget_Card2->width(), 393);
+    _addComponent_CheckInfoWidget_Card3->resize(_addComponent_CheckInfoWidget_Card3->width(), 393);
+
 
     _promotionView->setIsAutoScroll(true);
 
     _addComponent_CheckInfoLayout->addWidget(_addComponent_CheckInfoWidget_Text);
     _addComponent_CheckInfoLayout->addWidget(_promotionView);
-    _addComponent_CheckInfoLayout->addSpacing(100);
+    // _addComponent_CheckInfoLayout->addSpacing(100);
 
     _addComponentButtonNext = new ElaToolButton(this);
     _addComponentButtonNext->setIsTransparent(false);
@@ -165,22 +172,22 @@ void MainWindow::initElaWindow() {
     _addComponentButtonNext->setFixedHeight(50);
     // _addComponentButtonNext->setIconSize(QSize(35, 35));
     // _addComponentButtonNext->setFixedSize(100, 50);
-    _addComponentButtonCancel = new ElaToolButton(this);
-    _addComponentButtonCancel->setIsTransparent(false);
-    _addComponentButtonCancel->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    _addComponentButtonCancel->setBorderRadius(8);
+    _addComponent_CancelButton = new ElaToolButton(this);
+    _addComponent_CancelButton->setIsTransparent(false);
+    _addComponent_CancelButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    _addComponent_CancelButton->setBorderRadius(8);
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    _addComponentButtonCancel->setText("退出向导");
-    _addComponentButtonCancel->setElaIcon(ElaIconType::PersonToDoor);
+    _addComponent_CancelButton->setText("退出向导");
+    _addComponent_CancelButton->setElaIcon(ElaIconType::PersonToDoor);
     // _addComponentButtonCancel->setIconSize(QSize(35, 35));
     // _addComponentButtonCancel->setFixedSize(100, 50);
-    _addComponentButtonCancel->setFixedHeight(50);
+    _addComponent_CancelButton->setFixedHeight(50);
 
     QWidget *addComponentButtonArea = new QWidget(this);
     QHBoxLayout *addComponentButtonLayout = new QHBoxLayout(addComponentButtonArea);
     addComponentButtonLayout->setContentsMargins(0, 0, 0, 0);
     addComponentButtonLayout->addWidget(_addComponentButtonNext);
-    addComponentButtonLayout->addWidget(_addComponentButtonCancel);
+    addComponentButtonLayout->addWidget(_addComponent_CancelButton);
 
     _addComponent_busyRing = new FluBusyProgressRing;
     _addComponent_DownloadProgressRing = new FluProgressRing;
@@ -365,4 +372,17 @@ void MainWindow::InitConfig() {
         //        config_device_ini_[i]->setValue("/ee/connect_mode",123);
         //        config_device_ini_[i]->sync();
     }
+}
+
+void MainWindow::ShowSuccessInfo(const QString &info, const QString &title) {
+    ElaMessageBar::success(ElaMessageBarType::BottomLeft, title, info, 2000, this);
+}
+void MainWindow::ShowWarningInfo(const QString &info, const QString &title) {
+    ElaMessageBar::warning(ElaMessageBarType::BottomLeft, title, info, 2000, this);
+}
+void MainWindow::ShowInfoInfo(const QString &info, const QString &title) {
+    ElaMessageBar::information(ElaMessageBarType::BottomLeft, title, info, 2000, this);
+}
+void MainWindow::ShowErrorInfo(const QString &info, const QString &title) {
+    ElaMessageBar::error(ElaMessageBarType::BottomLeft, title, info, 2000, this);
 }

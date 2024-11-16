@@ -12,7 +12,7 @@ struct component_record_struct {
     QString name;
     QString color;
     QString jlcid;
-    float weight=0.0f;
+    float weight = 0.0f;
     QString discription;
     QString more_data;
     QString package;
@@ -296,6 +296,7 @@ class ComponentTableModel : public QAbstractTableModel {
         QVector<int> exacIndex;
         QVector<int> fuzzyIndex;
         QVector<component_record_struct> component_record;
+        QHash<QString, component_record_struct *> component_record_Hash;
         struct DisplayItem {
             enum Type { Label, Data } type;
             QString label; // 对于 Label 类型

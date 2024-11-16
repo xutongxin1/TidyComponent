@@ -75,7 +75,7 @@ class MainWindow : public ElaWindow {
         FluProgressRing *_addComponent_DownloadProgressRing;
         ElaText *_addComponent_WaitText;
         ElaToolButton *_addComponentButtonNext;
-        ElaToolButton *_addComponentButtonCancel;
+        ElaToolButton *_addComponent_CancelButton;
         FluBusyProgressRing *_addComponent_busyRing;
         ElaText *_addComponent_EditBoxText;
         ElaText *_addComponent_CheckInfoText;
@@ -90,7 +90,7 @@ class MainWindow : public ElaWindow {
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card2;
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card3;
         ElaPromotionView *_promotionView;
-        QTimer * _addComponent_timer;
+        QTimer *_addComponent_timer;
         int _addComponent_timeLeft;
 
         void initElaWindow();
@@ -135,14 +135,22 @@ class MainWindow : public ElaWindow {
         // void ShowAllComponents();
         // void ShowSomeComponents();
         void loadData();
+        void SaveData();
+        bool isExistingComponent(const QString &CID) const;
+        void addComponentToLib(const component_record_struct &_addingComponentObj) const;
         void addButtonToTable(int row, int col, const QString &color);
 
         void InitConfig();
+        void ShowSuccessInfo(const QString &info, const QString &title = QString());
+        void ShowWarningInfo(const QString &info, const QString &title = QString());
+        void ShowInfoInfo(const QString &info, const QString &title = QString());
+        void ShowErrorInfo(const QString &info, const QString &title = QString());
         void getDailySection() const;
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();
         void AddComponentLogic_4();
+        void cancelAddComponentLogic();
         void initAddComponentLogic();
         QString version_;
         component_record_struct *_addingComponentObj;

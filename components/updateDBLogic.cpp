@@ -2,51 +2,154 @@
 // Created by xtx on 24-9-13.
 //
 #include "mainwindow.h"
-
 void MainWindow::loadData() {
-    // 读取 JSON 文件
     QFile file("db.json");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, "Warning", "Cannot open db.json file");
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning("无法打开 db.json 文件。");
         return;
     }
 
-    const QByteArray jsonData = file.readAll();
+    QByteArray jsonData = file.readAll();
     file.close();
 
-    QJsonObject records = QJsonDocument::fromJson(jsonData).object()["_default"].toObject();
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData, &parseError);
 
-    for (auto it = records.begin(); it != records.end(); ++it) {
-        QJsonObject info = it.value().toObject();
-        QString name = info.value("Name").toString();
-        if (name.isEmpty())
-            continue;
-
-        // 创建一个 Record 对象并填充数据
-        component_record_struct record;
-        record.name = name;
-        record.color = info.value("Color").toString();
-        record.jlcid = info.value("JLCID").toString();
-        record.discription = info.value("discription").toString();
-        record.package = info.value("package").toString();
-
-        // 读取别名（Alias1 到 Alias9）
-        for (int i = 1; i <= 9; ++i) {
-            QString aliasKey = QString("Alias%1").arg(i);
-            record.aliases.append(info.value(aliasKey).toString());
-        }
-
-        // 将 Record 对象添加到 QVector 中
-        model->component_record.append(record);
+    if (parseError.error != QJsonParseError::NoError) {
+        qWarning() << "JSON 解析错误：" << parseError.errorString();
+        return;
     }
 
-    // ShowAllComponents();//显示所有元器件
-    // (void) QtConcurrent::run(
-    //        [&] {
-    //
-    //        });
+    QJsonArray jsonArray = doc.array();
+
+    for (const QJsonValue &value : jsonArray) {
+        if (!value.isObject())
+            continue;
+
+        QJsonObject obj = value.toObject();
+        component_record_struct record;
+
+        record.name = obj.value("name").toString();
+        record.color = obj.value("color").toString();
+        record.jlcid = obj.value("jlcid").toString();
+        record.weight = static_cast<float>(obj.value("weight").toDouble());
+        record.discription = obj.value("discription").toString();
+        record.more_data = obj.value("more_data").toString();
+        record.package = obj.value("package").toString();
+        record.pdf_url = obj.value("pdf_url").toString();
+        record.pdf_name = obj.value("pdf_name").toString();
+        record.aliases = obj.value("aliases").toVariant().toStringList().toVector();
+        record.png_FileUrl = obj.value("png_FileUrl").toVariant().toStringList().toVector();
+        record.sch_svg_FileUrl = obj.value("sch_svg_FileUrl").toVariant().toStringList().toVector();
+        record.pcb_svg_FileUrl = obj.value("pcb_svg_FileUrl").toVariant().toStringList().toVector();
+        record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
+
+        // 调用添加函数
+        addComponentToLib(record);
+    }
+}
+// WriteData() 函数实现
+void MainWindow::SaveData() {
+    QFile file("db.json");
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning("无法打开 db.json 文件进行写入。");
+        return;
+    }
+
+    QJsonArray jsonArray;
+
+    for (const component_record_struct& record : model->component_record) {
+        QJsonObject obj;
+
+        obj["name"] = record.name;
+        obj["color"] = record.color;
+        obj["jlcid"] = record.jlcid;
+        obj["weight"] = record.weight;
+        obj["discription"] = record.discription;
+        obj["more_data"] = record.more_data;
+        obj["package"] = record.package;
+        obj["pdf_url"] = record.pdf_url;
+        obj["pdf_name"] = record.pdf_name;
+
+        // 将 QVector<QString> 转换为 QJsonArray
+        QJsonArray aliasesArray;
+        for (const QString& alias : record.aliases) {
+            aliasesArray.append(alias);
+        }
+        obj["aliases"] = aliasesArray;
+
+        QJsonArray png_FileUrlArray;
+        for (const QString& url : record.png_FileUrl) {
+            png_FileUrlArray.append(url);
+        }
+        obj["png_FileUrl"] = png_FileUrlArray;
+
+        QJsonArray sch_svg_FileUrlArray;
+        for (const QString& url : record.sch_svg_FileUrl) {
+            sch_svg_FileUrlArray.append(url);
+        }
+        obj["sch_svg_FileUrl"] = sch_svg_FileUrlArray;
+
+        QJsonArray pcb_svg_FileUrlArray;
+        for (const QString& url : record.pcb_svg_FileUrl) {
+            pcb_svg_FileUrlArray.append(url);
+        }
+        obj["pcb_svg_FileUrl"] = pcb_svg_FileUrlArray;
+
+        obj["pdf_FileUrl"] = record.pdf_FileUrl;
+
+        jsonArray.append(obj);
+    }
+
+    QJsonDocument doc(jsonArray);
+    file.write(doc.toJson(QJsonDocument::Indented)); // 使用缩进格式，便于阅读
+    file.close();
 }
 
+// void MainWindow::loadData() {
+//     // 读取 JSON 文件
+//     QFile file("db.json");
+//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//         QMessageBox::warning(this, "Warning", "Cannot open db.json file");
+//         return;
+//     }
+//
+//     const QByteArray jsonData = file.readAll();
+//     file.close();
+//
+//     QJsonObject records = QJsonDocument::fromJson(jsonData).object()["_default"].toObject();
+//
+//     for (auto it = records.begin(); it != records.end(); ++it) {
+//         QJsonObject info = it.value().toObject();
+//         QString name = info.value("Name").toString();
+//         if (name.isEmpty())
+//             continue;
+//
+//         // 创建一个 Record 对象并填充数据
+//         component_record_struct record;
+//         record.name = name;
+//         record.color = info.value("Color").toString();
+//         record.jlcid = info.value("JLCID").toString();
+//         record.discription = info.value("discription").toString();
+//         record.package = info.value("package").toString();
+//
+//         // 读取别名（Alias1 到 Alias9）
+//         for (int i = 1; i <= 9; ++i) {
+//             QString aliasKey = QString("Alias%1").arg(i);
+//             record.aliases.append(info.value(aliasKey).toString());
+//         }
+//
+//         // 将 Record 对象添加到 QVector 中
+//         addComponentToLib(record);
+//     }
+// }
+bool MainWindow::isExistingComponent(const QString &CID) const {
+    return model->component_record_Hash.contains(CID);
+}
+void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj) const {
+    model->component_record.append(_addingComponentObj);
+    model->component_record_Hash.insert(_addingComponentObj.jlcid, &(model->component_record.last()));
+}
 // void MainWindow::importExcelToJson() {
 //     // 打开 Excel 文件
 //     QXlsx::Document xlsx("output.xlsx");
