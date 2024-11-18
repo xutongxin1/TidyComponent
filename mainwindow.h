@@ -100,9 +100,9 @@ class MainWindow : public ElaWindow {
         static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
         void findClosestRecords(
             const QVector<component_record_struct> &recordsVector,
-            const QString &searchString);
+            const QString &searchString) const;
 
-        void search();
+        void search() const;
         void importExcelToJson();
         void exportJsonToExcel();
 
@@ -129,7 +129,6 @@ class MainWindow : public ElaWindow {
         int device_count_;
         ConfigClass *config_main_ini_;
 
-        void AddComponentLogic();
         void GetConstructConfig();
         void SaveConstructConfig();
         static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
@@ -138,8 +137,8 @@ class MainWindow : public ElaWindow {
         void loadData();
         void SaveData();
         bool isExistingComponent(const QString &CID) const;
-        void addComponentToLib(const component_record_struct &_addingComponentObj) const;
-        void addButtonToTable(int row, int col, const QString &color);
+        void addComponentToLib(component_record_struct &_addingComponentObj) const;
+        static void updateSearchKey(component_record_struct &_addingComponentObj);
 
         void InitConfig();
         void ShowSuccessInfo(const QString &info, const QString &title = QString());

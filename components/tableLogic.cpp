@@ -21,23 +21,16 @@
 //
 //     return static_cast<double>(common) / (wordsA.size() + wordsB.size() - common);
 // }
-void MainWindow::AddComponentLogic() {
 
-
-    //完成元器件添加
-    // _infoDockhArea->show();
-    // _addComponentDockhArea->hide();
-    // _infoDockWidget->setWindowTitle("元件信息");
-}
 // 计算两个字符串的Levenshtein距离
 double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
     if (a.isEmpty() || b.isEmpty()) return 0.0;
 
-    int m = a.length();
-    int n = b.length();
+    const int m = static_cast<int>(a.length());
+    const int n = static_cast<int>(b.length());
 
     // 创建dp数组
-    std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+    std::vector<std::vector<int> > dp(m + 1, std::vector<int>(n + 1, 0));
 
     // 初始化dp数组
     for (int i = 0; i <= m; ++i) dp[i][0] = i;
@@ -47,9 +40,11 @@ double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
     for (int i = 1; i <= m; ++i) {
         for (int j = 1; j <= n; ++j) {
             int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
-            dp[i][j] = std::min({dp[i - 1][j] + 1,    // 删除
-                                 dp[i][j - 1] + 1,    // 插入
-                                 dp[i - 1][j - 1] + cost});  // 替换
+            dp[i][j] = std::min({
+                dp[i - 1][j] + 1, // 删除
+                dp[i][j - 1] + 1, // 插入
+                dp[i - 1][j - 1] + cost
+            }); // 替换
         }
     }
 
@@ -93,7 +88,8 @@ bool MainWindow::isExactMatch(const component_record_struct &record, const QStri
 }
 
 // 查找最接近的记录
-void MainWindow::findClosestRecords(const QVector<component_record_struct> &component_record, const QString &searchString) {
+void MainWindow::findClosestRecords(const QVector<component_record_struct> &component_record,
+                                    const QString &searchString) const {
     auto start = std::chrono::high_resolution_clock::now();
 
     //清空记录
@@ -110,17 +106,16 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
             model->exacIndex.append(index);
         } else {
             // 计算模糊相似度
-            double totalSimilarity = 0.0;
-            totalSimilarity += calculateSimilarity(record.name, searchString);
-            totalSimilarity += calculateSimilarity(record.discription, searchString);
-            totalSimilarity += calculateSimilarity(record.package, searchString);
-
-            for (const auto &alias : record.aliases) {
-                totalSimilarity += calculateSimilarity(alias, searchString);
-            }
+            // totalSimilarity += calculateSimilarity(record.name, searchString);
+            // totalSimilarity += calculateSimilarity(record.discription, searchString);
+            // totalSimilarity += calculateSimilarity(record.package, searchString);
+            //
+            // for (const auto &alias : record.aliases) {
+            //     totalSimilarity += calculateSimilarity(alias, searchString);
+            // }
 
             // 将相似度存入Map中，键是相似度，值是记录
-            if (totalSimilarity > 0.0) {
+            if (double totalSimilarity = calculateSimilarity(record.searchKey, searchString); totalSimilarity > 0.0) {
                 similarityMap.insert(totalSimilarity, index);
             }
         }
@@ -143,16 +138,16 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     std::cout << "搜索用时: " << duration << " ms\n";
 }
 
-void MainWindow::search() {
+void MainWindow::search() const {
     // QString searchString = ui_->input_search->text();
-    QString searchString = _searchBox->text();
-    if(searchString.isEmpty()) {
-        model->showAll=true;
+    const QString searchString = _searchBox->text();
+    if (searchString.isEmpty()) {
+        model->showAll = true;
         model->updateData();
         // ShowAllComponents();
         return;
     }
-    model->showAll=false;
+    model->showAll = false;
     findClosestRecords(model->component_record, searchString);
 
     // for (const auto &record : model.exacIndex) {
