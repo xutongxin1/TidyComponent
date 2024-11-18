@@ -38,6 +38,7 @@
 #include "ElaWindow.h"
 #include "FluBusyProgressRing.h"
 #include "FluProgressRing.h"
+#include "ResizedTableView.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
@@ -115,7 +116,7 @@ class MainWindow : public ElaWindow {
     private:
         // Ui::MainWindow *ui_;
         ElaContentDialog *_closeDialog{nullptr};
-        ElaTableView *tableView;
+        ResizedTableView *tableView;
         ElaPivot *_pivot{nullptr};
         ElaTabWidget *_tabWidget{nullptr};
         ElaListView *_iconView;
@@ -145,6 +146,7 @@ class MainWindow : public ElaWindow {
         void ShowWarningInfo(const QString &info, const QString &title = QString());
         void ShowInfoInfo(const QString &info, const QString &title = QString());
         void ShowErrorInfo(const QString &info, const QString &title = QString());
+        void InitSearchDock();
         void getDailySection() const;
         void AddComponentLogic_1();
         void AddComponentLogic_2();

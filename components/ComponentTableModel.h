@@ -25,8 +25,7 @@ struct component_record_struct {
     QString pdf_FileUrl;
 };
 const QStringList titles = {
-    "显示状态", "名称", "描述", "封装", "立创编号", "别名1", "别名2", "别名3", "别名4",
-    "别名5", "别名6", "别名7", "别名8", "别名9", "别名10"
+    "显示状态", "名称", "描述", "封装", "立创编号", "商品参数"
 };
 
 class ComponentTableModel : public QAbstractTableModel {
@@ -73,16 +72,10 @@ class ComponentTableModel : public QAbstractTableModel {
                                 return record.package;
                             case 4:
                                 return record.jlcid;
+                            case 5:
+                                return record.more_data;
                             default:
-                                if (index.column() >= 5 && index.column() <= 14) {
-                                    int aliasIndex = index.column() - 5;
-                                    if (aliasIndex < record.aliases.size())
-                                        return record.aliases[aliasIndex];
-                                    else
-                                        return QVariant();
-                                } else {
-                                    return QVariant();
-                                }
+                                return QVariant();
                         }
                     } else {
                         return QVariant();
@@ -144,56 +137,56 @@ class ComponentTableModel : public QAbstractTableModel {
             return flags;
         }
 
-        virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
-            if (value.toString().isEmpty()) {
-                // 数据不能为空，返回 false 表示修改失败
-                return false;
-            }
-
-            if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
-                return false;
-
-            if (role == Qt::EditRole) {
-                switch (index.column()) {
-                    case 0:
-                        component_record[index.row()].color = value.toString();
-                        break;
-                    case 1:
-                        component_record[index.row()].name = value.toString();
-                        break;
-                    case 2:
-                        component_record[index.row()].discription = value.toString();
-                        break;
-                    case 3:
-                        component_record[index.row()].package = value.toString();
-                        break;
-                    case 4:
-                        component_record[index.row()].jlcid = value.toString();
-                        break;
-                    default:
-                        if (index.column() >= 5 && index.column() <= 14) {
-                            int aliasIndex = index.column() - 5;
-                            // Ensure the aliases vector is large enough
-                            if (aliasIndex >= component_record[index.row()].aliases.size()) {
-                                component_record[index.row()].aliases.resize(aliasIndex + 1);
-                            }
-                            component_record[index.row()].aliases[aliasIndex] = value.toString();
-                        } else {
-                            return false;
-                        }
-                        break;
-                }
-
-                // Notify the view that the data has changed
-                emit dataChanged(index, index, {role});
-
-                // Indicate that the data was successfully set
-                return true;
-            }
-
-            // For other roles, return false
-            return false;
-        }
+        // virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
+        //     if (value.toString().isEmpty()) {
+        //         // 数据不能为空，返回 false 表示修改失败
+        //         return false;
+        //     }
+        //
+        //     if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
+        //         return false;
+        //
+        //     if (role == Qt::EditRole) {
+        //         switch (index.column()) {
+        //             case 0:
+        //                 component_record[index.row()].color = value.toString();
+        //                 break;
+        //             case 1:
+        //                 component_record[index.row()].name = value.toString();
+        //                 break;
+        //             case 2:
+        //                 component_record[index.row()].discription = value.toString();
+        //                 break;
+        //             case 3:
+        //                 component_record[index.row()].package = value.toString();
+        //                 break;
+        //             case 4:
+        //                 component_record[index.row()].jlcid = value.toString();
+        //                 break;
+        //             default:
+        //                 if (index.column() >= 5 && index.column() <= 14) {
+        //                     int aliasIndex = index.column() - 5;
+        //                     // Ensure the aliases vector is large enough
+        //                     if (aliasIndex >= component_record[index.row()].aliases.size()) {
+        //                         component_record[index.row()].aliases.resize(aliasIndex + 1);
+        //                     }
+        //                     component_record[index.row()].aliases[aliasIndex] = value.toString();
+        //                 } else {
+        //                     return false;
+        //                 }
+        //                 break;
+        //         }
+        //
+        //         // Notify the view that the data has changed
+        //         emit dataChanged(index, index, {role});
+        //
+        //         // Indicate that the data was successfully set
+        //         return true;
+        //     }
+        //
+        //     // For other roles, return false
+        //     return false;
+        // }
 
     private:
         //    行修改函数：添加多行和删除多行

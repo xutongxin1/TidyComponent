@@ -1,23 +1,109 @@
-{
-  "_default": {
-    "1": {
-      "Name": "STM32F103C8T6",
-      "JLCID": "C8734",
-      "discription": "主流增强型ARM Cortex-M3 MCU，具有64 KB Flash、72 MHz CPU",
-      "package": "LQFP-48(7x7)",
-      "Alias1": "ST(意法半导体)",
-      "Alias2": "",
-      "Alias3": "",
-      "Alias4": "",
-      "Alias5": "",
-      "Alias6": "",
-      "Alias7": "",
-      "Alias8": "",
-      "Alias9": "",
-      "Alias10": "",
-      "MAC": "25419226168392",
-      "INAddr": "101",
-      "Color": "ff0000"
+[
+    {
+        "aliases": [
+        ],
+        "color": "RandomColor",
+        "discription": "XC7Z020-2CLG400I",
+        "jlcid": "C569043",
+        "more_data": "参数完善中",
+        "name": "XC7Z020-2CLG400I",
+        "package": "CSPBGA-400",
+        "pcb_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/pcb_svg_1.svg"
+        ],
+        "pdf_FileUrl": "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/C446028_7ED8319F1F88212BA1E5D387DA4ECDB9.pdf",
+        "pdf_name": "C446028_7ED8319F1F88212BA1E5D387DA4ECDB9.pdf",
+        "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20191108/C446028_7ED8319F1F88212BA1E5D387DA4ECDB9.pdf",
+        "png_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/img_0.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/img_1.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/img_2.jpg"
+        ],
+        "sch_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/sch_svg_1.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/sch_svg_2.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/sch_svg_3.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C569043/sch_svg_4.svg"
+        ],
+        "weight": 0.9100000262260437
+    },
+    {
+        "aliases": [
+        ],
+        "color": "RandomColor",
+        "discription": "EPM240T100C5N",
+        "jlcid": "C10041",
+        "more_data": "商品目录：可编程逻辑器件(CPLD/FPGA)；类型：其它PLD；工作电压范围 - VCCIO：3.3V；2.5V；逻辑单元数：-；逻辑阵列块数量：240；工作温度范围：0℃~+85℃；",
+        "name": "EPM240T100C5N",
+        "package": "TQFP-100(14x14)",
+        "pcb_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/pcb_svg_1.svg"
+        ],
+        "pdf_FileUrl": "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/1457706563274.pdf",
+        "pdf_name": "1457706563274.pdf",
+        "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20121123/1457706563274.pdf",
+        "png_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/img_0.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/img_1.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/img_2.jpg"
+        ],
+        "sch_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/sch_svg_1.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/sch_svg_2.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/sch_svg_3.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/sch_svg_4.svg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C10041/sch_svg_5.svg"
+        ],
+        "weight": 2.5250000953674316
+    },
+    {
+        "aliases": [
+        ],
+        "color": "RandomColor",
+        "discription": "Objective To study the time distribution of non-agriculture employed population spent in a working day in China , and to provide basic information for intervention strategies.Methods The data of 2002 China Nutrition and Health Survey were used .",
+        "jlcid": "C52717",
+        "more_data": "商品目录：单片机(MCU/MPU/SOC)；CPU内核：STM8；应用领域：-；",
+        "name": "STM8S003F3P6TR",
+        "package": "TSSOP-20",
+        "pcb_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/pcb_svg_1.svg"
+        ],
+        "pdf_FileUrl": "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/C52717_1505374129400969196.pdf",
+        "pdf_name": "C52717_1505374129400969196.pdf",
+        "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20170914/C52717_1505374129400969196.pdf",
+        "png_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/img_0.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/img_1.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/img_2.jpg"
+        ],
+        "sch_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C52717/sch_svg_1.svg"
+        ],
+        "weight": 0.39816001057624817
+    },
+    {
+        "aliases": [
+        ],
+        "color": "RandomColor",
+        "discription": "100nF ±10% 50V",
+        "jlcid": "C6119867",
+        "more_data": "商品目录：贴片电容(MLCC)；容值：100nF；精度：±10%；额定电压：50V；材质(温度系数)：X7R；",
+        "name": "CGA0603X7R104K500JT",
+        "package": "0603",
+        "pcb_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/pcb_svg_1.svg"
+        ],
+        "pdf_FileUrl": "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/C6119867_贴片电容(MLCC)_CGA0603X7R104K500JT_规格书_WJ1233649.PDF",
+        "pdf_name": "C6119867_贴片电容(MLCC)_CGA0603X7R104K500JT_规格书_WJ1233649.PDF",
+        "pdf_url": "https://atta.szlcsc.com/upload/public/pdf/source/20240929/46E4C68AE5AC1CCA4EA8A6CA4712BB00.pdf",
+        "png_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/img_0.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/img_1.jpg",
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/img_2.jpg"
+        ],
+        "sch_svg_FileUrl": [
+            "C:/Users/xtx/AppData/Local/xtxGroup/TidyComponent/info/C6119867/sch_svg_1.svg"
+        ],
+        "weight": 0.0395830012857914
     }
-  }
-}
+]

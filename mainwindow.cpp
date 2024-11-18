@@ -18,19 +18,19 @@
 #include "FluProgressRing.h"
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
-
+#include "JustWrapDelegate.h"
 int record_DeviceNum = 0, record_WinNum = 0;
 
 MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     model = new ComponentTableModel();
-    tableView = new ElaTableView(this);
+    tableView = new ResizedTableView(this);
     //初始化ElaUI
     initElaWindow();
     qDebug() << INFOPATH;
 
     // 禁用tableView修改
-    // ui_->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
+    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     // 初始化导入数据
     loadData();
     model->showAll = true;
@@ -40,7 +40,17 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     ColorDelegate *colorDelegate = new ColorDelegate(this);
     tableView->setItemDelegateForColumn(0, colorDelegate);
 
+    auto *JustWrapDelegate0 = new JustWrapDelegate(this);
+    tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
+    tableView->setItemDelegateForColumn(2, JustWrapDelegate0);
+    tableView->setItemDelegateForColumn(3, JustWrapDelegate0);
+    tableView->setItemDelegateForColumn(4, JustWrapDelegate0);
+    tableView->setItemDelegateForColumn(5, JustWrapDelegate0);
+    // tableView->setWordWrap(true);
     model->updateData();
+    tableView->horizontalHeader()->setStretchLastSection(true);
+    tableView->resizeRowsToContents();
+    tableView->horizontalHeader()->setMinimumSectionSize(100);
 
     // 绑定导入导出按钮
     // connect(ui_->btn_export, &QPushButton::clicked, this, &MainWindow::exportJsonToExcel);
@@ -58,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     getDailySection();
     initAddComponentLogic();
 
+
     if (DEBUG) {
         _addComponentButton->click();
     }
@@ -68,7 +79,7 @@ MainWindow::~MainWindow() {
     // delete ui_;
 }
 void MainWindow::initElaWindow() {
-    resize(1200, 740);
+    resize(1920, 1080);
     setWindowIcon(QIcon(":/include/Image/Cirno.jpg"));
     setWindowTitle("Component Search");
     setUserInfoCardVisible(false);
@@ -101,121 +112,8 @@ void MainWindow::initElaWindow() {
     QVBoxLayout *infoDockLayout = new QVBoxLayout(_infoDockhArea);
     infoDockLayout->addStretch();
 
-    //添加元件信息栏初始化
-    _addComponentDockhArea = new ElaScrollPageArea(this);
-    _addComponentDockhArea->setMinimumHeight(0);
-    _addComponentDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
-
-    _addComponent_EditBox = new ElaLineEdit(this);
-    _addComponent_EditBox->setFixedSize(500, 45);
-    _addComponent_EditBox->setFixedHeight(45);
-    _addComponent_EditBox->setPlaceholderText("请输入元件的CID，可以直接输入数字部分");
-
-    _addComponentDockhArea->hide();
-
-    _addComponent_ProgressBar = new ElaProgressBar(this);
-    _addComponent_ProgressBar->setValue(20);
-
-    _addComponent_EditBoxText = new ElaText("1. 输入器件CID查找", this);
-    _addComponent_EditBoxText->setTextPixelSize(20);
-    _addComponent_CheckInfoText = new ElaText("2. 请检查元器件信息是否正确", this);
-    _addComponent_CheckInfoText->setTextPixelSize(20);
-    _addComponent_DownloadText = new ElaText("3. 下载相关资源", this);
-    _addComponent_DownloadText->setTextPixelSize(20);
-    _addComponent_OpenText = new ElaText("4. 分配存放点", this);
-    _addComponent_OpenText->setTextPixelSize(20);
-    _addComponent_WaitText = new ElaText("请在60s内打开闪蓝灯的格子", this);
-    _addComponent_WaitText->setTextPixelSize(20);
-
-    //信息渲染
-    _addComponent_CheckInfoWidget = new QWidget(this);
-    QVBoxLayout *_addComponent_CheckInfoLayout = new QVBoxLayout(_addComponent_CheckInfoWidget);
-    _addComponent_CheckInfoLayout->setContentsMargins(0, 0, 0, 0);
-    _addComponent_CheckInfoWidget_Text = new ElaText(" ", this);
-    _addComponent_CheckInfoWidget_Text->setTextPixelSize(15);
-
-    _addComponent_CheckInfoWidget_Card1 = new ElaPromotionCard(this);
-    _addComponent_CheckInfoWidget_Card2 = new ElaPromotionCard(this);
-    _addComponent_CheckInfoWidget_Card3 = new ElaPromotionCard(this);
-
-    // _addComponent_CheckInfoWidget_Card1->setFixedWidth(420);
-    // _addComponent_CheckInfoWidget_Card1->setFixedHeight(420);
-    // _addComponent_CheckInfoWidget_Card2->setFixedWidth(420);
-    // _addComponent_CheckInfoWidget_Card2->setFixedHeight(420);
-    // _addComponent_CheckInfoWidget_Card3->setFixedWidth(420);
-    // _addComponent_CheckInfoWidget_Card3->setFixedHeight(420);
-    _promotionView = new ElaPromotionView(this);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card1);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card2);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card3);
-    // _promotionView->setCardCollapseWidth(420);
-    _promotionView->setCardExpandWidth(420);
-    _promotionView->setFixedHeight(420);
-    _addComponent_CheckInfoWidget_Card1->resize(_addComponent_CheckInfoWidget_Card1->width(), 393);
-    _addComponent_CheckInfoWidget_Card2->resize(_addComponent_CheckInfoWidget_Card2->width(), 393);
-    _addComponent_CheckInfoWidget_Card3->resize(_addComponent_CheckInfoWidget_Card3->width(), 393);
-
-
-    _promotionView->setIsAutoScroll(true);
-
-    _addComponent_CheckInfoLayout->addWidget(_addComponent_CheckInfoWidget_Text);
-    _addComponent_CheckInfoLayout->addWidget(_promotionView);
-    // _addComponent_CheckInfoLayout->addSpacing(100);
-
-    _addComponentButtonNext = new ElaToolButton(this);
-    _addComponentButtonNext->setIsTransparent(false);
-    _addComponentButtonNext->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    _addComponentButtonNext->setBorderRadius(8);
-    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    _addComponentButtonNext->setText("下一步");
-    _addComponentButtonNext->setElaIcon(ElaIconType::ArrowRight);
-    _addComponentButtonNext->setFixedHeight(50);
-    // _addComponentButtonNext->setIconSize(QSize(35, 35));
-    // _addComponentButtonNext->setFixedSize(100, 50);
-    _addComponent_CancelButton = new ElaToolButton(this);
-    _addComponent_CancelButton->setIsTransparent(false);
-    _addComponent_CancelButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    _addComponent_CancelButton->setBorderRadius(8);
-    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    _addComponent_CancelButton->setText("退出向导");
-    _addComponent_CancelButton->setElaIcon(ElaIconType::PersonToDoor);
-    // _addComponentButtonCancel->setIconSize(QSize(35, 35));
-    // _addComponentButtonCancel->setFixedSize(100, 50);
-    _addComponent_CancelButton->setFixedHeight(50);
-
-    QWidget *addComponentButtonArea = new QWidget(this);
-    QHBoxLayout *addComponentButtonLayout = new QHBoxLayout(addComponentButtonArea);
-    addComponentButtonLayout->setContentsMargins(0, 0, 0, 0);
-    addComponentButtonLayout->addWidget(_addComponentButtonNext);
-    addComponentButtonLayout->addWidget(_addComponent_CancelButton);
-
-    _addComponent_busyRing = new FluBusyProgressRing;
-    _addComponent_DownloadProgressRing = new FluProgressRing;
-    _addComponent_DownloadProgressRing->setWorking(true);
-
-    QVBoxLayout *addComponentLayout = new QVBoxLayout(_addComponentDockhArea);
-    addComponentLayout->addWidget(_addComponent_EditBoxText);
-    addComponentLayout->addWidget(_addComponent_EditBox);
-
-    addComponentLayout->addWidget(_addComponent_CheckInfoText);
-    addComponentLayout->addWidget(_addComponent_busyRing);
-    addComponentLayout->addWidget(_addComponent_CheckInfoWidget);
-
-    addComponentLayout->addWidget(_addComponent_DownloadText);
-    addComponentLayout->addWidget(_addComponent_DownloadProgressRing);
-
-    addComponentLayout->addWidget(_addComponent_OpenText);
-    addComponentLayout->addWidget(_addComponent_WaitText);
-
-    addComponentLayout->addStretch();
-    addComponentLayout->addWidget(addComponentButtonArea);
-    addComponentLayout->addWidget(_addComponent_ProgressBar);
-
-    //默认在元件信息模式
-    _infoDockWidget->setWindowTitle("元件信息");
-    _infoDockWidget->setWidget(_infoDockhArea);
-
-    _addComponent_timer = new QTimer(this);
+    //初始化元件添加栏
+    InitSearchDock();
     //_pivot界面
     // _pivot = new ElaPivot(this);
     // _pivot->setPivotSpacing(8);
@@ -385,4 +283,120 @@ void MainWindow::ShowInfoInfo(const QString &info, const QString &title) {
 }
 void MainWindow::ShowErrorInfo(const QString &info, const QString &title) {
     ElaMessageBar::error(ElaMessageBarType::BottomLeft, title, info, 2000, this);
+}
+void MainWindow::InitSearchDock() {
+    //添加元件信息栏初始化
+    _addComponentDockhArea = new ElaScrollPageArea(this);
+    _addComponentDockhArea->setMinimumHeight(0);
+    _addComponentDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
+
+    _addComponent_EditBox = new ElaLineEdit(this);
+    _addComponent_EditBox->setFixedSize(500, 45);
+    _addComponent_EditBox->setFixedHeight(45);
+    _addComponent_EditBox->setPlaceholderText("请输入元件的CID，可以直接输入数字部分");
+
+    _addComponentDockhArea->hide();
+
+    _addComponent_ProgressBar = new ElaProgressBar(this);
+    _addComponent_ProgressBar->setValue(20);
+
+    _addComponent_EditBoxText = new ElaText("1. 输入器件CID查找", this);
+    _addComponent_EditBoxText->setTextPixelSize(20);
+    _addComponent_CheckInfoText = new ElaText("2. 请检查元器件信息是否正确", this);
+    _addComponent_CheckInfoText->setTextPixelSize(20);
+    _addComponent_DownloadText = new ElaText("3. 下载相关资源", this);
+    _addComponent_DownloadText->setTextPixelSize(20);
+    _addComponent_OpenText = new ElaText("4. 分配存放点", this);
+    _addComponent_OpenText->setTextPixelSize(20);
+    _addComponent_WaitText = new ElaText("请在60s内打开闪蓝灯的格子", this);
+    _addComponent_WaitText->setTextPixelSize(20);
+
+    //信息渲染
+    _addComponent_CheckInfoWidget = new QWidget(this);
+    QVBoxLayout *_addComponent_CheckInfoLayout = new QVBoxLayout(_addComponent_CheckInfoWidget);
+    _addComponent_CheckInfoLayout->setContentsMargins(0, 0, 0, 0);
+    _addComponent_CheckInfoWidget_Text = new ElaText(" ", this);
+    _addComponent_CheckInfoWidget_Text->setTextPixelSize(15);
+
+    _addComponent_CheckInfoWidget_Card1 = new ElaPromotionCard(this);
+    _addComponent_CheckInfoWidget_Card2 = new ElaPromotionCard(this);
+    _addComponent_CheckInfoWidget_Card3 = new ElaPromotionCard(this);
+
+    // _addComponent_CheckInfoWidget_Card1->setFixedWidth(420);
+    // _addComponent_CheckInfoWidget_Card1->setFixedHeight(420);
+    // _addComponent_CheckInfoWidget_Card2->setFixedWidth(420);
+    // _addComponent_CheckInfoWidget_Card2->setFixedHeight(420);
+    // _addComponent_CheckInfoWidget_Card3->setFixedWidth(420);
+    // _addComponent_CheckInfoWidget_Card3->setFixedHeight(420);
+    _promotionView = new ElaPromotionView(this);
+    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card1);
+    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card2);
+    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card3);
+    // _promotionView->setCardCollapseWidth(420);
+    _promotionView->setCardExpandWidth(420);
+    _promotionView->setFixedHeight(420);
+    _addComponent_CheckInfoWidget_Card1->resize(_addComponent_CheckInfoWidget_Card1->width(), 393);
+    _addComponent_CheckInfoWidget_Card2->resize(_addComponent_CheckInfoWidget_Card2->width(), 393);
+    _addComponent_CheckInfoWidget_Card3->resize(_addComponent_CheckInfoWidget_Card3->width(), 393);
+
+    _promotionView->setIsAutoScroll(true);
+
+    _addComponent_CheckInfoLayout->addWidget(_addComponent_CheckInfoWidget_Text);
+    _addComponent_CheckInfoLayout->addWidget(_promotionView);
+    // _addComponent_CheckInfoLayout->addSpacing(100);
+
+    _addComponentButtonNext = new ElaToolButton(this);
+    _addComponentButtonNext->setIsTransparent(false);
+    _addComponentButtonNext->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    _addComponentButtonNext->setBorderRadius(8);
+    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    _addComponentButtonNext->setText("下一步");
+    _addComponentButtonNext->setElaIcon(ElaIconType::ArrowRight);
+    _addComponentButtonNext->setFixedHeight(50);
+    // _addComponentButtonNext->setIconSize(QSize(35, 35));
+    // _addComponentButtonNext->setFixedSize(100, 50);
+    _addComponent_CancelButton = new ElaToolButton(this);
+    _addComponent_CancelButton->setIsTransparent(false);
+    _addComponent_CancelButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    _addComponent_CancelButton->setBorderRadius(8);
+    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    _addComponent_CancelButton->setText("退出向导");
+    _addComponent_CancelButton->setElaIcon(ElaIconType::PersonToDoor);
+    // _addComponentButtonCancel->setIconSize(QSize(35, 35));
+    // _addComponentButtonCancel->setFixedSize(100, 50);
+    _addComponent_CancelButton->setFixedHeight(50);
+
+    QWidget *addComponentButtonArea = new QWidget(this);
+    QHBoxLayout *addComponentButtonLayout = new QHBoxLayout(addComponentButtonArea);
+    addComponentButtonLayout->setContentsMargins(0, 0, 0, 0);
+    addComponentButtonLayout->addWidget(_addComponentButtonNext);
+    addComponentButtonLayout->addWidget(_addComponent_CancelButton);
+
+    _addComponent_busyRing = new FluBusyProgressRing;
+    _addComponent_DownloadProgressRing = new FluProgressRing;
+    _addComponent_DownloadProgressRing->setWorking(true);
+
+    QVBoxLayout *addComponentLayout = new QVBoxLayout(_addComponentDockhArea);
+    addComponentLayout->addWidget(_addComponent_EditBoxText);
+    addComponentLayout->addWidget(_addComponent_EditBox);
+
+    addComponentLayout->addWidget(_addComponent_CheckInfoText);
+    addComponentLayout->addWidget(_addComponent_busyRing);
+    addComponentLayout->addWidget(_addComponent_CheckInfoWidget);
+
+    addComponentLayout->addWidget(_addComponent_DownloadText);
+    addComponentLayout->addWidget(_addComponent_DownloadProgressRing);
+
+    addComponentLayout->addWidget(_addComponent_OpenText);
+    addComponentLayout->addWidget(_addComponent_WaitText);
+
+    addComponentLayout->addStretch();
+    addComponentLayout->addWidget(addComponentButtonArea);
+    addComponentLayout->addWidget(_addComponent_ProgressBar);
+
+    //默认在元件信息模式
+    _infoDockWidget->setWindowTitle("元件信息");
+    _infoDockWidget->setWidget(_infoDockhArea);
+
+    _addComponent_timer = new QTimer(this);
 }
