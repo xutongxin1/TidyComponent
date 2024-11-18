@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     tableView->setColumnWidth(2, 420);
     getDailySection();
     initAddComponentLogic();
-
+    tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     if (DEBUG) {
         _addComponentButton->click();

@@ -14,7 +14,7 @@ class ResizedTableView : public ElaTableView {
         explicit ResizedTableView(QWidget *parent = nullptr) : ElaTableView(parent) {
             connect(horizontalHeader(), &QHeaderView::sectionResized, this, [&] {
                 verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-                resizeRowToContents(0);
+                // resizeRowToContents(0);
             });
         }
         ~ResizedTableView() override = default;
