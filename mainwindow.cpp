@@ -23,7 +23,7 @@
 #include <QClipboard>
 #include <qstandarditemmodel.h>
 
-#include "ShowInfoModel .h"
+#include "ShowInfoModel.h"
 int record_DeviceNum = 0, record_WinNum = 0;
 
 MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     _showInfo_tableView->horizontalHeader()->setStretchLastSection(true);
     // _showInfo_tableView->resizeRowsToContents();
     _showInfo_tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
-    tableView->setColumnWidth(0, 100);
+    _showInfo_tableView->setColumnWidth(0, 100);
     if (DEBUG) {
         // _addComponentButton->click();
     }
@@ -128,10 +128,12 @@ void MainWindow::initElaWindow() {
     _showInfo_tableView = new ElaTableView(this);
     _showInfo_model = new ShowInfoModel(this);
     _showInfo_tableView->setModel(_showInfo_model);
+    _showInfo_tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _showInfo_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     _showInfo_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); // Make the table read-only
+    _showInfo_tableView->horizontalHeader()->setHidden(true);
+    _showInfo_tableView->verticalHeader()->setHidden(true);
     infoDockLayout->addWidget(_showInfo_tableView);
-
 
     // 3. ElaPromotionView for displaying images
     _showInfo_PNGview = new ElaPromotionView(this);
@@ -287,11 +289,16 @@ void MainWindow::initElaWindow() {
     // });
 }
 
-void MainWindow::updateContent(const QModelIndex &index) {
+void MainWindow::GetConstructConfig() {
+}
+
+void MainWindow::SaveConstructConfig() {
+}
+void MainWindow::updateContent(const QModelIndex &index) const {
     if (index.isValid()) {
         if (const QString cid = index.sibling(index.row(), 4).data(Qt::DisplayRole).toString(); model->
             component_record_Hash.contains(cid)) {
-            component_record_struct record = model->component_record_Hash.value(cid);
+            const component_record_struct record = model->component_record_Hash.value(cid);
 
             _showInfo_model->setComponentData(record);
 
@@ -305,36 +312,23 @@ void MainWindow::updateContent(const QModelIndex &index) {
             // for (int j = 0; j < record.pcb_svg_FileUrl.size(); ++j) {
             //     _showInfo_PNGCard3->setCardPixmap(QPixmap(record.pcb_svg_FileUrl[j]));
             // }
-            //
+
             // // Set PDF Button
             // m_pdfButton->setText("Data Sheet: " + record.pdf_name);
             // connect(m_pdfButton, &QPushButton::clicked, this, [record]() {
             //     QDesktopServices::openUrl(QUrl::fromLocalFile(record.pdf_FileUrl));
             // });
-            _showInfo_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+            // _showInfo_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
             _showInfo_tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+            int totalHeight = 2; //疑似是border的宽度
+            for (int row = 0; row < _showInfo_tableView->model()->rowCount(); row++) {
+                totalHeight += _showInfo_tableView->rowHeight(row);
+            }
+
+            // 设置 QTableView 的高度为内容的高度
+            _showInfo_tableView->setFixedHeight(totalHeight);
         }
     }
-}
-
-QLabel *MainWindow::createClickableLabel() {
-    QLabel *label = new QLabel(this);
-    label->setStyleSheet("color: blue; text-decoration: underline;");
-    label->setCursor(Qt::PointingHandCursor);
-    connect(label, &QLabel::linkActivated, this, &MainWindow::copyTextToClipboard);
-    return label;
-}
-void MainWindow::copyTextToClipboard() {
-    QLabel *label = qobject_cast<QLabel *>(sender());
-    if (label) {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(label->text());
-    }
-}
-void MainWindow::GetConstructConfig() {
-}
-
-void MainWindow::SaveConstructConfig() {
 }
 
 void MainWindow::InitConfig() {

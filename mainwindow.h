@@ -41,7 +41,7 @@
 #include "FluBusyProgressRing.h"
 #include "FluProgressRing.h"
 #include "ResizedTableView.h"
-#include "ShowInfoModel .h"
+#include "ShowInfoModel.h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
@@ -61,7 +61,7 @@ class MainWindow;
 }
 
 QT_END_NAMESPACE
-
+class ShowInfoModel;
 class MainWindow : public ElaWindow {
         Q_OBJECT
 
@@ -87,7 +87,7 @@ class MainWindow : public ElaWindow {
         ElaText *_addComponent_OpenText;
         bool isAddingComponent;
         int _addComponentStep;
-        QString _AddingComponent_CID;
+        QString _addingComponent_CID;
         ElaText *_addComponent_CheckInfoWidget_Text;
         QWidget *_addComponent_CheckInfoWidget;
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card1;
@@ -105,10 +105,6 @@ class MainWindow : public ElaWindow {
         ShowInfoModel * _showInfo_model;
 
         void initElaWindow();
-        void _showInfo_addTableViewRow(const QString &field, const QString &value);
-        void updateContent(const QModelIndex &index);
-        QLabel *createClickableLabel();
-        void copyTextToClipboard();
         explicit MainWindow(QWidget *parent = nullptr);
         static double calculateSimilarity(const QString &a, const QString &b);
         static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
@@ -145,6 +141,7 @@ class MainWindow : public ElaWindow {
 
         void GetConstructConfig();
         void SaveConstructConfig();
+        void updateContent(const QModelIndex &index) const;
         static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         // void ShowAllComponents();
         // void ShowSomeComponents();

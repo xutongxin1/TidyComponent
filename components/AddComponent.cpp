@@ -114,28 +114,28 @@ void MainWindow::AddComponentLogic_1() {
     _addComponent_busyRing->show();
     _addComponent_CheckInfoText->show();
     //请求服务器获取元器件信息
-    _AddingComponent_CID = _addComponent_EditBox->text();
-    if (_AddingComponent_CID[0] != 'C' && _AddingComponent_CID[0] != 'c') {
-        _AddingComponent_CID = "C" + _AddingComponent_CID;
-    } else if (_AddingComponent_CID[0] == 'c') {
-        _AddingComponent_CID[0] = 'C';
+    _addingComponent_CID = _addComponent_EditBox->text();
+    if (_addingComponent_CID[0] != 'C' && _addingComponent_CID[0] != 'c') {
+        _addingComponent_CID = "C" + _addingComponent_CID;
+    } else if (_addingComponent_CID[0] == 'c') {
+        _addingComponent_CID[0] = 'C';
     }
     // _addComponent_EditBox->setText(CID);
     //TODO: 检查现在是否有该器件
-    if (isExistingComponent(_AddingComponent_CID)) {
+    if (isExistingComponent(_addingComponent_CID)) {
         cancelAddComponentLogic(); //退出逻辑
         ShowWarningInfo("该元器件已经存在");
         return;
     }
-    getRequest("http://127.0.0.1:8000/item/" + _AddingComponent_CID, [&](const QJsonObject &jsonObj) {
+    getRequest("http://127.0.0.1:8000/item/" + _addingComponent_CID, [&](const QJsonObject &jsonObj) {
                    // qDebug() << jsonObj;
 
-                   extractComponentData(_AddingComponent_CID, jsonObj, *_addingComponentObj);
+                   extractComponentData(_addingComponent_CID, jsonObj, *_addingComponentObj);
                    // component_record_struct component1;
 
                    _addComponent_busyRing->hide();
                    _addComponent_CheckInfoWidget_Text->setText(
-                       "<b>元器件名称：</b>" + _addingComponentObj->name + "<br><b>元器件编号：</b>" + _AddingComponent_CID +
+                       "<b>元器件名称：</b>" + _addingComponentObj->name + "<br><b>元器件编号：</b>" + _addingComponent_CID +
                        "<br><b>元器件描述：</b>"
                        + _addingComponentObj->discription +
                        "<br><b>元器件封装：</b>" + _addingComponentObj->package);
@@ -188,7 +188,7 @@ void MainWindow::AddComponentLogic_2() {
                        AddComponentLogic_3();
                    }, [&](const QNetworkReply::NetworkError error) {
                        qWarning() << "无法获取元器件数据手册 " << error;
-                   }, _addingComponentObj->pdf_name, GetCIDPath(_AddingComponent_CID),
+                   }, _addingComponentObj->pdf_name, GetCIDPath(_addingComponent_CID),
                    [&](qint64 bytesReceived, qint64 bytesTotal) {
                        _addComponent_DownloadProgressRing->setCurValue(bytesReceived * 100 / bytesTotal);
                    });

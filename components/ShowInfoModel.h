@@ -4,11 +4,12 @@
 
 #ifndef SHOWINFOMODEL_H
 #define SHOWINFOMODEL_H
+#include "structH.h"
 #include <QAbstractTableModel>
 #include <QVariant>
 
 #include "ComponentTableModel.h"
-
+#include "mainwindow.h"
 class ShowInfoModel : public QAbstractTableModel {
         Q_OBJECT
 
@@ -17,19 +18,11 @@ class ShowInfoModel : public QAbstractTableModel {
         explicit ShowInfoModel(QObject *parent = nullptr) : QAbstractTableModel(parent) {
         }
 
-        void setComponentData(const component_record_struct &record) {
-            // const auto start = std::chrono::high_resolution_clock::now();
-            beginResetModel();
-            m_record = record;
-            endResetModel();
-            // auto stop = std::chrono::high_resolution_clock::now();
-            // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-            // qDebug() << "渲染用时: " << duration << " ms\n";
-        }
+        void setComponentData(const component_record_struct &record);
 
-        [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
+        [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override; // NOLINT(*-default-arguments)
 
-        [[nodiscard]] int columnCount(const QModelIndex &parent) const override;
+        [[nodiscard]] int columnCount(const QModelIndex &parent = QModelIndex()) const override; // NOLINT(*-default-arguments)
 
         [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
@@ -39,6 +32,15 @@ class ShowInfoModel : public QAbstractTableModel {
         component_record_struct m_record;
 };
 
+inline void ShowInfoModel::setComponentData(const component_record_struct &record) {
+    // const auto start = std::chrono::high_resolution_clock::now();
+    beginResetModel();
+    m_record = record;
+    endResetModel();
+    // auto stop = std::chrono::high_resolution_clock::now();
+    // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+    // qDebug() << "渲染用时: " << duration << " ms\n";
+}
 inline int ShowInfoModel::rowCount(const QModelIndex &parent) const {
     return static_cast<int>(m_record.aliases.size()) + 5; // 5 fields + aliases rows
 }
@@ -99,5 +101,6 @@ inline Qt::ItemFlags ShowInfoModel::flags(const QModelIndex &index) const {
     }
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled; // Cells are selectable but not editable
 }
+
 
 #endif //SHOWINFOMODEL_H
