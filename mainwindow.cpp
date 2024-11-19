@@ -19,6 +19,11 @@
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
 #include "JustWrapDelegate.h"
+#include <QApplication>
+#include <QClipboard>
+#include <qstandarditemmodel.h>
+
+#include "ShowInfoModel .h"
 int record_DeviceNum = 0, record_WinNum = 0;
 
 MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
@@ -63,14 +68,23 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         }
     });
 
-    tableView->setColumnWidth(1, 175);
-    tableView->setColumnWidth(2, 420);
+    //绑定数据更新动作
+    connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
+
     getDailySection();
     initAddComponentLogic();
+
+    //更新tableView的UI比例
+    tableView->setColumnWidth(1, 175);
+    tableView->setColumnWidth(2, 420);
     tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
+    _showInfo_tableView->horizontalHeader()->setStretchLastSection(true);
+    // _showInfo_tableView->resizeRowsToContents();
+    _showInfo_tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
+    tableView->setColumnWidth(0, 100);
     if (DEBUG) {
-        _addComponentButton->click();
+        // _addComponentButton->click();
     }
     // ui_->label_nowSearch->hide();
 }
@@ -109,11 +123,32 @@ void MainWindow::initElaWindow() {
     _infoDockhArea = new ElaScrollPageArea(this);
     _infoDockhArea->setMinimumHeight(0);
     _infoDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
-    QVBoxLayout *infoDockLayout = new QVBoxLayout(_infoDockhArea);
-    infoDockLayout->addStretch();
+    const auto infoDockLayout = new QVBoxLayout(_infoDockhArea);
+
+    _showInfo_tableView = new ElaTableView(this);
+    _showInfo_model = new ShowInfoModel(this);
+    _showInfo_tableView->setModel(_showInfo_model);
+    _showInfo_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _showInfo_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); // Make the table read-only
+    infoDockLayout->addWidget(_showInfo_tableView);
+
+
+    // 3. ElaPromotionView for displaying images
+    _showInfo_PNGview = new ElaPromotionView(this);
+    _showInfo_PNGCard1 = new ElaPromotionCard(this);
+    _showInfo_PNGCard2 = new ElaPromotionCard(this);
+    _showInfo_PNGCard3 = new ElaPromotionCard(this);
+    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard1);
+    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard2);
+    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard3);
+    infoDockLayout->addWidget(_showInfo_PNGview);
+
+    // 4. PDF Button
+    m_pdfButton = new QPushButton(this);
+    infoDockLayout->addWidget(m_pdfButton);
 
     //初始化元件添加栏
-    InitSearchDock();
+    InitSearchDockLogic();
     //_pivot界面
     // _pivot = new ElaPivot(this);
     // _pivot->setPivotSpacing(8);
@@ -252,6 +287,50 @@ void MainWindow::initElaWindow() {
     // });
 }
 
+void MainWindow::updateContent(const QModelIndex &index) {
+    if (index.isValid()) {
+        if (const QString cid = index.sibling(index.row(), 4).data(Qt::DisplayRole).toString(); model->
+            component_record_Hash.contains(cid)) {
+            component_record_struct record = model->component_record_Hash.value(cid);
+
+            _showInfo_model->setComponentData(record);
+
+            // // Set image cards (ElaPromotionView)
+            // for (int j = 0; j < record.png_FileUrl.size(); ++j) {
+            //     _showInfo_PNGCard1->setCardPixmap(QPixmap(record.png_FileUrl[j]));
+            // }
+            // for (int j = 0; j < record.sch_svg_FileUrl.size(); ++j) {
+            //     _showInfo_PNGCard2->setCardPixmap(QPixmap(record.sch_svg_FileUrl[j]));
+            // }
+            // for (int j = 0; j < record.pcb_svg_FileUrl.size(); ++j) {
+            //     _showInfo_PNGCard3->setCardPixmap(QPixmap(record.pcb_svg_FileUrl[j]));
+            // }
+            //
+            // // Set PDF Button
+            // m_pdfButton->setText("Data Sheet: " + record.pdf_name);
+            // connect(m_pdfButton, &QPushButton::clicked, this, [record]() {
+            //     QDesktopServices::openUrl(QUrl::fromLocalFile(record.pdf_FileUrl));
+            // });
+            _showInfo_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+            _showInfo_tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        }
+    }
+}
+
+QLabel *MainWindow::createClickableLabel() {
+    QLabel *label = new QLabel(this);
+    label->setStyleSheet("color: blue; text-decoration: underline;");
+    label->setCursor(Qt::PointingHandCursor);
+    connect(label, &QLabel::linkActivated, this, &MainWindow::copyTextToClipboard);
+    return label;
+}
+void MainWindow::copyTextToClipboard() {
+    QLabel *label = qobject_cast<QLabel *>(sender());
+    if (label) {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(label->text());
+    }
+}
 void MainWindow::GetConstructConfig() {
 }
 
@@ -284,7 +363,7 @@ void MainWindow::ShowInfoInfo(const QString &info, const QString &title) {
 void MainWindow::ShowErrorInfo(const QString &info, const QString &title) {
     ElaMessageBar::error(ElaMessageBarType::BottomLeft, title, info, 2000, this);
 }
-void MainWindow::InitSearchDock() {
+void MainWindow::InitSearchDockLogic() {
     //添加元件信息栏初始化
     _addComponentDockhArea = new ElaScrollPageArea(this);
     _addComponentDockhArea->setMinimumHeight(0);

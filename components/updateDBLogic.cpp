@@ -2,7 +2,7 @@
 // Created by xtx on 24-9-13.
 //
 #include "mainwindow.h"
-void MainWindow::loadData() {
+void MainWindow::loadData() const {
     QFile file("db.json");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning("无法打开 db.json 文件。");
@@ -22,7 +22,7 @@ void MainWindow::loadData() {
 
     QJsonArray jsonArray = doc.array();
 
-    for (const QJsonValue &value : jsonArray) {
+    for (const auto &value : jsonArray) {
         if (!value.isObject())
             continue;
 
@@ -39,6 +39,7 @@ void MainWindow::loadData() {
         record.pdf_url = obj.value("pdf_url").toString();
         record.pdf_name = obj.value("pdf_name").toString();
         record.aliases = obj.value("aliases").toVariant().toStringList().toVector();
+        record.aliases.resize(5); // 限制别名数量为 5
         record.png_FileUrl = obj.value("png_FileUrl").toVariant().toStringList().toVector();
         record.sch_svg_FileUrl = obj.value("sch_svg_FileUrl").toVariant().toStringList().toVector();
         record.pcb_svg_FileUrl = obj.value("pcb_svg_FileUrl").toVariant().toStringList().toVector();
@@ -49,7 +50,7 @@ void MainWindow::loadData() {
     }
 }
 // WriteData() 函数实现
-void MainWindow::SaveData() {
+void MainWindow::SaveData() const {
     QFile file("db.json");
     if (!file.open(QIODevice::WriteOnly)) {
         qWarning("无法打开 db.json 文件进行写入。");
@@ -109,9 +110,13 @@ void MainWindow::SaveData() {
 bool MainWindow::isExistingComponent(const QString &CID) const {
     return model->component_record_Hash.contains(CID);
 }
-void MainWindow::addComponentToLib(component_record_struct &_addingComponentObj) const {
+void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj) const {
     model->component_record.append(_addingComponentObj);
-    model->component_record_Hash.insert(_addingComponentObj.jlcid, &(model->component_record.last()));
+    model->component_record_Hash.insert(_addingComponentObj.jlcid, _addingComponentObj);
+    // if (model->component_record_Hash.contains("C569043")) {
+    //     const std::shared_ptr<component_record_struct> tmp = model->component_record_Hash.value("C569043");
+    //     qDebug() << tmp->name;
+    // }
 }
 void MainWindow::updateSearchKey(component_record_struct &_addingComponentObj) {
     _addingComponentObj.searchKey = _addingComponentObj.name + _addingComponentObj.jlcid + _addingComponentObj.

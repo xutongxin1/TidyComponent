@@ -20,6 +20,8 @@
 #include "FluDropDownButton.h"
 
 // #include "./ui_mainwindow.h"
+#include <qstandarditemmodel.h>
+
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
 #include "ElaDockWidget.h"
@@ -39,6 +41,7 @@
 #include "FluBusyProgressRing.h"
 #include "FluProgressRing.h"
 #include "ResizedTableView.h"
+#include "ShowInfoModel .h"
 #include "xlsxdatavalidation.h"
 #include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
 
@@ -93,8 +96,19 @@ class MainWindow : public ElaWindow {
         ElaPromotionView *_promotionView;
         QTimer *_addComponent_timer;
         int _addComponent_timeLeft;
+        QPushButton * m_pdfButton;
+        ElaPromotionView * _showInfo_PNGview;
+        ElaPromotionCard * _showInfo_PNGCard1;
+        ElaPromotionCard * _showInfo_PNGCard2;
+        ElaPromotionCard * _showInfo_PNGCard3;
+        ElaTableView * _showInfo_tableView;
+        ShowInfoModel * _showInfo_model;
 
         void initElaWindow();
+        void _showInfo_addTableViewRow(const QString &field, const QString &value);
+        void updateContent(const QModelIndex &index);
+        QLabel *createClickableLabel();
+        void copyTextToClipboard();
         explicit MainWindow(QWidget *parent = nullptr);
         static double calculateSimilarity(const QString &a, const QString &b);
         static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
@@ -134,10 +148,10 @@ class MainWindow : public ElaWindow {
         static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         // void ShowAllComponents();
         // void ShowSomeComponents();
-        void loadData();
-        void SaveData();
+        void loadData() const;
+        void SaveData() const;
         bool isExistingComponent(const QString &CID) const;
-        void addComponentToLib(component_record_struct &_addingComponentObj) const;
+        void addComponentToLib(const component_record_struct &_addingComponentObj) const;
         static void updateSearchKey(component_record_struct &_addingComponentObj);
 
         void InitConfig();
@@ -145,7 +159,7 @@ class MainWindow : public ElaWindow {
         void ShowWarningInfo(const QString &info, const QString &title = QString());
         void ShowInfoInfo(const QString &info, const QString &title = QString());
         void ShowErrorInfo(const QString &info, const QString &title = QString());
-        void InitSearchDock();
+        void InitSearchDockLogic();
         void getDailySection() const;
         void AddComponentLogic_1();
         void AddComponentLogic_2();

@@ -10,22 +10,22 @@
 
 struct component_record_struct {
     //以下为展示的部分
-    QString name; //元器件名称
-    QString jlcid; //嘉立创CID
-    QString discription; //元器件描述
-    QString more_data; //元器件参数
-    QString package; //元器件封装
-    QVector<QString> aliases; //元器件别名
-    QVector<QString> png_FileUrl; //元器件实物图文件路径
-    QVector<QString> sch_svg_FileUrl; //元器件sch_svg文件路径
-    QVector<QString> pcb_svg_FileUrl; //元器件pcb_svg文件路径
-    QString pdf_name; //元器件pdf文件名称
-    QString pdf_FileUrl; //元器件pdf文件路径
+    QString name=QString(); //元器件名称
+    QString jlcid=QString(); //嘉立创CID
+    QString discription=QString(); //元器件描述
+    QString more_data=QString(); //元器件参数
+    QString package=QString(); //元器件封装
+    QVector<QString> aliases=QVector<QString>(5,QString()); //元器件别名
+    QVector<QString> png_FileUrl={}; //元器件实物图文件路径
+    QVector<QString> sch_svg_FileUrl={}; //元器件sch_svg文件路径
+    QVector<QString> pcb_svg_FileUrl={}; //元器件pcb_svg文件路径
+    QString pdf_name=QString(); //元器件pdf文件名称
+    QString pdf_FileUrl=QString(); //元器件pdf文件路径
 
     //以下为逻辑部分
-    QString pdf_url;
-    QString searchKey;
-    QString color;
+    QString pdf_url=QString();
+    QString searchKey=QString();
+    QString color=QString();
     float weight = 0.0f; //器件重量
 };
 const QStringList titles = {
@@ -285,6 +285,13 @@ class ComponentTableModel : public QAbstractTableModel {
                 }
             }
         }
+        void onRowClicked(const QModelIndex &index) {
+            if (index.column() == 4) {
+                // Check if the clicked column is CID column (5th column)
+                const auto cid = index.data(Qt::DisplayRole).toString();
+                emit(RowClickedWithCID(cid));
+            }
+        }
 
     public:
         // 布尔变量，决定显示全部还是部分内容
@@ -293,11 +300,11 @@ class ComponentTableModel : public QAbstractTableModel {
         QVector<int> exacIndex;
         QVector<int> fuzzyIndex;
         QVector<component_record_struct> component_record;
-        QHash<QString, component_record_struct *> component_record_Hash;
+        QHash<QString, component_record_struct> component_record_Hash;
         struct DisplayItem {
-            enum Type { Label, Data } type;
-            QString label; // 对于 Label 类型
-            int dataIndex; // 对于 Data 类型，对应 component_records 中的索引
+            enum Type { Label, Data } type = Data;
+            QString label = QString(); // 对于 Label 类型
+            int dataIndex = 0; // 对于 Data 类型，对应 component_records 中的索引
         };
         // 存储要显示的项目列表
         QVector<DisplayItem> displayItems;
@@ -310,6 +317,8 @@ class ComponentTableModel : public QAbstractTableModel {
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
             qDebug() << "渲染用时: " << duration << " ms\n";
         }
+        Q_SIGNAL
+        void RowClickedWithCID(QString CID);
 };
 
 #endif //COMPONENTTABLEMODEL_H
