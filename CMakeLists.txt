@@ -168,12 +168,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/QXlsx/QXlsx/header)
 #        message(STATUS ${Boost_LIBRARY_DIR_DEBUG}/python311_d.lib)
 #    endif ()
 #endif ()
-
+#set(ELAWidget elawidgettools)
+set(ELAWidget "C:/GitProject/TidyComponent/cmake-build-relwithdebinfo/thirdLib/ElaWidgetTools/src/ElaWidgetTools.lib")
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
-            Qt6::Network elawidgettools Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
+            Qt6::Network ${ELAWidget} Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 else ()
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls elawidgettools QXlsx::QXlsx

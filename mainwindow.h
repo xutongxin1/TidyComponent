@@ -31,6 +31,7 @@
 #include "ElaProgressBar.h"
 #include "ElaPromotionCard.h"
 #include "ElaPromotionView.h"
+#include "ElaScrollPage.h"
 #include "ElaScrollPageArea.h"
 #include "ElaSuggestBox.h"
 #include "ElaTableView.h"
@@ -68,12 +69,14 @@ class MainWindow : public ElaWindow {
     public:
         ComponentTableModel *model;
         ElaToolButton *_resetSearchButton;
-        ElaToolButton *_addComponentButton;
+
         ElaToolButton *_delComponentButton;
-        ElaScrollPageArea *_infoDockhArea;
-        ElaScrollPageArea *_addComponentDockhArea;
-        ElaLineEdit *_addComponent_EditBox;
+        QWidget *_showInfo_Widget;
         ElaDockWidget *_infoDockWidget;
+
+        ElaToolButton *_addComponent_BeginButton;
+        ElaScrollPageArea *_addComponent_DockhArea;
+        ElaLineEdit *_addComponent_EditBox;
         ElaProgressBar *_addComponent_ProgressBar;
         ElaProgressBar *_addComponentLoadingProgressBar;
         FluProgressRing *_addComponent_DownloadProgressRing;
@@ -85,24 +88,40 @@ class MainWindow : public ElaWindow {
         ElaText *_addComponent_CheckInfoText;
         ElaText *_addComponent_DownloadText;
         ElaText *_addComponent_OpenText;
-        bool isAddingComponent;
-        int _addComponentStep;
         QString _addingComponent_CID;
         ElaText *_addComponent_CheckInfoWidget_Text;
         QWidget *_addComponent_CheckInfoWidget;
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card1;
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card2;
         ElaPromotionCard *_addComponent_CheckInfoWidget_Card3;
-        ElaPromotionView *_promotionView;
+        ElaPromotionView *_addComponent_PNGView;
         QTimer *_addComponent_timer;
         int _addComponent_timeLeft;
-        QPushButton * m_pdfButton;
-        ElaPromotionView * _showInfo_PNGview;
-        ElaPromotionCard * _showInfo_PNGCard1;
-        ElaPromotionCard * _showInfo_PNGCard2;
-        ElaPromotionCard * _showInfo_PNGCard3;
-        ElaTableView * _showInfo_tableView;
-        ShowInfoModel * _showInfo_model;
+        int _addComponentStep;
+        bool isAddingComponent;
+
+        ElaPromotionView *_showInfo_PNGView;
+        ElaPromotionView *_showInfo_SCHPCBview;
+        ElaPromotionCard *_showInfo_PNGCard1;
+        ElaPromotionCard *_showInfo_PNGCard2;
+        ElaPromotionCard *_showInfo_PNGCard3;
+        ElaPromotionCard *_showInfo_PNGCard4;
+        ElaPromotionCard *_showInfo_PNGCard5;
+        ElaPromotionCard *_showInfo_SCHCard1;
+        ElaPromotionCard *_showInfo_SCHCard2;
+        ElaPromotionCard *_showInfo_SCHCard3;
+        ElaPromotionCard *_showInfo_SCHCard4;
+        ElaPromotionCard *_showInfo_SCHCard5;
+        ElaPromotionCard *_showInfo_PCBCard1;
+        ElaPromotionCard *_showInfo_PCBCard2;
+        ElaPromotionCard *_showInfo_PCBCard3;
+        ElaPromotionCard *_showInfo_PCBCard4;
+        ElaPromotionCard *_showInfo_PCBCard5;
+        ElaTableView *_showInfo_tableView;
+        ShowInfoModel *_showInfo_model;
+        ElaText *_showInfo_NoComponentTips;
+        ElaToolButton *_showInfo_OpenPDFButton;
+        ElaScrollArea * _showInfo_scrollArea;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -141,8 +160,9 @@ class MainWindow : public ElaWindow {
 
         void GetConstructConfig();
         void SaveConstructConfig();
-        void updateContent(const QModelIndex &index) const;
-        static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
+        void updateContent(const QItemSelection &selected, const QItemSelection &deselected) const;
+        static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL);
+        // static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         // void ShowAllComponents();
         // void ShowSomeComponents();
         void loadData() const;
@@ -158,6 +178,7 @@ class MainWindow : public ElaWindow {
         void ShowErrorInfo(const QString &info, const QString &title = QString());
         void InitSearchDockLogic();
         void getDailySection() const;
+        void extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();

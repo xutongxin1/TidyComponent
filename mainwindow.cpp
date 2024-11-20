@@ -23,6 +23,9 @@
 #include <QClipboard>
 #include <qstandarditemmodel.h>
 
+#include "ElaScrollArea.h"
+#include "ElaScrollBar.h"
+#include "ElaScrollPage.h"
 #include "ShowInfoModel.h"
 int record_DeviceNum = 0, record_WinNum = 0;
 
@@ -69,7 +72,8 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     });
 
     //绑定数据更新动作
-    connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
+    // connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
+    connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updateContent);
 
     getDailySection();
     initAddComponentLogic();
@@ -120,11 +124,40 @@ void MainWindow::initElaWindow() {
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
 
     //元件信息栏初始化
-    _infoDockhArea = new ElaScrollPageArea(this);
-    _infoDockhArea->setMinimumHeight(0);
-    _infoDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
-    const auto infoDockLayout = new QVBoxLayout(_infoDockhArea);
+    _showInfo_Widget = new QWidget(this);
+    const auto infoDockLayout = new QVBoxLayout(_showInfo_Widget);
 
+    //初始化滚动栏
+    _showInfo_scrollArea = new ElaScrollArea(this);
+    _showInfo_scrollArea->setMouseTracking(true);
+    _showInfo_scrollArea->setIsAnimation(Qt::Vertical, true);
+    _showInfo_scrollArea->setWidgetResizable(true);
+    _showInfo_scrollArea->setIsGrabGesture(false, 0);
+    _showInfo_scrollArea->setIsOverShoot(Qt::Vertical, true);
+    _showInfo_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ElaScrollBar *floatVScrollBar = new ElaScrollBar(_showInfo_scrollArea->verticalScrollBar(), _showInfo_scrollArea);
+    floatVScrollBar->setIsAnimation(true);
+    _showInfo_scrollArea->setWidget(_showInfo_Widget);
+
+    //初始化无器件的提示文字
+    _showInfo_NoComponentTips = new ElaText("请选一个元器件以显示详细信息", this);
+    _showInfo_NoComponentTips->setTextPixelSize(20);
+    infoDockLayout->addWidget(_showInfo_NoComponentTips);
+
+    // 数据手册按钮
+    _showInfo_OpenPDFButton = new ElaToolButton(this);
+    _showInfo_OpenPDFButton->setIsTransparent(false);
+    _showInfo_OpenPDFButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _showInfo_OpenPDFButton->setBorderRadius(8);
+    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    _showInfo_OpenPDFButton->setText("打开数据手册");
+    _showInfo_OpenPDFButton->setElaIcon(ElaIconType::FileDoc);
+    _showInfo_OpenPDFButton->setIconSize(QSize(35, 35));
+    _showInfo_OpenPDFButton->setFixedSize(100, 75);
+    infoDockLayout->addWidget(_showInfo_OpenPDFButton);
+    infoDockLayout->addStretch();
+
+    //数据表初始化
     _showInfo_tableView = new ElaTableView(this);
     _showInfo_model = new ShowInfoModel(this);
     _showInfo_tableView->setModel(_showInfo_model);
@@ -135,19 +168,47 @@ void MainWindow::initElaWindow() {
     _showInfo_tableView->verticalHeader()->setHidden(true);
     infoDockLayout->addWidget(_showInfo_tableView);
 
-    // 3. ElaPromotionView for displaying images
-    _showInfo_PNGview = new ElaPromotionView(this);
-    _showInfo_PNGCard1 = new ElaPromotionCard(this);
-    _showInfo_PNGCard2 = new ElaPromotionCard(this);
-    _showInfo_PNGCard3 = new ElaPromotionCard(this);
-    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard1);
-    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard2);
-    _showInfo_PNGview->appendPromotionCard(_showInfo_PNGCard3);
-    infoDockLayout->addWidget(_showInfo_PNGview);
+    //图片初始化
+    _showInfo_PNGView = new ElaPromotionView(this);
+    _showInfo_SCHPCBview = new ElaPromotionView(this);
+    _showInfo_PNGCard1 = new ElaPromotionCard(_showInfo_PNGView);
+    _showInfo_PNGCard2 = new ElaPromotionCard(_showInfo_PNGView);
+    _showInfo_PNGCard3 = new ElaPromotionCard(_showInfo_PNGView);
+    _showInfo_PNGCard4 = new ElaPromotionCard(_showInfo_PNGView);
+    _showInfo_PNGCard5 = new ElaPromotionCard(_showInfo_PNGView);
+    _showInfo_SCHCard1 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_SCHCard2 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_SCHCard3 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_SCHCard4 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_SCHCard5 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PCBCard1 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PCBCard2 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PCBCard3 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PCBCard4 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PCBCard5 = new ElaPromotionCard(_showInfo_SCHPCBview);
+    _showInfo_PNGCard1->hide();
+    _showInfo_PNGCard2->hide();
+    _showInfo_PNGCard3->hide();
+    _showInfo_PNGCard4->hide();
+    _showInfo_PNGCard5->hide();
+    _showInfo_SCHCard1->hide();
+    _showInfo_SCHCard2->hide();
+    _showInfo_SCHCard3->hide();
+    _showInfo_SCHCard4->hide();
+    _showInfo_SCHCard5->hide();
+    _showInfo_PCBCard1->hide();
+    _showInfo_PCBCard2->hide();
+    _showInfo_PCBCard3->hide();
+    _showInfo_PCBCard4->hide();
+    _showInfo_PCBCard5->hide();
+    infoDockLayout->addWidget(_showInfo_PNGView);
+    infoDockLayout->addWidget(_showInfo_SCHPCBview);
 
-    // 4. PDF Button
-    m_pdfButton = new QPushButton(this);
-    infoDockLayout->addWidget(m_pdfButton);
+    //默认隐藏策略
+    _showInfo_tableView->hide();
+    _showInfo_PNGView->hide();
+    _showInfo_SCHPCBview->hide();
+    _showInfo_OpenPDFButton->hide();
 
     //初始化元件添加栏
     InitSearchDockLogic();
@@ -235,15 +296,15 @@ void MainWindow::initElaWindow() {
     searchAreaLayout->addWidget(_importSearchButton);
     searchAreaLayout->addStretch();
 
-    _addComponentButton = new ElaToolButton(this);
-    _addComponentButton->setIsTransparent(false);
-    _addComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    _addComponentButton->setBorderRadius(8);
+    _addComponent_BeginButton = new ElaToolButton(this);
+    _addComponent_BeginButton->setIsTransparent(false);
+    _addComponent_BeginButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _addComponent_BeginButton->setBorderRadius(8);
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    _addComponentButton->setText("添加元器件");
-    _addComponentButton->setElaIcon(ElaIconType::Plus);
-    _addComponentButton->setIconSize(QSize(35, 35));
-    _addComponentButton->setFixedSize(100, 75);
+    _addComponent_BeginButton->setText("添加元器件");
+    _addComponent_BeginButton->setElaIcon(ElaIconType::Plus);
+    _addComponent_BeginButton->setIconSize(QSize(35, 35));
+    _addComponent_BeginButton->setFixedSize(100, 75);
 
     // _delComponentButton = new ElaToolButton(this);
     // _delComponentButton->setIsTransparent(false);
@@ -259,7 +320,7 @@ void MainWindow::initElaWindow() {
     // searchArea->setMinimumHeight(0);
     // searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *editAreaLayout = new QHBoxLayout(editArea);
-    editAreaLayout->addWidget(_addComponentButton);
+    editAreaLayout->addWidget(_addComponent_BeginButton);
     // editAreaLayout->addWidget(_delComponentButton);
     editAreaLayout->addStretch();
 
@@ -294,42 +355,6 @@ void MainWindow::GetConstructConfig() {
 
 void MainWindow::SaveConstructConfig() {
 }
-void MainWindow::updateContent(const QModelIndex &index) const {
-    if (index.isValid()) {
-        if (const QString cid = index.sibling(index.row(), 4).data(Qt::DisplayRole).toString(); model->
-            component_record_Hash.contains(cid)) {
-            const component_record_struct record = model->component_record_Hash.value(cid);
-
-            _showInfo_model->setComponentData(record);
-
-            // // Set image cards (ElaPromotionView)
-            // for (int j = 0; j < record.png_FileUrl.size(); ++j) {
-            //     _showInfo_PNGCard1->setCardPixmap(QPixmap(record.png_FileUrl[j]));
-            // }
-            // for (int j = 0; j < record.sch_svg_FileUrl.size(); ++j) {
-            //     _showInfo_PNGCard2->setCardPixmap(QPixmap(record.sch_svg_FileUrl[j]));
-            // }
-            // for (int j = 0; j < record.pcb_svg_FileUrl.size(); ++j) {
-            //     _showInfo_PNGCard3->setCardPixmap(QPixmap(record.pcb_svg_FileUrl[j]));
-            // }
-
-            // // Set PDF Button
-            // m_pdfButton->setText("Data Sheet: " + record.pdf_name);
-            // connect(m_pdfButton, &QPushButton::clicked, this, [record]() {
-            //     QDesktopServices::openUrl(QUrl::fromLocalFile(record.pdf_FileUrl));
-            // });
-            // _showInfo_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-            _showInfo_tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-            int totalHeight = 2; //疑似是border的宽度
-            for (int row = 0; row < _showInfo_tableView->model()->rowCount(); row++) {
-                totalHeight += _showInfo_tableView->rowHeight(row);
-            }
-
-            // 设置 QTableView 的高度为内容的高度
-            _showInfo_tableView->setFixedHeight(totalHeight);
-        }
-    }
-}
 
 void MainWindow::InitConfig() {
     config_main_ini_ = new ConfigClass("main.ini", QSettings::IniFormat);
@@ -359,16 +384,16 @@ void MainWindow::ShowErrorInfo(const QString &info, const QString &title) {
 }
 void MainWindow::InitSearchDockLogic() {
     //添加元件信息栏初始化
-    _addComponentDockhArea = new ElaScrollPageArea(this);
-    _addComponentDockhArea->setMinimumHeight(0);
-    _addComponentDockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
+    _addComponent_DockhArea = new ElaScrollPageArea(this);
+    _addComponent_DockhArea->setMinimumHeight(0);
+    _addComponent_DockhArea->setMaximumHeight(QWIDGETSIZE_MAX);
 
     _addComponent_EditBox = new ElaLineEdit(this);
     _addComponent_EditBox->setFixedSize(500, 45);
     _addComponent_EditBox->setFixedHeight(45);
     _addComponent_EditBox->setPlaceholderText("请输入元件的CID，可以直接输入数字部分");
 
-    _addComponentDockhArea->hide();
+    _addComponent_DockhArea->hide();
 
     _addComponent_ProgressBar = new ElaProgressBar(this);
     _addComponent_ProgressBar->setValue(20);
@@ -401,21 +426,21 @@ void MainWindow::InitSearchDockLogic() {
     // _addComponent_CheckInfoWidget_Card2->setFixedHeight(420);
     // _addComponent_CheckInfoWidget_Card3->setFixedWidth(420);
     // _addComponent_CheckInfoWidget_Card3->setFixedHeight(420);
-    _promotionView = new ElaPromotionView(this);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card1);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card2);
-    _promotionView->appendPromotionCard(_addComponent_CheckInfoWidget_Card3);
+    _addComponent_PNGView = new ElaPromotionView(this);
+    _addComponent_PNGView->appendPromotionCard(_addComponent_CheckInfoWidget_Card1);
+    _addComponent_PNGView->appendPromotionCard(_addComponent_CheckInfoWidget_Card2);
+    _addComponent_PNGView->appendPromotionCard(_addComponent_CheckInfoWidget_Card3);
     // _promotionView->setCardCollapseWidth(420);
-    _promotionView->setCardExpandWidth(420);
-    _promotionView->setFixedHeight(420);
+    _addComponent_PNGView->setCardExpandWidth(420);
+    _addComponent_PNGView->setFixedHeight(420);
     _addComponent_CheckInfoWidget_Card1->resize(_addComponent_CheckInfoWidget_Card1->width(), 393);
     _addComponent_CheckInfoWidget_Card2->resize(_addComponent_CheckInfoWidget_Card2->width(), 393);
     _addComponent_CheckInfoWidget_Card3->resize(_addComponent_CheckInfoWidget_Card3->width(), 393);
 
-    _promotionView->setIsAutoScroll(true);
+    _addComponent_PNGView->setIsAutoScroll(true);
 
     _addComponent_CheckInfoLayout->addWidget(_addComponent_CheckInfoWidget_Text);
-    _addComponent_CheckInfoLayout->addWidget(_promotionView);
+    _addComponent_CheckInfoLayout->addWidget(_addComponent_PNGView);
     // _addComponent_CheckInfoLayout->addSpacing(100);
 
     _addComponentButtonNext = new ElaToolButton(this);
@@ -449,7 +474,7 @@ void MainWindow::InitSearchDockLogic() {
     _addComponent_DownloadProgressRing = new FluProgressRing;
     _addComponent_DownloadProgressRing->setWorking(true);
 
-    QVBoxLayout *addComponentLayout = new QVBoxLayout(_addComponentDockhArea);
+    QVBoxLayout *addComponentLayout = new QVBoxLayout(_addComponent_DockhArea);
     addComponentLayout->addWidget(_addComponent_EditBoxText);
     addComponentLayout->addWidget(_addComponent_EditBox);
 
@@ -469,7 +494,7 @@ void MainWindow::InitSearchDockLogic() {
 
     //默认在元件信息模式
     _infoDockWidget->setWindowTitle("元件信息");
-    _infoDockWidget->setWidget(_infoDockhArea);
+    _infoDockWidget->setWidget(_showInfo_scrollArea);
 
     _addComponent_timer = new QTimer(this);
 }

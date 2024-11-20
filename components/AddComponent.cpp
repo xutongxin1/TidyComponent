@@ -1,3 +1,4 @@
+#include "ElaScrollArea.h"
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
 #include "mainwindow.h"
@@ -49,7 +50,7 @@ QString SaveFile(const QString &directory, const QString &filename, const QStrin
     }
     return dir.filePath(filename);
 }
-void extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component) {
+void MainWindow::extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component) {
     // 1. Extract basic data fields
     component.name = json["商品型号"].toString();
 
@@ -77,9 +78,21 @@ void extractComponentData(const QString &CID, const QJsonObject &json, component
     // 2. Extract image URLs and store them in aliases (QVector<QString>)
     QJsonArray imageLinks = json["图片链接"].toArray();
     // QVector<QString> img_url;
-    for (int i = 0; i < imageLinks.size(); ++i) {
+    for (int i = 0; i < imageLinks.size() - 1; ++i) {
+        if (imageLinks[i].toString().isEmpty())continue;
         // qDebug() << "Processing image " << i << " URL:" << imageLinks[i].toString();
-        getFileRequest(imageLinks[i].toString(), nullptr
+        getFileRequest(imageLinks[i].toString(), [=](const QString &) {
+                           if (i == 0) {
+                               _addComponent_CheckInfoWidget_Card1->
+                                   setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[i]));
+                           } else if (i == 1) {
+                               _addComponent_CheckInfoWidget_Card2->
+                                   setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[i]));
+                           } else if (i == 2) {
+                               _addComponent_CheckInfoWidget_Card3->
+                                   setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[i]));
+                           }
+                       }
                        , nullptr,
                        "img_" + QString::number(i) + ".jpg", GetCIDPath(CID));
         component.png_FileUrl.append(GetCIDPath(CID) + "/img_" + QString::number(i) + ".jpg");
@@ -121,7 +134,7 @@ void MainWindow::AddComponentLogic_1() {
         _addingComponent_CID[0] = 'C';
     }
     // _addComponent_EditBox->setText(CID);
-    //TODO: 检查现在是否有该器件
+
     if (isExistingComponent(_addingComponent_CID)) {
         cancelAddComponentLogic(); //退出逻辑
         ShowWarningInfo("该元器件已经存在");
@@ -139,18 +152,18 @@ void MainWindow::AddComponentLogic_1() {
                        "<br><b>元器件描述：</b>"
                        + _addingComponentObj->discription +
                        "<br><b>元器件封装：</b>" + _addingComponentObj->package);
-                   for (int j = 0; j < _addingComponentObj->png_FileUrl.size(); j++) {
-                       if (j == 0) {
-                           _addComponent_CheckInfoWidget_Card1->
-                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-                       } else if (j == 1) {
-                           _addComponent_CheckInfoWidget_Card2->
-                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-                       } else if (j == 2) {
-                           _addComponent_CheckInfoWidget_Card3->
-                               setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
-                       }
-                   }
+                   // for (int j = 0; j < _addingComponentObj->png_FileUrl.size(); j++) {
+                   //     if (j == 0) {
+                   //         _addComponent_CheckInfoWidget_Card1->
+                   //             setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                   //     } else if (j == 1) {
+                   //         _addComponent_CheckInfoWidget_Card2->
+                   //             setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                   //     } else if (j == 2) {
+                   //         _addComponent_CheckInfoWidget_Card3->
+                   //             setCardPixmap(QPixmap(_addingComponentObj->png_FileUrl[j]));
+                   //     }
+                   // }
                    _addComponent_CheckInfoWidget->show();
                    // _promotionView->show();
 
@@ -226,11 +239,11 @@ void MainWindow::AddComponentLogic_4() {
     QTimer::singleShot(2000, [&]() {
         //关闭向导
         _addComponent_WaitText->hide();
-        _addComponentButton->setEnabled(true);
-        _addComponentDockhArea->hide();
-        _infoDockhArea->show();
+        _addComponent_BeginButton->setEnabled(true);
+        _addComponent_DockhArea->hide();
+        _showInfo_Widget->show();
         _infoDockWidget->setWindowTitle("元器件信息");
-        _infoDockWidget->setWidget(_infoDockhArea);
+        _infoDockWidget->setWidget(_showInfo_scrollArea);
         // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
         resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     });
@@ -239,11 +252,11 @@ void MainWindow::AddComponentLogic_4() {
 void MainWindow::cancelAddComponentLogic() {
     _addComponent_ProgressBar->setValue(20);
     _addComponent_timer->stop();
-    _addComponentButton->setEnabled(true);
-    _addComponentDockhArea->hide();
-    _infoDockhArea->show();
+    _addComponent_BeginButton->setEnabled(true);
+    _addComponent_DockhArea->hide();
+    _showInfo_Widget->show();
     _infoDockWidget->setWindowTitle("元器件信息");
-    _infoDockWidget->setWidget(_infoDockhArea);
+    _infoDockWidget->setWidget(_showInfo_scrollArea);
     // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     _addComponentStep = 1;
@@ -256,11 +269,11 @@ void MainWindow::initAddComponentLogic() {
     connect(_addComponent_CancelButton, &ElaToolButton::clicked, this, [&] {
         cancelAddComponentLogic();
     });
-    connect(_addComponentButton, &ElaToolButton::clicked, this, [&] {
-        _addComponentDockhArea->show();
-        _infoDockhArea->hide();
+    connect(_addComponent_BeginButton, &ElaToolButton::clicked, this, [&] {
+        _addComponent_DockhArea->show();
+        _showInfo_Widget->hide();
         _infoDockWidget->setWindowTitle("新增元器件向导");
-        _infoDockWidget->setWidget(_addComponentDockhArea);
+        _infoDockWidget->setWidget(_addComponent_DockhArea);
         _addComponent_WaitText->hide();
         _addComponent_busyRing->hide();
         _addComponent_DownloadProgressRing->hide();
@@ -276,7 +289,7 @@ void MainWindow::initAddComponentLogic() {
         isAddingComponent = true;
         _addComponentStep = 1;
         _addComponent_CancelButton->setEnabled(true);
-        _addComponentButton->setEnabled(false);
+        _addComponent_BeginButton->setEnabled(false);
         _addComponent_EditBox->clear();
         _addComponent_EditBox->setFocus();
         _addComponentButtonNext->setEnabled(false);
