@@ -1,6 +1,8 @@
 //
 // Created by xtx on 24-11-19.
 //
+#include <QSvgRenderer>
+
 #include "ShowInfoModel.h"
 void MainWindow::updateContent(const QItemSelection &selected, const QItemSelection &deselected) const {
     // qDebug() << selected.indexes();
@@ -22,7 +24,7 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
 
             _showInfo_model->setComponentData(record);
 
-            // // Set image cards (ElaPromotionView)
+            //设置png
             if (record.png_FileUrl.empty()) {
                 _showInfo_PNGView->hide();
             } else {
@@ -49,6 +51,58 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
                     }
                 }
             }
+
+            //设置sch和pcb
+            if (record.sch_svg_FileUrl.empty()) {
+                _showInfo_PNGView->hide();
+            } else {
+                int sch_pcb_count = 0;
+                _showInfo_SCHPCBview->clearPromotionCard();
+                for (const auto &j : record.sch_svg_FileUrl) {
+                    switch (sch_pcb_count) {
+                        case 0:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard1, j, true);
+                            break;
+                        case 1:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard2, j, true);
+                            break;
+                        case 2:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard3, j, true);
+                            break;
+                        case 3:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard4, j, true);
+                            break;
+                        case 4:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard5, j, true);
+                            break;
+                        default: ;
+                    }
+                    sch_pcb_count++;
+                }
+                sch_pcb_count = 0;
+                for (const auto &j : record.pcb_svg_FileUrl) {
+                    switch (sch_pcb_count) {
+                        case 0:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard1, j, true);
+                            break;
+                        case 1:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard2, j, true);
+                            break;
+                        case 2:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard3, j, true);
+                            break;
+                        case 3:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard4, j, true);
+                            break;
+                        case 4:
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard5, j, true);
+                            break;
+                        default: ;
+                    }
+                    sch_pcb_count++;
+                }
+            }
+
             // for (int j = 0; j < record.sch_svg_FileUrl.size(); ++j) {
             //     _showInfo_PNGCard2->setCardPixmap(QPixmap(record.sch_svg_FileUrl[j]));
             // }
@@ -75,7 +129,88 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
         }
     }
 }
-void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL) {
-    card->setCardPixmap(QPixmap(fileURL));
+QPixmap renderSvgToPixmap(const QString &svgFilePath, const QSize &targetSize, int xOffset = 0, int yOffset = 0) {
+    // 创建QSvgRenderer来解析SVG
+    QSvgRenderer svgRenderer(svgFilePath);
+
+    // 获取SVG的原始尺寸
+    QSize svgSize = svgRenderer.defaultSize();
+
+    // 计算目标尺寸，使其按原始比例缩放
+    QSize scaledSize = targetSize;
+    float aspectRatio = static_cast<float>(svgSize.width()) / svgSize.height();
+    float targetAspectRatio = static_cast<float>(targetSize.width()) / targetSize.height();
+
+    if (aspectRatio > targetAspectRatio) {
+        // 宽度优先缩放
+        scaledSize.setWidth(targetSize.width());
+        scaledSize.setHeight(targetSize.width() / aspectRatio);
+    } else {
+        // 高度优先缩放
+        scaledSize.setHeight(targetSize.height());
+        scaledSize.setWidth(targetSize.height() * aspectRatio);
+    }
+
+    // 创建白色背景的QPixmap
+    QPixmap pixmap(targetSize);
+    pixmap.fill(Qt::white); // 填充白色背景
+
+    // 使用QPainter将SVG渲染到QPixmap上
+    QPainter painter(&pixmap);
+    // 计算偏移量，使图像居中或者手动调整
+    int centerX = (targetSize.width() - scaledSize.width()) / 2 + xOffset;
+    int centerY = (targetSize.height() - scaledSize.height()) / 2 + yOffset;
+
+    // 使用计算的偏移量来调整图像的位置
+    painter.translate(centerX, centerY);
+    svgRenderer.render(&painter);
+    painter.end();
+
+    return pixmap;
+}
+QPixmap renderSvgToPixmap(const QString &svgFilePath, const QSize &targetSize) {
+    // 创建QSvgRenderer来解析SVG
+    QSvgRenderer svgRenderer(svgFilePath);
+
+    // 获取SVG的原始尺寸
+    QSize svgSize = svgRenderer.defaultSize();
+
+    // 计算目标尺寸，使其按原始比例缩放
+    QSize scaledSize = targetSize;
+    float aspectRatio = static_cast<float>(svgSize.width()) / svgSize.height();
+    float targetAspectRatio = static_cast<float>(targetSize.width()) / targetSize.height();
+
+    if (aspectRatio > targetAspectRatio) {
+        // 宽度优先缩放
+        scaledSize.setWidth(targetSize.width());
+        scaledSize.setHeight(targetSize.width() / aspectRatio);
+    } else {
+        // 高度优先缩放
+        scaledSize.setHeight(targetSize.height());
+        scaledSize.setWidth(targetSize.height() * aspectRatio);
+    }
+
+    // 创建白色背景的QPixmap
+    QPixmap pixmap(targetSize);
+    pixmap.fill(Qt::white);  // 填充白色背景
+
+    // 使用QPainter将SVG渲染到QPixmap上
+    QPainter painter(&pixmap);
+    // 计算绘制时的位置，使得图像居中
+    int xOffset = (targetSize.width() - scaledSize.width()) / 2;
+    int yOffset = (targetSize.height() - scaledSize.height()) / 2;
+    painter.translate(xOffset, yOffset);
+    svgRenderer.render(&painter);
+    painter.end();
+
+    return pixmap;
+}
+void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL, bool isSVG) {
+    if (isSVG) {
+        card->setCardPixmap(renderSvgToPixmap(fileURL, QSize(1600, 1600), -100, -400));
+    } else {
+        card->setCardPixmap(QPixmap(fileURL));
+    }
+
     view->appendPromotionCard(card);
 }

@@ -121,7 +121,7 @@ class MainWindow : public ElaWindow {
         ShowInfoModel *_showInfo_model;
         ElaText *_showInfo_NoComponentTips;
         ElaToolButton *_showInfo_OpenPDFButton;
-        ElaScrollArea * _showInfo_scrollArea;
+        ElaScrollArea *_showInfo_scrollArea;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -161,7 +161,8 @@ class MainWindow : public ElaWindow {
         void GetConstructConfig();
         void SaveConstructConfig();
         void updateContent(const QItemSelection &selected, const QItemSelection &deselected) const;
-        static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL);
+        static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
+                                  bool isSVG = false);
         // static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         // void ShowAllComponents();
         // void ShowSomeComponents();
