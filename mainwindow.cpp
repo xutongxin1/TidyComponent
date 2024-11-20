@@ -155,7 +155,7 @@ void MainWindow::initElaWindow() {
     _showInfo_OpenPDFButton->setIconSize(QSize(35, 35));
     _showInfo_OpenPDFButton->setFixedSize(100, 75);
     infoDockLayout->addWidget(_showInfo_OpenPDFButton);
-    infoDockLayout->addStretch();
+
 
     //数据表初始化
     _showInfo_tableView = new ElaTableView(this);
@@ -203,6 +203,7 @@ void MainWindow::initElaWindow() {
     _showInfo_PCBCard5->hide();
     infoDockLayout->addWidget(_showInfo_PNGView);
     infoDockLayout->addWidget(_showInfo_SCHPCBview);
+    infoDockLayout->addStretch();
 
     //默认隐藏策略
     _showInfo_tableView->hide();

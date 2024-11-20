@@ -56,12 +56,14 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
             //     _showInfo_PNGCard3->setCardPixmap(QPixmap(record.pcb_svg_FileUrl[j]));
             // }
 
-            // // Set PDF Button
-            // m_pdfButton->setText("Data Sheet: " + record.pdf_name);
-            // connect(m_pdfButton, &QPushButton::clicked, this, [record]() {
-            //     QDesktopServices::openUrl(QUrl::fromLocalFile(record.pdf_FileUrl));
-            // });
-            // _showInfo_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+            //显示信息
+            _showInfo_tableView->show();
+            _showInfo_PNGView->show();
+            _showInfo_SCHPCBview->show();
+            _showInfo_OpenPDFButton->show();
+            _showInfo_NoComponentTips->hide();
+
+            //要先显示表格才能根据内容调整高度
             _showInfo_tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
             int totalHeight = 2; //疑似是border的宽度
             for (int row = 0; row < _showInfo_tableView->model()->rowCount(); row++) {
@@ -70,13 +72,6 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
 
             // 设置 QTableView 的高度为内容的高度
             _showInfo_tableView->setFixedHeight(totalHeight);
-
-            //显示信息
-            _showInfo_tableView->show();
-            _showInfo_PNGView->show();
-            _showInfo_SCHPCBview->show();
-            _showInfo_OpenPDFButton->show();
-            _showInfo_NoComponentTips->hide();
         }
     }
 }
