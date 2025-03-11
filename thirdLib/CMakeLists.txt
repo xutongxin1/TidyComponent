@@ -7,7 +7,7 @@ add_subdirectory(CppQtFluentUi888/FluIconTool)
 add_subdirectory(CppQtFluentUi888/FluUtils)
 add_subdirectory(CppQtFluentUi888/FluWinGallery)
 
-add_subdirectory(ElaWidgetTools/src)
+add_subdirectory(ElaWidgetTools/ElaWidgetTools)
 
 #include_directories("CppQtFluentUi888/FluWinGallery")
 #include_directories("CppQtFluentUi888/FluIconTool")
