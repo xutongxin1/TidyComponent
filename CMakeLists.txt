@@ -132,7 +132,7 @@ file(GLOB QRC "*.qrc")
 #file(GLOB_RECURSE Resource "./thirdLib/qmetarial/resources.qrc")
 file(GLOB_RECURSE SOURCES ${SOURCES} "./config/*.ini")
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
     add_executable(${PROJECT_NAME} WIN32 ${HEADER} ${RSOURCE} ${UI} ${QRC} ${Resource})
 else ()
     add_executable(${PROJECT_NAME} ${HEADER} ${RSOURCE} ${UI} ${QRC} ${Resource})

@@ -27,7 +27,8 @@
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
 #include "ElaText.h"
-#define CONFIGPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
+
+#define CONFIGPATH QString("config/")
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
 #define INFOPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 #define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"

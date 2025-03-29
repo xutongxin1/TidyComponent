@@ -3,7 +3,7 @@
 //
 #include "mainwindow.h"
 void MainWindow::loadData() const {
-    QFile file("db.json");
+    QFile file(CONFIGPATH + "db.json");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning("无法打开 db.json 文件。");
         return;
@@ -51,7 +51,7 @@ void MainWindow::loadData() const {
 }
 // WriteData() 函数实现
 void MainWindow::SaveData() const {
-    QFile file("db.json");
+    QFile file(CONFIGPATH + "db.json");
     if (!file.open(QIODevice::WriteOnly)) {
         qWarning("无法打开 db.json 文件进行写入。");
         return;
