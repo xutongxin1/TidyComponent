@@ -2,7 +2,7 @@
 // Created by xtx on 24-11-19.
 //
 #include <QSvgRenderer>
-
+#include <ElaText.h>
 #include "ShowInfoModel.h"
 void MainWindow::updateContent(const QItemSelection &selected, const QItemSelection &deselected) const {
     // qDebug() << selected.indexes();

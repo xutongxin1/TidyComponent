@@ -1,3 +1,5 @@
+#include <QImageReader>
+
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
 #include "mainwindow.h"
@@ -6,15 +8,40 @@
 //
 void MainWindow::getDailySection() const {
     //获取
-    getRequest("https://whyta.cn/api/tx/one?key=cc8cba0a7069",
+    getRequest("http://v3.wufazhuce.com:8000/api/channel/one/0/0",
                [&](const QJsonObject &jsonObj) {
-                   QJsonObject resultObj = jsonObj.value("result").toObject();
-
-                   // 提取字段
-                   QString word = resultObj.value("word").toString();
-                   QString imgurl = resultObj.value("imgurl").toString();
-                   if (word.isEmpty() || imgurl.isEmpty())
+                   if (!jsonObj.contains("data") || !jsonObj["data"].isObject()) {
                        qWarning() << "无法解析每日一言";
+                       return;
+                   }
+
+                   QJsonObject dataObj = jsonObj["data"].toObject();
+
+                   // 检查是否包含"content_list"数组
+                   if (!dataObj.contains("content_list") || !dataObj["content_list"].isArray()) {
+                       qWarning() << "无法解析每日一言";
+                       return;
+                   }
+
+                   QJsonArray contentList = dataObj["content_list"].toArray();
+
+                   // 检查数组是否为空
+                   if (contentList.isEmpty()) {
+                       qWarning() << "无法解析每日一言";
+                       return;
+                   }
+
+                   // 获取第一个元素
+                   QJsonObject firstContent = contentList.at(0).toObject();
+
+                   // word
+                   QString imgurl = firstContent["img_url"].toString();
+                   QString word = firstContent["forward"].toString();
+
+                   if (word.isEmpty() || imgurl.isEmpty()) {
+                       qWarning() << "无法解析每日一言";
+                       return;
+                   }
                    // 输出字段
                    // qDebug() << "Word:" << word;
                    // qDebug() << "Image URL:" << imgurl;
@@ -34,7 +61,7 @@ void MainWindow::getDailySection() const {
                                       qWarning() << "无法获取每日一言 " << error;
                                   },
                                   "Daily.jpg",
-                                  CONFIGPATH);
+                                  TEMP_PATH);
                    _promotionCard->setSubTitle(word);
                },
                [](QNetworkReply::NetworkError error) {

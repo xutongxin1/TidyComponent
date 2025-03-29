@@ -1,6 +1,8 @@
 //
 // Created by xtx on 24-9-13.
 //
+#include <iostream>
+
 #include "mainwindow.h"
 
 // 计算两个字符串的相似度（简单实现，可以替换为更复杂的算法）

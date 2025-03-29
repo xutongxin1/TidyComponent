@@ -91,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         // _addComponentButton->click();
     }
     // ui_->label_nowSearch->hide();
+
+    // 最大化
+    showMaximized();
 }
 
 MainWindow::~MainWindow() {
@@ -105,16 +108,15 @@ void MainWindow::initElaWindow() {
     setIsNavigationBarEnable(false);
 
     // 拦截默认关闭事件
-    _closeDialog = new ElaContentDialog(this);
-    connect(_closeDialog, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
-    connect(_closeDialog, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
-    this->setIsDefaultClosed(false);
-    connect(this, &MainWindow::closeButtonClicked, this, [=]() {
-        _closeDialog->exec();
-    });
+    // _closeDialog = new ElaContentDialog(this);
+    // connect(_closeDialog, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+    // connect(_closeDialog, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
+    // this->setIsDefaultClosed(false);
+    // connect(this, &MainWindow::closeButtonClicked, this, [=]() {
+    //     _closeDialog->exec();
+    // });
 
-    // 移动到中心
-    moveToCenter();
+
 
     // 停靠窗口
     _infoDockWidget = new ElaDockWidget(this);

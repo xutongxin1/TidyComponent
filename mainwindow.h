@@ -1,26 +1,11 @@
 #ifndef MAIN__MAINWINDOW_H_
 #define MAIN__MAINWINDOW_H_
 
-#include <qlabel.h>
-#include <QMainWindow>
-
 #include "ConfigClass.h"
-#include <string>
-#include <QTcpSocket>
-#include "structH.h"
-#include <QDesktopServices>
-#include <QMessageBox>
-#include <QVector>
 #include <QString>
-#include <QStringList>
-#include <QMap>
-#include <algorithm>
-#include <QImageReader>
 #include <QtConcurrent/qtconcurrentrun.h>
-#include "FluDropDownButton.h"
 
 // #include "./ui_mainwindow.h"
-#include <qstandarditemmodel.h>
 
 #include "ComponentTableModel.h"
 #include "ElaContentDialog.h"
@@ -33,27 +18,26 @@
 #include "ElaPromotionView.h"
 #include "ElaScrollPage.h"
 #include "ElaScrollPageArea.h"
-#include "ElaSuggestBox.h"
 #include "ElaTableView.h"
 #include "ElaTabWidget.h"
-#include "ElaText.h"
 #include "ElaToolButton.h"
 #include "ElaWindow.h"
 #include "FluBusyProgressRing.h"
 #include "FluProgressRing.h"
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
-#include "xlsxdatavalidation.h"
-#include "thirdLib/QXlsx/QXlsx/header/xlsxdocument.h"
-
+#include "ElaText.h"
 #define CONFIGPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
+#define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
 #define INFOPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
-
+#define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 using namespace std;
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
 #endif
+
+
 
 QT_BEGIN_NAMESPACE
 
