@@ -38,8 +38,6 @@ using namespace std;
 #pragma execution_character_set("utf-8")
 #endif
 
-
-
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
@@ -173,6 +171,7 @@ class MainWindow : public ElaWindow {
         void initAddComponentLogic();
         QString version_;
         component_record_struct *_addingComponentObj;
+        bool isDownloadPDF = false;
 };
 
 #endif // MAIN__MAINWINDOW_H_

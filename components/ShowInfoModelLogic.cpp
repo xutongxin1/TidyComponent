@@ -61,19 +61,19 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
                 for (const auto &j : record.sch_svg_FileUrl) {
                     switch (sch_pcb_count) {
                         case 0:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard1, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard1, j, false);
                             break;
                         case 1:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard2, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard2, j, false);
                             break;
                         case 2:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard3, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard3, j, false);
                             break;
                         case 3:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard4, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard4, j, false);
                             break;
                         case 4:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard5, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard5, j, false);
                             break;
                         default: ;
                     }
@@ -83,19 +83,19 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
                 for (const auto &j : record.pcb_svg_FileUrl) {
                     switch (sch_pcb_count) {
                         case 0:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard1, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard1, j, false);
                             break;
                         case 1:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard2, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard2, j, false);
                             break;
                         case 2:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard3, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard3, j, false);
                             break;
                         case 3:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard4, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard4, j, false);
                             break;
                         case 4:
-                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard5, j, true);
+                            AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard5, j, false);
                             break;
                         default: ;
                     }

@@ -1,3 +1,5 @@
+#include <QSvgRenderer>
+
 #include "ElaScrollArea.h"
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
@@ -7,6 +9,40 @@
 //
 QString GetCIDPath(const QString &CID) {
     return INFOPATH + "/" + CID;
+}
+
+QByteArray svgToPng(const QString &svgContent, int width = 0, int height = 0) {
+    // 使用SVG内容创建渲染器
+    QSvgRenderer renderer(svgContent.toUtf8());
+
+    // 获取默认尺寸或使用指定尺寸
+    QSize size = renderer.defaultSize();
+    if (width > 0 && height > 0) {
+        size = QSize(width, height);
+    } else if (width > 0) {
+        double aspectRatio = static_cast<double>(size.height()) / size.width();
+        size = QSize(width, static_cast<int>(width * aspectRatio));
+    } else if (height > 0) {
+        double aspectRatio = static_cast<double>(size.width()) / size.height();
+        size = QSize(static_cast<int>(height * aspectRatio), height);
+    }
+
+    // 创建QImage用于渲染
+    QImage image(size, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    // 渲染SVG
+    QPainter painter(&image);
+    renderer.render(&painter);
+    painter.end();
+
+    // 转换为PNG
+    QByteArray pngData;
+    QBuffer buffer(&pngData);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG");
+
+    return pngData;
 }
 
 QPixmap resizeImage(const QString &filename, int width = -1, int height = -1) {
@@ -50,6 +86,29 @@ QString SaveFile(const QString &directory, const QString &filename, const QStrin
     }
     return dir.filePath(filename);
 }
+
+QString SavePngFile(const QString &directory, const QString &filename, const QString &content) {
+    QString dirPath = directory.isEmpty() ? QDir::tempPath() : directory;
+    QDir dir(dirPath);
+    if (!dir.exists()) {
+        dir.mkpath("."); // 创建目录
+    }
+    // 移除可能存在的base64头部信息(如果有的话)
+    QString base64Data = content;
+    if (base64Data.contains(","))
+        base64Data = base64Data.split(",").at(1);
+
+    // 将base64字符串转换为QByteArray
+    QByteArray imageData = QByteArray::fromBase64(base64Data.toLatin1());
+
+    // qDebug() << "Saving file to:" << dir.filePath(filename);
+    QFile file(dir.filePath(filename));
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(imageData);
+        file.close();
+    }
+    return dir.filePath(filename);
+}
 void MainWindow::extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component) {
     // 1. Extract basic data fields
     component.name = json["商品型号"].toString();
@@ -75,10 +134,14 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
     component.pdf_url = json["数据手册"].toString();
     component.pdf_name = json["数据手册名称"].toString();
 
+    component.price = json["价格"].toString();
+    component.inventory = json["库存"].toString();
+
     // 2. Extract image URLs and store them in aliases (QVector<QString>)
     QJsonArray imageLinks = json["图片链接"].toArray();
+    qDebug() << imageLinks << imageLinks.size();
     // QVector<QString> img_url;
-    for (int i = 0; i < imageLinks.size() - 1; ++i) {
+    for (int i = 0; i < imageLinks.size(); ++i) {
         if (imageLinks[i].toString().isEmpty())continue;
         // qDebug() << "Processing image " << i << " URL:" << imageLinks[i].toString();
         getFileRequest(imageLinks[i].toString(), [=](const QString &) {
@@ -103,9 +166,9 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
     // For sch_svg (e.g., storing in files)
     QJsonObject schSvg = json["sch_svg"].toObject();
     for (auto it = schSvg.begin(); it != schSvg.end(); ++it) {
-        QString filename = "sch_svg_" + it.key() + ".svg";
+        QString filename = "sch_svg_" + it.key() + ".png";
         QString content = it.value().toString();
-        filename = SaveFile(GetCIDPath(CID), filename, content);
+        filename = SavePngFile(GetCIDPath(CID), filename, content);
         qDebug() << "Saving sch_svg to file:" << filename;
         component.sch_svg_FileUrl.append(filename);
     }
@@ -113,9 +176,9 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
     // For pcb_svg (e.g., storing in files)
     QJsonObject pcbSvg = json["pcb_svg"].toObject();
     for (auto it = pcbSvg.begin(); it != pcbSvg.end(); ++it) {
-        QString filename = "pcb_svg_" + it.key() + ".svg";
+        QString filename = "pcb_svg_" + it.key() + ".png";
         QString content = it.value().toString();
-        filename = SaveFile(GetCIDPath(CID), filename, content);
+        filename = SavePngFile(GetCIDPath(CID), filename, content);
         qDebug() << "Saving pcb_svg to file:" << filename;
         component.pcb_svg_FileUrl.append(filename);
     }
@@ -141,7 +204,7 @@ void MainWindow::AddComponentLogic_1() {
         return;
     }
     getRequest("http://127.0.0.1:8000/item/" + _addingComponent_CID, [&](const QJsonObject &jsonObj) {
-                   // qDebug() << jsonObj;
+                   qDebug() << jsonObj;
 
                    extractComponentData(_addingComponent_CID, jsonObj, *_addingComponentObj);
                    // component_record_struct component1;
@@ -189,23 +252,28 @@ void MainWindow::AddComponentLogic_1() {
 void MainWindow::AddComponentLogic_2() {
     _addComponent_CheckInfoWidget->hide();
     _addComponent_CheckInfoText->hide();
-    _addComponent_DownloadText->show();
-    _addComponent_DownloadProgressRing->show();
 
-    _addComponent_DownloadProgressRing->setCurValue(0);
-    getFileRequest(_addingComponentObj->pdf_url, [&](const QString &fileUrl) {
-                       qDebug() << "下载完成" << fileUrl;
-                       _addComponent_ProgressBar->setValue(80);
-                       _addingComponentObj->pdf_FileUrl = fileUrl;
-                       _addComponentStep = 3;
-                       AddComponentLogic_3();
-                   }, [&](const QNetworkReply::NetworkError error) {
-                       qWarning() << "无法获取元器件数据手册 " << error;
-                   }, _addingComponentObj->pdf_name, GetCIDPath(_addingComponent_CID),
-                   [&](qint64 bytesReceived, qint64 bytesTotal) {
-                       _addComponent_DownloadProgressRing->setCurValue(bytesReceived * 100 / bytesTotal);
-                   });
-    _addComponentButtonNext->setEnabled(false);
+    if (!isDownloadPDF) {
+        _addComponentStep = 3;
+        AddComponentLogic_3();
+    } else {
+        _addComponent_DownloadText->show();
+        _addComponent_DownloadProgressRing->show();
+        _addComponentButtonNext->setEnabled(false);
+        _addComponent_DownloadProgressRing->setCurValue(0);
+        getFileRequest(_addingComponentObj->pdf_url, [&](const QString &fileUrl) {
+                           qDebug() << "下载完成" << fileUrl;
+                           _addComponent_ProgressBar->setValue(80);
+                           _addingComponentObj->pdf_FileUrl = fileUrl;
+                           _addComponentStep = 3;
+                           AddComponentLogic_3();
+                       }, [&](const QNetworkReply::NetworkError error) {
+                           qWarning() << "无法获取元器件数据手册 " << error;
+                       }, _addingComponentObj->pdf_name, GetCIDPath(_addingComponent_CID),
+                       [&](qint64 bytesReceived, qint64 bytesTotal) {
+                           _addComponent_DownloadProgressRing->setCurValue(bytesReceived * 100 / bytesTotal);
+                       });
+    }
     // _addComponentStep = 3;
 }
 void MainWindow::AddComponentLogic_3() {

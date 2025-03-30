@@ -44,6 +44,8 @@ void MainWindow::loadData() const {
         record.sch_svg_FileUrl = obj.value("sch_svg_FileUrl").toVariant().toStringList().toVector();
         record.pcb_svg_FileUrl = obj.value("pcb_svg_FileUrl").toVariant().toStringList().toVector();
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
+        record.price= obj.value("price").toString();
+        record.inventory = obj.value("inventory").toString();
 
         // 调用添加函数
         addComponentToLib(record);
@@ -71,6 +73,8 @@ void MainWindow::SaveData() const {
         obj["package"] = record.package;
         obj["pdf_url"] = record.pdf_url;
         obj["pdf_name"] = record.pdf_name;
+        obj["price"] = record.price;
+        obj["inventory"] = record.inventory;
 
         // 将 QVector<QString> 转换为 QJsonArray
         QJsonArray aliasesArray;
