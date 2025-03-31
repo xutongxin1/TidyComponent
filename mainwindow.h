@@ -30,7 +30,7 @@
 
 #define CONFIGPATH QString("config/")
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
-#define INFOPATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
+#define INFOPATH  QString("config/info")
 #define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 using namespace std;
 

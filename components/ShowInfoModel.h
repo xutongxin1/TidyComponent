@@ -42,7 +42,7 @@ inline void ShowInfoModel::setComponentData(const component_record_struct &recor
     // qDebug() << "渲染用时: " << duration << " ms\n";
 }
 inline int ShowInfoModel::rowCount(const QModelIndex &parent) const {
-    return static_cast<int>(m_record.aliases.size()) + 5; // 5 fields + aliases rows
+    return static_cast<int>(m_record.aliases.size()) + 7; // 5 fields + aliases rows
 }
 inline int ShowInfoModel::columnCount(const QModelIndex &parent) const {
     return 2; // Field, Value
@@ -65,9 +65,13 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                     return "商品参数";
                 case 4:
                     return "封装";
+                case 5:
+                    return "立创参考价";
+                case 6:
+                    return "立创库存";
                 default:
-                    if (index.row() < 10)
-                        return "别名" + QString::number(index.row() - 4);
+                    if (index.row() < 12)
+                        return "别名" + QString::number(index.row() - 7);
                     else
                         return QVariant();
             }
@@ -83,10 +87,14 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                     return m_record.more_data; // More Data
                 case 4:
                     return m_record.package; // Package
+                case 5:
+                    return m_record.price; // Package
+                case 6:
+                    return m_record.inventory; // Package
                 default:
-                    if (index.row() < 10)
+                    if (index.row() < 12)
                         // For aliases
-                        return m_record.aliases[index.row() - 5]; // Aliases start from row 5
+                        return m_record.aliases[index.row() - 7]; // Aliases start from row 5
                     else
                         return QVariant();
             }

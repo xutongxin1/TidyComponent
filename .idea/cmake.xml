@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CMakeSharedSettings">
     <configurations>
-      <configuration PROFILE_NAME="RelWithDebInfo" ENABLED="true" CONFIG_NAME="RelWithDebInfo" />
+      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio" ENABLED="true" GENERATION_DIR="cmake" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio" />
     </configurations>
   </component>
 </project>
