@@ -3,6 +3,9 @@
 //
 #include <QSvgRenderer>
 #include <ElaText.h>
+#include <QDesktopServices>
+
+#include "ElaPushButton.h"
 #include "ShowInfoModel.h"
 void MainWindow::updateContent(const QItemSelection &selected, const QItemSelection &deselected) const {
     // qDebug() << selected.indexes();
@@ -126,6 +129,21 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
 
             // 设置 QTableView 的高度为内容的高度
             _showInfo_tableView->setFixedHeight(totalHeight);
+
+            //绑定_showInfo_OpenPDFButton按钮逻辑
+            if (record.pdf_url.isEmpty()) {
+                _showInfo_OpenPDFButton->setDisabled(true);
+            }
+            else {
+                _showInfo_OpenPDFButton->setDisabled(false);
+                if (isDownloadPDF == true) {
+                    //TODO:还没写
+                } else {
+                    connect(_showInfo_OpenPDFButton, &ElaToolButton::clicked, this, [=](bool check) {
+                        QDesktopServices::openUrl(QUrl(record.pdf_url.toLatin1()));
+                    });
+                }
+            }
         }
     }
 }
@@ -192,7 +210,7 @@ QPixmap renderSvgToPixmap(const QString &svgFilePath, const QSize &targetSize) {
 
     // 创建白色背景的QPixmap
     QPixmap pixmap(targetSize);
-    pixmap.fill(Qt::white);  // 填充白色背景
+    pixmap.fill(Qt::white); // 填充白色背景
 
     // 使用QPainter将SVG渲染到QPixmap上
     QPainter painter(&pixmap);
