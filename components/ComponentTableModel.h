@@ -10,26 +10,25 @@
 
 struct component_record_struct {
     //以下为展示的部分
-    QString name=QString(); //元器件名称
-    QString jlcid=QString(); //嘉立创CID
-    QString discription=QString(); //元器件描述
-    QString more_data=QString(); //元器件参数
-    QString package=QString(); //元器件封装
-    QVector<QString> aliases=QVector<QString>(5,QString()); //元器件别名
-    QVector<QString> png_FileUrl={}; //元器件实物图文件路径
-    QVector<QString> sch_svg_FileUrl={}; //元器件sch_svg文件路径
-    QVector<QString> pcb_svg_FileUrl={}; //元器件pcb_svg文件路径
-    QString pdf_name=QString(); //元器件pdf文件名称
-    QString pdf_FileUrl=QString(); //元器件pdf文件路径
-    QString price=QString();//元器件价格
-    QString inventory=QString();//元器件库存
+    QString name = QString(); //元器件名称
+    QString jlcid = QString(); //嘉立创CID
+    QString discription = QString(); //元器件描述
+    QString more_data = QString(); //元器件参数
+    QString package = QString(); //元器件封装
+    QVector<QString> aliases = QVector<QString>(5, QString()); //元器件别名
+    QVector<QString> png_FileUrl = {}; //元器件实物图文件路径
+    QVector<QString> sch_svg_FileUrl = {}; //元器件sch_svg文件路径
+    QVector<QString> pcb_svg_FileUrl = {}; //元器件pcb_svg文件路径
+    QString pdf_name = QString(); //元器件pdf文件名称
+    QString pdf_FileUrl = QString(); //元器件pdf文件路径
+    QString price = QString(); //元器件价格
+    QString inventory = QString(); //元器件库存
 
     //以下为逻辑部分
-    QString pdf_url=QString();
-    QString searchKey=QString();
-    QString color=QString();
+    QString pdf_url = QString();
+    QString searchKey = QString();
+    QString color = QString("就绪");
     float weight = 0.0f; //器件重量
-
 };
 const QStringList titles = {
     "显示状态", "名称", "描述", "封装", "立创编号", "商品参数"
@@ -106,10 +105,14 @@ class ComponentTableModel : public QAbstractTableModel {
                 //     }
                 case Qt::BackgroundRole:
                     if (index.column() == 0) {
-                        if (item.type == DisplayItem::Data)
-                            return QBrush(QColor(component_record[item.dataIndex].color));
-                        else
-                            return QVariant();
+                        if (item.type == DisplayItem::Data) {
+                            if (component_record[item.dataIndex].color == "就绪") {
+                                return QVariant();
+                            } else {
+                                return QBrush(QColor(component_record[item.dataIndex].color));
+                            }
+                        }
+                        else { return QVariant(); }
                     } else {
                         return QVariant();
                     }

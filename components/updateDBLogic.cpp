@@ -30,7 +30,7 @@ void MainWindow::loadData() const {
         component_record_struct record;
 
         record.name = obj.value("name").toString();
-        record.color = obj.value("color").toString();
+        // record.color = obj.value("color").toString();
         record.jlcid = obj.value("jlcid").toString();
         record.weight = static_cast<float>(obj.value("weight").toDouble());
         record.discription = obj.value("discription").toString();
@@ -65,7 +65,7 @@ void MainWindow::SaveData() const {
         QJsonObject obj;
 
         obj["name"] = record.name;
-        obj["color"] = record.color;
+        // obj["color"] = record.color;
         obj["jlcid"] = record.jlcid;
         obj["weight"] = record.weight;
         obj["discription"] = record.discription;

@@ -114,7 +114,7 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
     component.name = json["商品型号"].toString();
 
     // Randomly assign a color (for demonstration purposes, using a placeholder value)
-    component.color = "RandomColor"; // You can replace this with a function to assign a real random color if needed
+    component.color = "就绪"; // You can replace this with a function to assign a real random color if needed
 
     component.jlcid = json["商品编号"].toString();
 
