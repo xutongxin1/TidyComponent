@@ -46,6 +46,7 @@ void MainWindow::loadData() const {
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
         record.price= obj.value("price").toString();
         record.inventory = obj.value("inventory").toString();
+        record.PID = obj.value("PID").toString();
 
         // 调用添加函数
         addComponentToLib(record);
@@ -75,6 +76,7 @@ void MainWindow::SaveData() const {
         obj["pdf_name"] = record.pdf_name;
         obj["price"] = record.price;
         obj["inventory"] = record.inventory;
+        obj["PID"] = record.PID;
 
         // 将 QVector<QString> 转换为 QJsonArray
         QJsonArray aliasesArray;

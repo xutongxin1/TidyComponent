@@ -136,6 +136,7 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
 
     component.price = json["价格"].toString();
     component.inventory = json["库存"].toString();
+    component.PID = json["PID"].toString();
 
     // 2. Extract image URLs and store them in aliases (QVector<QString>)
     QJsonArray imageLinks = json["图片链接"].toArray();

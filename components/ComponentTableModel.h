@@ -23,6 +23,8 @@ struct component_record_struct {
     QString pdf_FileUrl = QString(); //元器件pdf文件路径
     QString price = QString(); //元器件价格
     QString inventory = QString(); //元器件库存
+    QString PID = QString(); //元器件库存
+
 
     //以下为逻辑部分
     QString pdf_url = QString();

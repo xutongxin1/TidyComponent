@@ -88,9 +88,9 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                 case 4:
                     return m_record.package; // Package
                 case 5:
-                    return m_record.price; // Package
+                    return m_record.price; // price
                 case 6:
-                    return m_record.inventory; // Package
+                    return m_record.inventory; // inventory
                 default:
                     if (index.row() < 12)
                         // For aliases
