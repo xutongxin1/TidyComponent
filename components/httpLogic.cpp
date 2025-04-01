@@ -52,8 +52,8 @@ void MainWindow::getDailySection() const {
                                       QImageReader reader(filePath);
                                       reader.setAutoTransform(true);
                                       const QImage img = reader.read();
-                                      _promotionCard->setFixedSize(img.size().width() * 350.0 / img.size().height(),
-                                                                   350);
+                                      _promotionCard->setFixedSize(img.width() * 300.0 / img.height(),
+                                                                   300);
                                       _promotionCard->setCardPixmap(QPixmap(filePath));
                                   },
                                   [](QNetworkReply::NetworkError error) {
