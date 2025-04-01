@@ -105,6 +105,8 @@ class MainWindow : public ElaWindow {
         ElaText *_showInfo_NoComponentTips;
         ElaToolButton *_showInfo_OpenPDFButton;
         ElaScrollArea *_showInfo_scrollArea;
+        QWidget * _showInfo_Web_Widget;
+        ElaToolButton * _showInfo_OpenWebSiteButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);

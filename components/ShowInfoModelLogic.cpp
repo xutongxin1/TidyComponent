@@ -15,7 +15,7 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
         _showInfo_tableView->hide();
         _showInfo_PNGView->hide();
         _showInfo_SCHPCBview->hide();
-        _showInfo_OpenPDFButton->hide();
+        _showInfo_Web_Widget->hide();
         _showInfo_NoComponentTips->show();
         return;
     }
@@ -117,7 +117,7 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
             _showInfo_tableView->show();
             _showInfo_PNGView->show();
             _showInfo_SCHPCBview->show();
-            _showInfo_OpenPDFButton->show();
+            _showInfo_Web_Widget->show();
             _showInfo_NoComponentTips->hide();
 
             //要先显示表格才能根据内容调整高度
@@ -130,15 +130,21 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
             // 设置 QTableView 的高度为内容的高度
             _showInfo_tableView->setFixedHeight(totalHeight);
 
+            //绑定_showInfo_OpenWebSiteButton按钮逻辑
+            disconnect(_showInfo_OpenWebSiteButton, nullptr, nullptr, nullptr);
+            connect(_showInfo_OpenWebSiteButton, &ElaToolButton::clicked, this, [=](bool check) {
+                QDesktopServices::openUrl(QUrl("https://item.szlcsc.com/" + QString(record.PID) + ".html"));
+            });
+
             //绑定_showInfo_OpenPDFButton按钮逻辑
             if (record.pdf_url.isEmpty()) {
                 _showInfo_OpenPDFButton->setDisabled(true);
-            }
-            else {
+            } else {
                 _showInfo_OpenPDFButton->setDisabled(false);
                 if (isDownloadPDF == true) {
                     //TODO:还没写
                 } else {
+                    disconnect(_showInfo_OpenPDFButton, nullptr, nullptr, nullptr);
                     connect(_showInfo_OpenPDFButton, &ElaToolButton::clicked, this, [=](bool check) {
                         QDesktopServices::openUrl(QUrl(record.pdf_url.toLatin1()));
                     });

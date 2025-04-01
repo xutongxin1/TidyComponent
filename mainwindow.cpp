@@ -146,7 +146,20 @@ void MainWindow::initElaWindow() {
     _showInfo_NoComponentTips->setTextPixelSize(20);
     infoDockLayout->addWidget(_showInfo_NoComponentTips);
 
-    // 数据手册按钮
+    // 打开网站按钮和数据手册按钮
+    _showInfo_Web_Widget = new QWidget(this);
+    const auto _showInfo_Web_Widget_Layout = new QHBoxLayout(_showInfo_Web_Widget);
+
+    _showInfo_OpenWebSiteButton = new ElaToolButton(this);
+    _showInfo_OpenWebSiteButton->setIsTransparent(false);
+    _showInfo_OpenWebSiteButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _showInfo_OpenWebSiteButton->setBorderRadius(8);
+    _showInfo_OpenWebSiteButton->setText("打开立创详情页");
+    _showInfo_OpenWebSiteButton->setElaIcon(ElaIconType::Globe);
+    _showInfo_OpenWebSiteButton->setIconSize(QSize(35, 35));
+    _showInfo_OpenWebSiteButton->setFixedSize(100, 75);
+
+
     _showInfo_OpenPDFButton = new ElaToolButton(this);
     _showInfo_OpenPDFButton->setIsTransparent(false);
     _showInfo_OpenPDFButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -156,7 +169,9 @@ void MainWindow::initElaWindow() {
     _showInfo_OpenPDFButton->setElaIcon(ElaIconType::FileDoc);
     _showInfo_OpenPDFButton->setIconSize(QSize(35, 35));
     _showInfo_OpenPDFButton->setFixedSize(100, 75);
-    infoDockLayout->addWidget(_showInfo_OpenPDFButton);
+    _showInfo_Web_Widget_Layout->addWidget(_showInfo_OpenWebSiteButton);
+    _showInfo_Web_Widget_Layout->addWidget(_showInfo_OpenPDFButton);
+    infoDockLayout->addWidget(_showInfo_Web_Widget);
 
 
     //数据表初始化
@@ -211,7 +226,7 @@ void MainWindow::initElaWindow() {
     _showInfo_tableView->hide();
     _showInfo_PNGView->hide();
     _showInfo_SCHPCBview->hide();
-    _showInfo_OpenPDFButton->hide();
+    _showInfo_Web_Widget->hide();
 
     //初始化元件添加栏
     InitSearchDockLogic();
