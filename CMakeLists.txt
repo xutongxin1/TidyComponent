@@ -122,7 +122,7 @@ set(CMAKE_PROJECT_VERSION 1.1)
 find_package(QT NAMES Qt6 REQUIRED PrintSupport COMPONENTS Network SerialPort Widgets OpenGL Concurrent Svg)
 find_package(Qt6 REQUIRED COMPONENTS Core5Compat)       # QT6
 find_package(Qt6 REQUIRED COMPONENTS Gui)               # QT6
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED PrintSupport COMPONENTS Network SerialPort Widgets OpenGL Concurrent Svg HttpServer)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED PrintSupport COMPONENTS Network SerialPort SerialPort Widgets OpenGL Concurrent Svg HttpServer)
 qt_standard_project_setup()
 
 file(GLOB HEADER "*.h")
@@ -174,7 +174,7 @@ if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelW
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
-            Qt6::Network ElaWidgetTools Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
+            Qt6::Network ElaWidgetTools Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent Qt6::SerialPort)
 else ()
     target_link_libraries(
             ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls ElaWidgetTools QXlsx::QXlsx

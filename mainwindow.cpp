@@ -27,6 +27,9 @@
 #include "ElaScrollBar.h"
 #include "ElaScrollPage.h"
 #include "ShowInfoModel.h"
+#include <QSerialPortInfo>
+
+#include "SerialPortManager.h"
 int record_DeviceNum = 0, record_WinNum = 0;
 
 MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
@@ -91,9 +94,49 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         // _addComponentButton->click();
     }
     // ui_->label_nowSearch->hide();
+    const auto serialPortInfos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &portInfo : serialPortInfos) {
+        qDebug() << "\n"
+                 << "Port:" << portInfo.portName() << "\n"
+                 << "Location:" << portInfo.systemLocation() << "\n"
+                 << "Description:" << portInfo.description() << "\n"
+                 << "Manufacturer:" << portInfo.manufacturer() << "\n"
+                 << "Serial number:" << portInfo.serialNumber() << "\n"
+                 << "Vendor Identifier:"
+                 << (portInfo.hasVendorIdentifier()
+                     ? QByteArray::number(portInfo.vendorIdentifier(), 16)
+                     : QByteArray()) << "\n"
+                 << "Product Identifier:"
+                 << (portInfo.hasProductIdentifier()
+                     ? QByteArray::number(portInfo.productIdentifier(), 16)
+                     : QByteArray());
+    }
+
+    serialManager=new SerialPortManager(this);
+
+    // 设置回调函数
+    serialManager->setConnectedCallback([]() {
+        qDebug() << "成功连接到串口!";
+    });
+
+    serialManager->setDisconnectedCallback([]() {
+        qDebug() << "串口连接已断开!";
+    });
+
+    serialManager->setDataReceivedCallback([](const QString& data) {
+        qDebug() << "接收到数据:" << data;
+    });
+
+    // 启动连接，开始自动重连
+    qDebug() << "开始尝试连接...";
+    serialManager->startConnection();
+
+    // 显示当前连接状态
+    qDebug() << "当前状态:" << serialManager->getConnectionStatus();
 
     // 最大化
     showMaximized();
+
 }
 
 MainWindow::~MainWindow() {

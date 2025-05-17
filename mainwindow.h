@@ -27,6 +27,7 @@
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
 #include "ElaText.h"
+#include "SerialPortManager.h"
 
 #define CONFIGPATH QString("config/")
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
@@ -50,6 +51,7 @@ class MainWindow : public ElaWindow {
         Q_OBJECT
 
     public:
+        SerialPortManager *serialManager;
         ComponentTableModel *model;
         ElaToolButton *_resetSearchButton;
 
@@ -105,8 +107,8 @@ class MainWindow : public ElaWindow {
         ElaText *_showInfo_NoComponentTips;
         ElaToolButton *_showInfo_OpenPDFButton;
         ElaScrollArea *_showInfo_scrollArea;
-        QWidget * _showInfo_Web_Widget;
-        ElaToolButton * _showInfo_OpenWebSiteButton;
+        QWidget *_showInfo_Web_Widget;
+        ElaToolButton *_showInfo_OpenWebSiteButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
