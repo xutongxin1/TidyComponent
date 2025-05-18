@@ -46,23 +46,35 @@ void MainWindow::getDailySection() const {
                    // qDebug() << "Word:" << word;
                    // qDebug() << "Image URL:" << imgurl;
                    // qDebug() << "系统缓存目录路径:" << QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
-                   getFileRequest(imgurl,
-                                  [&](const QString &filePath) {
-                                      // qDebug() << "File downloaded to:" << filePath;
-                                      QImageReader reader(filePath);
-                                      reader.setAutoTransform(true);
-                                      const QImage img = reader.read();
-                                      _promotionCard->setFixedSize(img.width() * 300.0 / img.height(),
-                                                                   300);
-                                      _promotionCard->setCardPixmap(QPixmap(filePath));
-                                  },
-                                  [](QNetworkReply::NetworkError error) {
-                                      // 处理失败的错误信息
-                                      qWarning() << "无法获取每日一言 " << error;
-                                  },
-                                  "Daily.jpg",
-                                  TEMP_PATH);
-                   _promotionCard->setSubTitle(word);
+                   if (const QFileInfo fileInfo(TEMP_PATH + "/Daily.jpg"); !fileInfo.exists() || fileInfo.lastModified()
+                       .date() != QDate::currentDate()) {
+                       qDebug()<<"获取新的每日一言";
+                       getFileRequest(imgurl,
+                                      [&](const QString &filePath) {
+                                          // qDebug() << "File downloaded to:" << filePath;
+                                          QImageReader reader(filePath);
+                                          reader.setAutoTransform(true);
+                                          const QImage img = reader.read();
+                                          _promotionCard->setFixedSize(img.width() * 300.0 / img.height(),
+                                                                       300);
+                                          _promotionCard->setCardPixmap(QPixmap(filePath));
+                                      },
+                                      [](QNetworkReply::NetworkError error) {
+                                          // 处理失败的错误信息
+                                          qWarning() << "无法获取每日一言 " << error;
+                                      },
+                                      "Daily.jpg",
+                                      TEMP_PATH);
+                       _promotionCard->setSubTitle(word);
+                   } else {
+                       qDebug()<<"每日一言使用缓存";
+                       QImageReader reader(TEMP_PATH + "/Daily.jpg");
+                       reader.setAutoTransform(true);
+                       const QImage img = reader.read();
+                       _promotionCard->setFixedSize(img.width() * 300.0 / img.height(),
+                                                    300);
+                       _promotionCard->setCardPixmap(QPixmap(TEMP_PATH + "/Daily.jpg"));
+                   }
                },
                [](QNetworkReply::NetworkError error) {
                    // 处理失败的错误信息

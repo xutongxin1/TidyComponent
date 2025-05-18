@@ -128,11 +128,8 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     });
 
     // 启动连接，开始自动重连
-    qDebug() << "开始尝试连接...";
+    qDebug() << "开始尝试连接到用户侧...";
     serialManager->startConnection();
-
-    // 显示当前连接状态
-    qDebug() << "当前状态:" << serialManager->getConnectionStatus();
 
     // 最大化
     showMaximized();
