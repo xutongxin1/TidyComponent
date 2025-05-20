@@ -30,6 +30,8 @@ struct component_record_struct {
     QString pdf_url = QString();
     QString searchKey = QString();
     QString color = QString("就绪");
+    bool isApply=false;//是否被申请
+    // int applyType
     float weight = 0.0f; //器件重量
 };
 const QStringList titles = {

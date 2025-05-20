@@ -5,10 +5,9 @@
 #include <ElaText.h>
 #include <QDesktopServices>
 
-#include "ElaPushButton.h"
 #include "ShowInfoModel.h"
-void MainWindow::updateContent(const QItemSelection &selected, const QItemSelection &deselected) const {
-    // qDebug() << selected.indexes();
+void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected)  {
+    //  展示元器件信息
     QModelIndexList selectedIndexes = selected.indexes();
     if (selectedIndexes.isEmpty()) {
         //没有选中任何行
@@ -16,7 +15,14 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
         _showInfo_PNGView->hide();
         _showInfo_SCHPCBview->hide();
         _showInfo_Web_Widget->hide();
+        _applyButton->hide();
+        _apply_LightButton->hide();
+        _apply_Light_VoiceButton->hide();
+        _returnButton->hide();
         _showInfo_NoComponentTips->show();
+        if (ApplyComponentNum==0) {
+            _noReturnTips->show();
+        }
         return;
     }
     if (selectedIndexes[0].isValid()) {
@@ -24,6 +30,9 @@ void MainWindow::updateContent(const QItemSelection &selected, const QItemSelect
             ; model->
             component_record_Hash.contains(cid)) {
             const component_record_struct record = model->component_record_Hash.value(cid);
+
+            //更新申请逻辑
+            UpdateApplyLogic(record);
 
             _showInfo_model->setComponentData(record);
 

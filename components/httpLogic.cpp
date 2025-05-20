@@ -74,6 +74,7 @@ void MainWindow::getDailySection() const {
                        _promotionCard->setFixedSize(img.width() * 300.0 / img.height(),
                                                     300);
                        _promotionCard->setCardPixmap(QPixmap(TEMP_PATH + "/Daily.jpg"));
+                       _promotionCard->setSubTitle(word);
                    }
                },
                [](QNetworkReply::NetworkError error) {

@@ -12,6 +12,7 @@
 #include "ElaDockWidget.h"
 #include "ElaLineEdit.h"
 #include "ElaListView.h"
+#include "ElaMenuBar.h"
 #include "ElaPivot.h"
 #include "ElaProgressBar.h"
 #include "ElaPromotionCard.h"
@@ -109,6 +110,14 @@ class MainWindow : public ElaWindow {
         ElaScrollArea *_showInfo_scrollArea;
         QWidget *_showInfo_Web_Widget;
         ElaToolButton *_showInfo_OpenWebSiteButton;
+        QAction *connectStateAction;
+        ElaToolButton *_searchTypeButton;
+        ElaToolButton *_return_ALLButton;
+        ElaToolButton *_returnButton;
+        ElaToolButton *_applyButton;
+        ElaToolButton *_apply_LightButton;
+        ElaToolButton *_apply_Light_VoiceButton;
+        ElaText * _noReturnTips;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -117,7 +126,7 @@ class MainWindow : public ElaWindow {
         void findClosestRecords(
             const QVector<component_record_struct> &recordsVector,
             const QString &searchString) const;
-
+        void UpdateApplyLogic(const component_record_struct &record);
         void search() const;
         void importExcelToJson();
         void exportJsonToExcel();
@@ -130,6 +139,9 @@ class MainWindow : public ElaWindow {
         // QVector<int> fuzzyIndex;// 模糊结果
 
     private:
+        int ApplyComponentNum = 0;
+
+
         // Ui::MainWindow *ui_;
         ElaContentDialog *_closeDialog{nullptr};
         ResizedTableView *tableView;
@@ -147,7 +159,8 @@ class MainWindow : public ElaWindow {
 
         void GetConstructConfig();
         void SaveConstructConfig();
-        void updateContent(const QItemSelection &selected, const QItemSelection &deselected) const;
+        void initSerialPort();
+        void updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
         // static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
@@ -164,7 +177,10 @@ class MainWindow : public ElaWindow {
         void ShowWarningInfo(const QString &info, const QString &title = QString());
         void ShowInfoInfo(const QString &info, const QString &title = QString());
         void ShowErrorInfo(const QString &info, const QString &title = QString());
-        void InitSearchDockLogic();
+        void UpdateApplyReturnUI();
+        void InitApplyReturnUI();
+        void InitAddComponentDockUI();
+        void SerialDataReceived(const QString &data);
         void getDailySection() const;
         void extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AddComponentLogic_1();
