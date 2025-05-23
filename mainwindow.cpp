@@ -73,7 +73,8 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
 
     //绑定数据更新动作
     // connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
-    connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updateComponentInfo);
+    connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this,
+            &MainWindow::updateComponentInfo);
 
     getDailySection();
     initAddComponentLogic();
@@ -100,56 +101,12 @@ MainWindow::~MainWindow() {
     // delete ui_;
 }
 
-
 void MainWindow::GetConstructConfig() {
 }
 
 void MainWindow::SaveConstructConfig() {
 }
-void MainWindow::initSerialPort() {
-    const auto serialPortInfos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &portInfo : serialPortInfos) {
-        qDebug() << "\n"
-            << "Port:" << portInfo.portName() << "\n"
-            << "Location:" << portInfo.systemLocation() << "\n"
-            << "Description:" << portInfo.description() << "\n"
-            << "Manufacturer:" << portInfo.manufacturer() << "\n"
-            << "Serial number:" << portInfo.serialNumber() << "\n"
-            << "Vendor Identifier:"
-            << (portInfo.hasVendorIdentifier()
-                    ? QByteArray::number(portInfo.vendorIdentifier(), 16)
-                    : QByteArray()) << "\n"
-            << "Product Identifier:"
-            << (portInfo.hasProductIdentifier()
-                    ? QByteArray::number(portInfo.productIdentifier(), 16)
-                    : QByteArray());
-    }
 
-    serialManager = new SerialPortManager(this);
-
-    // 设置回调函数
-    serialManager->setConnectedCallback([&]() {
-        qDebug() << "成功连接到串口!";
-        connectStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::PlugCircleCheck));
-        connectStateAction->setText("已连接");
-    });
-
-    serialManager->setDisconnectedCallback([&]() {
-        qDebug() << "串口连接已断开!";
-        connectStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::Plug));
-        connectStateAction->setText("未连接");
-    });
-
-    serialManager->setDataReceivedCallback([&](const QString &data) {
-        qDebug() << "接收到数据:" << data;
-        SerialDataReceived(data);
-    });
-
-    // 启动连接，开始自动重连
-    qDebug() << "开始尝试连接到用户侧...";
-    serialManager->startConnection();
-
-}
 
 void MainWindow::InitConfig() {
     config_main_ini_ = new ConfigClass("main.ini", QSettings::IniFormat);
@@ -177,4 +134,3 @@ void MainWindow::ShowInfoInfo(const QString &info, const QString &title) {
 void MainWindow::ShowErrorInfo(const QString &info, const QString &title) {
     ElaMessageBar::error(ElaMessageBarType::BottomLeft, title, info, 2000, this);
 }
-

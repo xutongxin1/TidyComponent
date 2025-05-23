@@ -29,6 +29,8 @@
     "sch_svg_FileUrl": [
       "config/info/C115962/sch_svg_1.png"
     ],
-    "weight": 0.15299999713897705
+    "weight": 0.15299999713897705,
+    "MAC": "AABBCCDDEEFF",
+    "coordinate": "111"
   }
 ]

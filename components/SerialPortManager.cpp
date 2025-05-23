@@ -4,11 +4,10 @@
 
 SerialPortManager::SerialPortManager(QObject *parent)
     : QObject(parent)
-    , m_serialPort(new QSerialPort(this))
-    , m_reconnectTimer(new QTimer(this))
-    , m_connectionStatus(Disconnected)
-    , m_autoReconnectEnabled(false)
-{
+      , m_serialPort(new QSerialPort(this))
+      , m_reconnectTimer(new QTimer(this))
+      , m_connectionStatus(Disconnected)
+      , m_autoReconnectEnabled(false) {
     // 连接定时器到尝试连接的槽函数
     connect(m_reconnectTimer, &QTimer::timeout, this, &SerialPortManager::attemptConnection);
 
@@ -17,21 +16,18 @@ SerialPortManager::SerialPortManager(QObject *parent)
     connect(m_serialPort, &QSerialPort::errorOccurred, this, &SerialPortManager::onSerialPortError);
 }
 
-SerialPortManager::~SerialPortManager()
-{
+SerialPortManager::~SerialPortManager() {
     closeConnection();
 }
 
-void SerialPortManager::startConnection()
-{
+void SerialPortManager::startConnection() {
     if (m_connectionStatus == Disconnected) {
         m_autoReconnectEnabled = true;
         attemptConnection();
     }
 }
 
-void SerialPortManager::closeConnection()
-{
+void SerialPortManager::closeConnection() {
     m_autoReconnectEnabled = false;
     m_reconnectTimer->stop();
 
@@ -42,27 +38,19 @@ void SerialPortManager::closeConnection()
     m_connectionStatus = Disconnected;
 }
 
-SerialPortManager::ConnectionStatus SerialPortManager::getConnectionStatus() const
-{
+SerialPortManager::ConnectionStatus SerialPortManager::getConnectionStatus() const {
     return m_connectionStatus;
 }
 
-void SerialPortManager::setDataReceivedCallback(std::function<void(const QString&)> callback)
-{
-    m_dataReceivedCallback = callback;
-}
-
-void SerialPortManager::setConnectedCallback(std::function<void()> callback)
-{
+void SerialPortManager::setConnectedCallback(std::function<void()> callback) {
     m_connectedCallback = callback;
 }
 
-void SerialPortManager::setDisconnectedCallback(std::function<void()> callback)
-{
+void SerialPortManager::setDisconnectedCallback(std::function<void()> callback) {
     m_disconnectedCallback = callback;
 }
 
-bool SerialPortManager::writeData(const QString& data) const {
+bool SerialPortManager::writeData(const QString &data) const {
     if (m_connectionStatus != Connected || !m_serialPort->isOpen()) {
         return false;
     }
@@ -73,8 +61,7 @@ bool SerialPortManager::writeData(const QString& data) const {
     return (bytesWritten == byteData.size());
 }
 
-void SerialPortManager::attemptConnection()
-{
+void SerialPortManager::attemptConnection() {
     if (m_connectionStatus == Connected) {
         return;
     }
@@ -91,7 +78,7 @@ void SerialPortManager::attemptConnection()
 
     // 查找特定序列号的端口
     bool found = false;
-    for (const QSerialPortInfo& info : ports) {
+    for (const QSerialPortInfo &info : ports) {
         if (info.serialNumber() == "TIDYCOMPONENT") {
             m_serialPort->setPort(info);
             found = true;
@@ -131,18 +118,64 @@ void SerialPortManager::attemptConnection()
         }
     }
 }
+void SerialPortManager::processCompleteMessages(const QString &data) {
+    // 将新数据附加到缓冲区
+    m_buffer.append(data);
 
-void SerialPortManager::onSerialPortReadyRead()
-{
-    if (m_dataReceivedCallback) {
-        QByteArray data = m_serialPort->readAll();
-        QString message = QString::fromUtf8(data);
-        m_dataReceivedCallback(message);
+    int endPos;
+    while ((endPos = m_buffer.indexOf("\r\n")) != -1) {
+        // 提取完整消息（不含\r\n）
+        QString completeMessage = m_buffer.left(endPos);
+
+        // 处理消息
+        if (!findAndExecuteCallback(completeMessage)) {
+            // 如果没有模式匹配，调用未匹配回调
+            if (m_unmatchedCallback) {
+                m_unmatchedCallback(completeMessage);
+            }
+        }
+
+        // 从缓冲区移除已处理的消息和\r\n
+        m_buffer.remove(0, endPos + 2); // +2 用于\r\n
+    }
+}
+bool SerialPortManager::findAndExecuteCallback(const QString &message) {
+    // 尝试查找匹配的模式
+    for (const auto &entry : m_patternCallbacks) {
+        const QString &pattern = entry.first;
+
+        // 检查消息是否包含模式
+        if (message.contains(pattern)) {
+            // 执行回调
+            entry.second(message);
+            return true;
+        }
+    }
+
+    // 未找到匹配的模式
+    return false;
+}
+
+void SerialPortManager::connectPattern(const QString &pattern, MessageCallback callback) {
+    m_patternCallbacks[pattern] = callback;
+}
+
+void SerialPortManager::disconnectPattern(const QString &pattern) {
+    auto it = m_patternCallbacks.find(pattern);
+    if (it != m_patternCallbacks.end()) {
+        m_patternCallbacks.erase(it);
     }
 }
 
-void SerialPortManager::onSerialPortError(QSerialPort::SerialPortError error)
-{
+void SerialPortManager::onSerialPortReadyRead() {
+    if (m_serialPort->isOpen()) {
+        QByteArray data = m_serialPort->readAll();
+        QString message = QString::fromUtf8(data);
+        processCompleteMessages(message);
+    }
+}
+
+void SerialPortManager::onSerialPortError(QSerialPort::SerialPortError error) {
     // 忽略NoError
     if (error == QSerialPort::NoError) {
         return;
@@ -156,8 +189,7 @@ void SerialPortManager::onSerialPortError(QSerialPort::SerialPortError error)
     }
 }
 
-void SerialPortManager::handleDisconnection()
-{
+void SerialPortManager::handleDisconnection() {
     if (m_connectionStatus != Disconnected) {
         // 如果端口仍然打开，则关闭它
         if (m_serialPort->isOpen()) {

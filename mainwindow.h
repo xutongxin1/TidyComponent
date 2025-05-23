@@ -118,6 +118,9 @@ class MainWindow : public ElaWindow {
         ElaToolButton *_apply_LightButton;
         ElaToolButton *_apply_Light_VoiceButton;
         ElaText * _noReturnTips;
+        bool _serial_isOK;
+        bool _serial_isMESH_OK;
+        bool _serial_is_inWriteMOde;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
