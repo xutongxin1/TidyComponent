@@ -109,7 +109,88 @@ QString SavePngFile(const QString &directory, const QString &filename, const QSt
     }
     return dir.filePath(filename);
 }
-void MainWindow::extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component) {
+
+//仅用于更新数据
+void MainWindow::AnalyzeComponentData(const QString &CID, const QJsonObject &json,
+                                      component_record_struct &component) {
+    // 1. Extract basic data fields
+    component.name = json["商品型号"].toString();
+
+    // Randomly assign a color (for demonstration purposes, using a placeholder value)
+    component.color = "就绪"; // You can replace this with a function to assign a real random color if needed
+
+    component.jlcid = json["商品编号"].toString();
+
+    // Extract weight and convert to float (extract number before "克(g)")
+    QString weightStr = json["商品毛重"].toString();
+    static QRegularExpression re("[^0-9.]");
+    weightStr.remove(re); // Remove non-numeric characters except for the dot
+    component.weight = weightStr.toFloat();
+
+    component.discription = json["描述"].toString();
+    if (component.discription.isEmpty()) {
+        component.discription = component.name;
+    }
+    component.more_data = json["商品参数"].toString();
+    component.package = json["商品封装"].toString();
+
+    component.pdf_url = json["数据手册"].toString();
+    component.pdf_name = json["数据手册名称"].toString();
+
+    component.price = json["价格"].toString();
+    component.inventory = json["库存"].toString();
+    component.PID = json["PID"].toString();
+
+    QJsonArray imageLinks = json["图片链接"].toArray();
+    qDebug() << imageLinks << imageLinks.size();
+    for (int i = 0; i < imageLinks.size(); ++i) {
+        if (imageLinks[i].toString().isEmpty())continue;
+        getFileRequest(imageLinks[i].toString(), [=](const QString &png_FileUrl) {
+                           switch (i) {
+                               case 0:
+                                   AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard1, png_FileUrl);
+                                   break;
+                               case 1:
+                                   AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard2, png_FileUrl);
+                                   break;
+                               case 2:
+                                   AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard3, png_FileUrl);
+                                   break;
+                               case 3:
+                                   AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard4, png_FileUrl);
+                                   break;
+                               case 4:
+                                   AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard5, png_FileUrl);
+                                   break;
+
+                               default: ;
+                           }
+                       }, nullptr,
+                       "img_" + QString::number(i) + ".jpg", GetCIDPath(CID));
+        component.png_FileUrl.append(GetCIDPath(CID) + "/img_" + QString::number(i) + ".jpg");
+    }
+    QJsonObject schSvg = json["sch_svg"].toObject();
+    for (auto it = schSvg.begin(); it != schSvg.end(); ++it) {
+        QString filename = "sch_svg_" + it.key() + ".png";
+        QString content = it.value().toString();
+        filename = SavePngFile(GetCIDPath(CID), filename, content);
+        qDebug() << "Saving sch_svg to file:" << filename;
+        component.sch_svg_FileUrl.append(filename);
+    }
+
+    QJsonObject pcbSvg = json["pcb_svg"].toObject();
+    for (auto it = pcbSvg.begin(); it != pcbSvg.end(); ++it) {
+        QString filename = "pcb_svg_" + it.key() + ".png";
+        QString content = it.value().toString();
+        filename = SavePngFile(GetCIDPath(CID), filename, content);
+        qDebug() << "Saving pcb_svg to file:" << filename;
+        component.pcb_svg_FileUrl.append(filename);
+    }
+}
+
+//仅用于添加数据
+void MainWindow::AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json,
+                                            component_record_struct &component) {
     // 1. Extract basic data fields
     component.name = json["商品型号"].toString();
 
@@ -184,6 +265,7 @@ void MainWindow::extractComponentData(const QString &CID, const QJsonObject &jso
         component.pcb_svg_FileUrl.append(filename);
     }
 }
+
 void MainWindow::AddComponentLogic_1() {
     _addComponent_EditBoxText->hide();
 
@@ -207,7 +289,7 @@ void MainWindow::AddComponentLogic_1() {
     getRequest("http://127.0.0.1:8000/item/" + _addingComponent_CID, [&](const QJsonObject &jsonObj) {
                    qDebug() << jsonObj;
 
-                   extractComponentData(_addingComponent_CID, jsonObj, *_addingComponentObj);
+                   AnalyzeAddingComponentData(_addingComponent_CID, jsonObj, *_addingComponentObj);
                    // component_record_struct component1;
 
                    _addComponent_busyRing->hide();
@@ -302,7 +384,7 @@ void MainWindow::AddComponentLogic_4() {
     //TODO: 上传数据
     addComponentToLib(*_addingComponentObj);
     model->updateData();
-    SaveData(); //触发保存
+    SaveSingleComponent(_addingComponent_CID); //触发保存
     delete _addingComponentObj;
     _addingComponentObj = nullptr;
     QTimer::singleShot(2000, [&]() {

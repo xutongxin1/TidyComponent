@@ -33,6 +33,8 @@ struct component_record_struct {
     bool isApply=false;//是否被申请
     // int applyType
     float weight = 0.0f; //器件重量
+    QString MAC= QString(); //对应mesh地址
+    QString coordinate= QString(); //对应内部地址
 };
 const QStringList titles = {
     "显示状态", "名称", "描述", "封装", "立创编号", "商品参数"
@@ -278,6 +280,22 @@ class ComponentTableModel : public QAbstractTableModel {
             beginResetModel();
             updateDisplayItems();
             endResetModel();
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+            qDebug() << "渲染用时: " << duration << " ms\n";
+        }
+        void updateDataWithNoRowChange() {
+            auto start = std::chrono::high_resolution_clock::now();
+
+            // 更新数据但不重置模型
+            updateDisplayItems();
+
+            // 发送数据改变信号
+            if (rowCount() > 0 && columnCount() > 0) {
+                emit dataChanged(index(0, 0),
+                                index(rowCount() - 1, columnCount() - 1));
+            }
+
             auto stop = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
             qDebug() << "渲染用时: " << duration << " ms\n";

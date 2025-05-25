@@ -31,6 +31,7 @@
 #include "SerialPortManager.h"
 
 #define CONFIGPATH QString("config/")
+#define DBPATH QString("config/db/")
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
 #define INFOPATH  QString("config/info")
 #define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
@@ -110,6 +111,7 @@ class MainWindow : public ElaWindow {
         ElaScrollArea *_showInfo_scrollArea;
         QWidget *_showInfo_Web_Widget;
         ElaToolButton *_showInfo_OpenWebSiteButton;
+        ElaToolButton * _showInfo_updateInfoButton;
         QAction *connectStateAction;
         ElaToolButton *_searchTypeButton;
         ElaToolButton *_return_ALLButton;
@@ -121,6 +123,7 @@ class MainWindow : public ElaWindow {
         bool _serial_isOK;
         bool _serial_isMESH_OK;
         bool _serial_is_inWriteMOde;
+
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -140,6 +143,18 @@ class MainWindow : public ElaWindow {
 
         // QVector<int> exacIndex;// 精确结果
         // QVector<int> fuzzyIndex;// 模糊结果
+        // 设备配置结构体
+        struct DeviceInfo {
+            QString MAC;
+            QVector<QString> coordinates;
+            int type = 1;
+        };
+
+        // 设备配置管理结构体
+        struct DeviceConfig {
+            QVector<DeviceInfo> devices;
+            QHash<QString, DeviceInfo*> deviceMap; // 快速查找
+        };
 
     private:
         int ApplyComponentNum = 0;
@@ -169,11 +184,24 @@ class MainWindow : public ElaWindow {
         // static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
         // void ShowAllComponents();
         // void ShowSomeComponents();
-        void loadData() const;
-        void SaveData() const;
+        // void loadData() const;
+        // void SaveData() const;
+
+        void loadDataFromFolder() const;
+        void SaveDataToFolder();
+        void SaveSingleComponent(component_record_struct record);
+        void SaveSingleComponent(const QString &jlcid);
+        void updateDeviceConfig(const QString &MAC, const QString &coordinate) const;
+        void saveDeviceConfig(const DeviceConfig &config) const;
+        DeviceConfig loadDeviceConfig() const;
+        DeviceInfo *getDeviceByMAC(const QString &MAC) const;
+        void deleteSingleComponent(const QString &jlcid) const;
+
         bool isExistingComponent(const QString &CID) const;
         void addComponentToLib(const component_record_struct &_addingComponentObj) const;
+        void replaceComponentToLib(const component_record_struct &_replacingComponentObj) const;
         static void updateSearchKey(component_record_struct &_addingComponentObj);
+        void updateOneComponent(const QString &CID);
 
         void InitConfig();
         void ShowSuccessInfo(const QString &info, const QString &title = QString());
@@ -185,7 +213,8 @@ class MainWindow : public ElaWindow {
         void InitAddComponentDockUI();
         void SerialDataReceived(const QString &data);
         void getDailySection() const;
-        void extractComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
+        void AnalyzeComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
+        void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();

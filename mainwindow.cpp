@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     // tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     // 初始化导入数据
-    loadData();
+    loadDataFromFolder();
     model->showAll = true;
     tableView->setModel(model);
 

@@ -6,6 +6,7 @@
 #include <QDesktopServices>
 
 #include "ShowInfoModel.h"
+
 void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected)  {
     //  展示元器件信息
     QModelIndexList selectedIndexes = selected.indexes();
@@ -143,6 +144,12 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
             disconnect(_showInfo_OpenWebSiteButton, nullptr, nullptr, nullptr);
             connect(_showInfo_OpenWebSiteButton, &ElaToolButton::clicked, this, [=](bool check) {
                 QDesktopServices::openUrl(QUrl("https://item.szlcsc.com/" + QString(record.PID) + ".html"));
+            });
+
+            disconnect(_showInfo_updateInfoButton,nullptr,nullptr,nullptr);
+            connect(_showInfo_updateInfoButton, &ElaToolButton::clicked, this, [&,cid](bool check) {
+                _showInfo_updateInfoButton->setDisabled(true);
+                updateOneComponent(cid);
             });
 
             //绑定_showInfo_OpenPDFButton按钮逻辑

@@ -80,13 +80,23 @@ void MainWindow::initElaWindow() {
     _showInfo_OpenPDFButton->setIsTransparent(false);
     _showInfo_OpenPDFButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     _showInfo_OpenPDFButton->setBorderRadius(8);
-    //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
     _showInfo_OpenPDFButton->setText("打开数据手册");
     _showInfo_OpenPDFButton->setElaIcon(ElaIconType::FileDoc);
     _showInfo_OpenPDFButton->setIconSize(QSize(35, 35));
     _showInfo_OpenPDFButton->setFixedSize(100, 75);
+
+    _showInfo_updateInfoButton = new ElaToolButton(this);
+    _showInfo_updateInfoButton->setIsTransparent(false);
+    _showInfo_updateInfoButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _showInfo_updateInfoButton->setBorderRadius(8);
+    _showInfo_updateInfoButton->setText("更新器件数据");
+    _showInfo_updateInfoButton->setElaIcon(ElaIconType::FileDoc);
+    _showInfo_updateInfoButton->setIconSize(QSize(35, 35));
+    _showInfo_updateInfoButton->setFixedSize(100, 75);
+
     _showInfo_Web_Widget_Layout->addWidget(_showInfo_OpenWebSiteButton);
     _showInfo_Web_Widget_Layout->addWidget(_showInfo_OpenPDFButton);
+    _showInfo_Web_Widget_Layout->addWidget(_showInfo_updateInfoButton);
     infoDockLayout->addWidget(_showInfo_Web_Widget);
 
     //数据表初始化
