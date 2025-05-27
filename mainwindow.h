@@ -147,7 +147,7 @@ class MainWindow : public ElaWindow {
         struct DeviceInfo {
             QString MAC;
             QVector<QString> coordinates;
-            int type = 1;
+            QString type;
         };
 
         // 设备配置管理结构体
@@ -155,7 +155,7 @@ class MainWindow : public ElaWindow {
             QVector<DeviceInfo> devices;
             QHash<QString, DeviceInfo*> deviceMap; // 快速查找
         };
-
+        DeviceConfig _config;
     private:
         int ApplyComponentNum = 0;
 
@@ -187,11 +187,11 @@ class MainWindow : public ElaWindow {
         // void loadData() const;
         // void SaveData() const;
 
-        void loadDataFromFolder() const;
+        void loadDataFromFolder();
         void SaveDataToFolder();
         void SaveSingleComponent(component_record_struct record);
         void SaveSingleComponent(const QString &jlcid);
-        void updateDeviceConfig(const QString &MAC, const QString &coordinate) const;
+        void updateDeviceConfig(const QString &MAC, const QString &coordinate, const QString &type);
         void saveDeviceConfig(const DeviceConfig &config) const;
         DeviceConfig loadDeviceConfig() const;
         DeviceInfo *getDeviceByMAC(const QString &MAC) const;

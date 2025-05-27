@@ -25,16 +25,16 @@ struct component_record_struct {
     QString inventory = QString(); //元器件库存
     QString PID = QString(); //元器件库存
 
-
     //以下为逻辑部分
     QString pdf_url = QString();
     QString searchKey = QString();
     QString color = QString("就绪");
-    bool isApply=false;//是否被申请
+    bool isApply = false; //是否被申请
     // int applyType
     float weight = 0.0f; //器件重量
-    QString MAC= QString(); //对应mesh地址
-    QString coordinate= QString(); //对应内部地址
+    QString MAC = QString(); //对应mesh地址
+    QString coordinate = QString(); //对应内部地址
+    QString device_type = QString();
 };
 const QStringList titles = {
     "显示状态", "名称", "描述", "封装", "立创编号", "商品参数"
@@ -117,8 +117,7 @@ class ComponentTableModel : public QAbstractTableModel {
                             } else {
                                 return QBrush(QColor(component_record[item.dataIndex].color));
                             }
-                        }
-                        else { return QVariant(); }
+                        } else { return QVariant(); }
                     } else {
                         return QVariant();
                     }
@@ -256,7 +255,7 @@ class ComponentTableModel : public QAbstractTableModel {
         // 布尔变量，决定显示全部还是部分内容
         bool showAll;
         enum SEARCH_TYPE {
-            SEARCH_FUZZY=1,
+            SEARCH_FUZZY = 1,
             SEARCH_EXACT,
             SEARCH_BOM
         };
@@ -293,7 +292,7 @@ class ComponentTableModel : public QAbstractTableModel {
             // 发送数据改变信号
             if (rowCount() > 0 && columnCount() > 0) {
                 emit dataChanged(index(0, 0),
-                                index(rowCount() - 1, columnCount() - 1));
+                                 index(rowCount() - 1, columnCount() - 1));
             }
 
             auto stop = std::chrono::high_resolution_clock::now();

@@ -7,7 +7,7 @@
 #include "GetRequestHandler.h"
 #include "mainwindow.h"
 
-void MainWindow::loadDataFromFolder() const {
+void MainWindow::loadDataFromFolder() {
     QDir dbDir(DBPATH);
 
     if (!dbDir.exists()) {
@@ -64,6 +64,7 @@ void MainWindow::loadDataFromFolder() const {
         record.inventory = obj.value("inventory").toString();
         record.PID = obj.value("PID").toString();
         record.MAC = obj.value("MAC").toString();
+        record.device_type = obj.value("device_type").toString();
         record.coordinate = obj.value("coordinate").toString();
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
 
@@ -92,6 +93,7 @@ void MainWindow::loadDataFromFolder() const {
 
         addComponentToLib(record);
     }
+    _config = loadDeviceConfig();
 }
 
 void MainWindow::SaveDataToFolder() {
@@ -144,6 +146,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     obj["inventory"] = record.inventory;
     obj["PID"] = record.PID;
     obj["MAC"] = record.MAC;
+    obj["device_type"] = record.device_type;
     obj["coordinate"] = record.coordinate;
     obj["pdf_FileUrl"] = record.pdf_FileUrl;
 
@@ -179,8 +182,8 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty()) {
-        updateDeviceConfig(record.MAC, record.coordinate);
+    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty()&& !record.device_type.isEmpty()) {
+        updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
 void MainWindow::SaveSingleComponent(const QString &jlcid) {
@@ -194,12 +197,10 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
 }
 
 // 3. 更新设备配置文件
-void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate) const {
-    DeviceConfig config = loadDeviceConfig();
-
-    // 查找是否已存在该MAC
+void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate,const QString &type) {
+        // 查找是否已存在该MAC
     bool found = false;
-    for (DeviceInfo &device : config.devices) {
+    for (DeviceInfo &device : _config.devices) {
         if (device.MAC == MAC) {
             // 检查coordinate是否已存在
             if (!device.coordinates.contains(coordinate)) {
@@ -215,12 +216,12 @@ void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinat
         DeviceInfo newDevice;
         newDevice.MAC = MAC;
         newDevice.coordinates.append(coordinate);
-        newDevice.type = 1;
-        config.devices.append(newDevice);
+        newDevice.type = type;
+        _config.devices.append(newDevice);
     }
 
     // 保存配置文件
-    saveDeviceConfig(config);
+    saveDeviceConfig(_config);
 }
 
 // 4. 保存设备配置文件
@@ -285,7 +286,7 @@ MainWindow::DeviceConfig MainWindow::loadDeviceConfig() const {
         QJsonObject deviceObj = value.toObject();
         DeviceInfo device;
         device.MAC = deviceObj.value("MAC").toString();
-        device.type = deviceObj.value("type").toInt(1);
+        device.type = deviceObj.value("type").toString();
 
         QJsonArray coordArray = deviceObj.value("coordinates").toArray();
         for (const QJsonValue &coordValue : coordArray) {

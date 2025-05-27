@@ -29,7 +29,8 @@
     "config/info/C115962/sch_svg_1.png"
   ],
   "weight": 0.15299999713897705,
-  "MAC": "AABBCCDDEEFF",
-  "coordinate": "111"
+  "MAC": "AA:BB:CC:DD:EE:FF",
+  "coordinate": "111",
+  "device_type": "B53"
 }
 
