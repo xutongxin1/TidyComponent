@@ -8,6 +8,7 @@
 // #include "./ui_mainwindow.h"
 
 #include "ComponentTableModel.h"
+#include "EDAChromeHttpServer.h"
 #include "ElaContentDialog.h"
 #include "ElaDockWidget.h"
 #include "ElaLineEdit.h"
@@ -30,10 +31,12 @@
 #include "ElaText.h"
 #include "SerialPortManager.h"
 
-#define CONFIGPATH QString("config/")
-#define DBPATH QString("config/db/")
+#define CONFIGPATH QCoreApplication::applicationDirPath()+QString("/config/")
+#define DBPATH QCoreApplication::applicationDirPath()+QString("/config/db/")
+#define INFOPATH  QCoreApplication::applicationDirPath()+QString("/config/info")
+#define ChromePATH QCoreApplication::applicationDirPath()+QString("/config/Chrome/")
+
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
-#define INFOPATH  QString("config/info")
 #define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 using namespace std;
 
@@ -111,19 +114,20 @@ class MainWindow : public ElaWindow {
         ElaScrollArea *_showInfo_scrollArea;
         QWidget *_showInfo_Web_Widget;
         ElaToolButton *_showInfo_OpenWebSiteButton;
-        ElaToolButton * _showInfo_updateInfoButton;
-        QAction *connectStateAction;
+        ElaToolButton *_showInfo_updateInfoButton;
+        QAction *connectUserStateAction;
         ElaToolButton *_searchTypeButton;
         ElaToolButton *_return_ALLButton;
         ElaToolButton *_returnButton;
         ElaToolButton *_applyButton;
         ElaToolButton *_apply_LightButton;
         ElaToolButton *_apply_Light_VoiceButton;
-        ElaText * _noReturnTips;
+        ElaText *_noReturnTips;
         bool _serial_isOK;
         bool _serial_isMESH_OK;
         bool _serial_is_inWriteMOde;
-
+        EDAChromeHttpServer *EDA_Server;
+        ElaToolButton *_openEDAChromeButton;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -134,8 +138,7 @@ class MainWindow : public ElaWindow {
             const QString &searchString) const;
         void UpdateApplyLogic(const component_record_struct &record);
         void search() const;
-        void importExcelToJson();
-        void exportJsonToExcel();
+        void InitEDAChromeHttpServer();
 
         ~MainWindow() override;
 
@@ -147,18 +150,18 @@ class MainWindow : public ElaWindow {
         struct DeviceInfo {
             QString MAC;
             QVector<QString> coordinates;
-            int type = 1;
+            QString type;
         };
 
         // 设备配置管理结构体
         struct DeviceConfig {
             QVector<DeviceInfo> devices;
-            QHash<QString, DeviceInfo*> deviceMap; // 快速查找
+            QHash<QString, DeviceInfo *> deviceMap; // 快速查找
         };
+        DeviceConfig _config;
 
     private:
         int ApplyComponentNum = 0;
-
 
         // Ui::MainWindow *ui_;
         ElaContentDialog *_closeDialog{nullptr};
@@ -187,15 +190,46 @@ class MainWindow : public ElaWindow {
         // void loadData() const;
         // void SaveData() const;
 
-        void loadDataFromFolder() const;
+        void loadDataFromFolder();
         void SaveDataToFolder();
         void SaveSingleComponent(component_record_struct record);
         void SaveSingleComponent(const QString &jlcid);
-        void updateDeviceConfig(const QString &MAC, const QString &coordinate) const;
-        void saveDeviceConfig(const DeviceConfig &config) const;
-        DeviceConfig loadDeviceConfig() const;
+        void updateDeviceConfig(const QString &MAC, const QString &coordinate, const QString &type);
+        bool addDevice(const QString &MAC, const QString &type);
+        bool saveDeviceConfig();
+        void loadDeviceConfig();
         DeviceInfo *getDeviceByMAC(const QString &MAC) const;
         void deleteSingleComponent(const QString &jlcid) const;
+
+        // 缓存每种类型的所有可能坐标
+        QHash<QString, QStringList> _typeCoordinatesCache;
+
+        // 辅助函数
+        void initializeCoordinatesCache();
+        QStringList generateAllCoordinatesForType(const QString &type);
+
+        // 按类型统计坐标
+        int getTotalCoordinatesCountForType(const QString &type);
+        int getUsedCoordinatesCountForType(const QString &type);
+        int getAvailableCoordinatesCountForType(const QString &type);
+        int getDeviceCountForType(const QString &type);
+        QStringList getAvailableCoordinatesForType(const QString &type);
+
+        // 坐标分配和释放
+        QPair<QString, QString> allocateCoordinateForType(const QString &type,
+                                                          const QString &preferredCoordinate = QString());
+        QPair<QString, QString> allocateNextAvailableCoordinateForType(const QString &type);
+        bool releaseCoordinate(const QString &type, const QString &coordinate);
+        bool releaseCoordinateByMAC(const QString &MAC, const QString &coordinate);
+
+        // 获取类型的所有设备及其坐标使用情况
+        QVector<QPair<QString, int> > getDeviceUsageForType(const QString &type);
+
+        // 统计和报告
+        void updateTypeStatistics();
+        QHash<QString, QPair<int, int> > getAllTypeStatistics(); // type -> (used, total)
+        QVector<QPair<QString, QString> > allocateMultipleCoordinatesForType(const QString &type, int count);
+        QString findDeviceByCoordinate(const QString &type, const QString &coordinate);
 
         bool isExistingComponent(const QString &CID) const;
         void addComponentToLib(const component_record_struct &_addingComponentObj) const;
@@ -214,7 +248,8 @@ class MainWindow : public ElaWindow {
         void SerialDataReceived(const QString &data);
         void getDailySection() const;
         void AnalyzeComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
-        void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
+        void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json,
+                                        component_record_struct &component);
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();

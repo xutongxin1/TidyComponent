@@ -1,0 +1,14 @@
+{
+  "devices": [
+    {
+      "MAC": "AA:BB:CC:DD:EE:FF",
+      "type": "B53",
+      "coordinates": ["111"]
+    },
+    {
+      "MAC": "AA:CC:CC:DD:EE:FF",
+      "type": "B53",
+      "coordinates": ["222"]
+    }
+  ]
+}

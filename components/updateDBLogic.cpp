@@ -7,7 +7,7 @@
 #include "GetRequestHandler.h"
 #include "mainwindow.h"
 
-void MainWindow::loadDataFromFolder() const {
+void MainWindow::loadDataFromFolder() {
     QDir dbDir(DBPATH);
 
     if (!dbDir.exists()) {
@@ -64,6 +64,7 @@ void MainWindow::loadDataFromFolder() const {
         record.inventory = obj.value("inventory").toString();
         record.PID = obj.value("PID").toString();
         record.MAC = obj.value("MAC").toString();
+        record.device_type = obj.value("device_type").toString();
         record.coordinate = obj.value("coordinate").toString();
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
 
@@ -92,6 +93,7 @@ void MainWindow::loadDataFromFolder() const {
 
         addComponentToLib(record);
     }
+    loadDeviceConfig();
 }
 
 void MainWindow::SaveDataToFolder() {
@@ -144,6 +146,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     obj["inventory"] = record.inventory;
     obj["PID"] = record.PID;
     obj["MAC"] = record.MAC;
+    obj["device_type"] = record.device_type;
     obj["coordinate"] = record.coordinate;
     obj["pdf_FileUrl"] = record.pdf_FileUrl;
 
@@ -179,8 +182,8 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty()) {
-        updateDeviceConfig(record.MAC, record.coordinate);
+    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty()&& !record.device_type.isEmpty()) {
+        updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
 void MainWindow::SaveSingleComponent(const QString &jlcid) {
@@ -194,12 +197,10 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
 }
 
 // 3. 更新设备配置文件
-void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate) const {
-    DeviceConfig config = loadDeviceConfig();
-
-    // 查找是否已存在该MAC
+void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate,const QString &type) {
+        // 查找是否已存在该MAC
     bool found = false;
-    for (DeviceInfo &device : config.devices) {
+    for (DeviceInfo &device : _config.devices) {
         if (device.MAC == MAC) {
             // 检查coordinate是否已存在
             if (!device.coordinates.contains(coordinate)) {
@@ -215,56 +216,59 @@ void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinat
         DeviceInfo newDevice;
         newDevice.MAC = MAC;
         newDevice.coordinates.append(coordinate);
-        newDevice.type = 1;
-        config.devices.append(newDevice);
+        newDevice.type = type;
+        _config.devices.append(newDevice);
     }
 
     // 保存配置文件
-    saveDeviceConfig(config);
+    saveDeviceConfig();
 }
 
 // 4. 保存设备配置文件
-void MainWindow::saveDeviceConfig(const DeviceConfig &config) const {
+bool MainWindow::saveDeviceConfig() {
     QString configPath = CONFIGPATH + "device_config.json";
     QFile file(configPath);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "无法打开设备配置文件进行写入：" << configPath;
-        return;
+        qWarning() << "无法打开设备配置文件进行写入:" << configPath;
+        return false;
     }
 
+    QJsonObject rootObj;
     QJsonArray devicesArray;
-    for (const DeviceInfo &device : config.devices) {
+
+    for (const DeviceInfo &device : _config.devices) {
         QJsonObject deviceObj;
-        deviceObj["MAC"] = device.MAC;
-        deviceObj["type"] = device.type;
+        deviceObj.insert("MAC", device.MAC);
+        deviceObj.insert("type", device.type);
 
         QJsonArray coordArray;
         for (const QString &coord : device.coordinates) {
             coordArray.append(coord);
         }
-        deviceObj["coordinates"] = coordArray;
+        deviceObj.insert("coordinates", coordArray);
 
         devicesArray.append(deviceObj);
     }
 
-    QJsonObject rootObj;
-    rootObj["devices"] = devicesArray;
+    rootObj.insert("devices", devicesArray);
 
     QJsonDocument doc(rootObj);
-    file.write(doc.toJson(QJsonDocument::Indented));
+    file.write(doc.toJson());
     file.close();
+
+    qDebug() << "设备配置已保存到:" << configPath;
+    return true;
 }
 
 // 5. 读取设备配置文件
-MainWindow::DeviceConfig MainWindow::loadDeviceConfig() const {
-    DeviceConfig config;
+void MainWindow::loadDeviceConfig()  {
     QString configPath = CONFIGPATH + "device_config.json";
     QFile file(configPath);
 
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "设备配置文件不存在，创建新配置";
-        return config;
+        return ;
     }
 
     QByteArray jsonData = file.readAll();
@@ -275,7 +279,7 @@ MainWindow::DeviceConfig MainWindow::loadDeviceConfig() const {
 
     if (parseError.error != QJsonParseError::NoError) {
         qWarning() << "设备配置文件JSON解析错误：" << parseError.errorString();
-        return config;
+        return ;
     }
 
     QJsonObject rootObj = doc.object();
@@ -285,24 +289,21 @@ MainWindow::DeviceConfig MainWindow::loadDeviceConfig() const {
         QJsonObject deviceObj = value.toObject();
         DeviceInfo device;
         device.MAC = deviceObj.value("MAC").toString();
-        device.type = deviceObj.value("type").toInt(1);
+        device.type = deviceObj.value("type").toString();
 
         QJsonArray coordArray = deviceObj.value("coordinates").toArray();
         for (const QJsonValue &coordValue : coordArray) {
             device.coordinates.append(coordValue.toString());
         }
 
-        config.devices.append(device);
-        config.deviceMap.insert(device.MAC, &config.devices.last());
+        _config.devices.append(device);
+        _config.deviceMap.insert(device.MAC, &_config.devices.last());
     }
-
-    return config;
 }
 
 // 辅助函数：获取特定MAC的设备信息
 MainWindow::DeviceInfo *MainWindow::getDeviceByMAC(const QString &MAC) const {
-    static DeviceConfig config = loadDeviceConfig();
-    return config.deviceMap.value(MAC, nullptr);
+    return _config.deviceMap.value(MAC, nullptr);
 }
 
 // 辅助函数：删除单个元件文件
@@ -376,116 +377,3 @@ void MainWindow::updateOneComponent(const QString &CID) {
                    _showInfo_updateInfoButton->setEnabled(true);
                });
 }
-
-// void MainWindow::loadData() const {
-//     QFile file(CONFIGPATH + "db.json");
-//     if (!file.open(QIODevice::ReadOnly)) {
-//         qWarning("无法打开 db.json 文件。");
-//         return;
-//     }
-//
-//     QByteArray jsonData = file.readAll();
-//     file.close();
-//
-//     QJsonParseError parseError;
-//     QJsonDocument doc = QJsonDocument::fromJson(jsonData, &parseError);
-//
-//     if (parseError.error != QJsonParseError::NoError) {
-//         qWarning() << "JSON 解析错误：" << parseError.errorString();
-//         return;
-//     }
-//
-//     QJsonArray jsonArray = doc.array();
-//
-//     for (const auto &value : jsonArray) {
-//         if (!value.isObject())
-//             continue;
-//
-//         QJsonObject obj = value.toObject();
-//         component_record_struct record;
-//
-//         record.name = obj.value("name").toString();
-//         // record.color = obj.value("color").toString();
-//         record.jlcid = obj.value("jlcid").toString();
-//         record.weight = static_cast<float>(obj.value("weight").toDouble());
-//         record.discription = obj.value("discription").toString();
-//         record.more_data = obj.value("more_data").toString();
-//         record.package = obj.value("package").toString();
-//         record.pdf_url = obj.value("pdf_url").toString();
-//         record.pdf_name = obj.value("pdf_name").toString();
-//         record.aliases = obj.value("aliases").toVariant().toStringList().toVector();
-//         record.aliases.resize(5); // 限制别名数量为 5
-//         record.png_FileUrl = obj.value("png_FileUrl").toVariant().toStringList().toVector();
-//         record.sch_svg_FileUrl = obj.value("sch_svg_FileUrl").toVariant().toStringList().toVector();
-//         record.pcb_svg_FileUrl = obj.value("pcb_svg_FileUrl").toVariant().toStringList().toVector();
-//         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
-//         record.price= obj.value("price").toString();
-//         record.inventory = obj.value("inventory").toString();
-//         record.PID = obj.value("PID").toString();
-//         record.MAC = obj.value("MAC").toString();
-//         record.coordinate = obj.value("coordinate").toString();
-//
-//         // 调用添加函数
-//         addComponentToLib(record);
-//     }
-// }
-// // WriteData() 函数实现
-// void MainWindow::SaveData() const {
-//     QFile file(CONFIGPATH + "db.json");
-//     if (!file.open(QIODevice::WriteOnly)) {
-//         qWarning("无法打开 db.json 文件进行写入。");
-//         return;
-//     }
-//
-//     QJsonArray jsonArray;
-//
-//     for (const component_record_struct &record : model->component_record) {
-//         QJsonObject obj;
-//
-//         obj["name"] = record.name;
-//         // obj["color"] = record.color;
-//         obj["jlcid"] = record.jlcid;
-//         obj["weight"] = record.weight;
-//         obj["discription"] = record.discription;
-//         obj["more_data"] = record.more_data;
-//         obj["package"] = record.package;
-//         obj["pdf_url"] = record.pdf_url;
-//         obj["pdf_name"] = record.pdf_name;
-//         obj["price"] = record.price;
-//         obj["inventory"] = record.inventory;
-//         obj["PID"] = record.PID;
-//
-//         // 将 QVector<QString> 转换为 QJsonArray
-//         QJsonArray aliasesArray;
-//         for (const QString &alias : record.aliases) {
-//             aliasesArray.append(alias);
-//         }
-//         obj["aliases"] = aliasesArray;
-//
-//         QJsonArray png_FileUrlArray;
-//         for (const QString &url : record.png_FileUrl) {
-//             png_FileUrlArray.append(url);
-//         }
-//         obj["png_FileUrl"] = png_FileUrlArray;
-//
-//         QJsonArray sch_svg_FileUrlArray;
-//         for (const QString &url : record.sch_svg_FileUrl) {
-//             sch_svg_FileUrlArray.append(url);
-//         }
-//         obj["sch_svg_FileUrl"] = sch_svg_FileUrlArray;
-//
-//         QJsonArray pcb_svg_FileUrlArray;
-//         for (const QString &url : record.pcb_svg_FileUrl) {
-//             pcb_svg_FileUrlArray.append(url);
-//         }
-//         obj["pcb_svg_FileUrl"] = pcb_svg_FileUrlArray;
-//
-//         obj["pdf_FileUrl"] = record.pdf_FileUrl;
-//
-//         jsonArray.append(obj);
-//     }
-//
-//     QJsonDocument doc(jsonArray);
-//     file.write(doc.toJson(QJsonDocument::Indented)); // 使用缩进格式，便于阅读
-//     file.close();
-// }

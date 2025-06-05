@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     // tableView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     // 初始化导入数据
     loadDataFromFolder();
+    initializeCoordinatesCache();
     model->showAll = true;
     tableView->setModel(model);
 
@@ -89,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     _showInfo_tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
     _showInfo_tableView->setColumnWidth(0, 100);
     if (DEBUG) {
-        // _addComponentButton->click();
+        updateTypeStatistics();
     }
     // ui_->label_nowSearch->hide();
     initSerialPort();

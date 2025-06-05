@@ -23,8 +23,8 @@ void MainWindow::initElaWindow() {
     // this->setMenuBar(menuBar);
     this->setCustomWidget(ElaAppBarType::MiddleArea, customWidget);
     this->setCustomWidgetMaximumWidth(500);
-    connectStateAction = menuBar->addElaIconAction(ElaIconType::Plug, "未连接");
-    connect(connectStateAction, &QAction::triggered, this, [&]() {
+    connectUserStateAction = menuBar->addElaIconAction(ElaIconType::Plug, "未连接到用户侧");
+    connect(connectUserStateAction, &QAction::triggered, this, [&]() {
     });
     // 拦截默认关闭事件
     // _closeDialog = new ElaContentDialog(this);
@@ -41,7 +41,7 @@ void MainWindow::initElaWindow() {
     _infoDockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
-
+    _infoDockWidget->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
     //元件信息栏初始化
     _showInfo_Widget = new QWidget(this);
     const auto infoDockLayout = new QVBoxLayout(_showInfo_Widget);
@@ -90,7 +90,7 @@ void MainWindow::initElaWindow() {
     _showInfo_updateInfoButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     _showInfo_updateInfoButton->setBorderRadius(8);
     _showInfo_updateInfoButton->setText("更新器件数据");
-    _showInfo_updateInfoButton->setElaIcon(ElaIconType::FileDoc);
+    _showInfo_updateInfoButton->setElaIcon(ElaIconType::ArrowsRotateReverse);
     _showInfo_updateInfoButton->setIconSize(QSize(35, 35));
     _showInfo_updateInfoButton->setFixedSize(100, 75);
 
@@ -228,7 +228,18 @@ void MainWindow::initElaWindow() {
     _importSearchButton->setText("导入BOM表\n进行搜索");
     _importSearchButton->setElaIcon(ElaIconType::FileImport);
     _importSearchButton->setIconSize(QSize(35, 35));
-    _importSearchButton->setFixedSize(130, 75);
+    _importSearchButton->setFixedSize(120, 75);
+
+    _openEDAChromeButton = new ElaToolButton(this);
+    _openEDAChromeButton->setIsTransparent(false);
+    _openEDAChromeButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _openEDAChromeButton->setBorderRadius(8);
+    _openEDAChromeButton->setText("打开\nEDA Chrome注入");
+    _openEDAChromeButton->setElaIcon(ElaIconType::FileImport);
+    _openEDAChromeButton->setIconSize(QSize(35, 35));
+    _openEDAChromeButton->setFixedSize(120, 75);
+
+    InitEDAChromeHttpServer();
 
     QWidget *searchArea = new QWidget(this);
     // searchArea->setMinimumHeight(0);
@@ -238,6 +249,7 @@ void MainWindow::initElaWindow() {
     searchAreaLayout->addWidget(_resetSearchButton);
     searchAreaLayout->addWidget(_searchTypeButton);
     searchAreaLayout->addWidget(_importSearchButton);
+    searchAreaLayout->addWidget(_openEDAChromeButton);
     searchAreaLayout->addStretch();
 
     _return_ALLButton = new ElaToolButton(this);

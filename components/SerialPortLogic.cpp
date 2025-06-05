@@ -27,14 +27,14 @@ void MainWindow::initSerialPort() {
     // 设置回调函数
     serialManager->setConnectedCallback([&]() {
         qDebug() << "成功连接到串口!";
-        connectStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::PlugCircleCheck));
-        connectStateAction->setText("已连接");
+        connectUserStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::PlugCircleCheck));
+        connectUserStateAction->setText("已连接");
     });
 
     serialManager->setDisconnectedCallback([&]() {
         qDebug() << "串口连接已断开!";
-        connectStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::Plug));
-        connectStateAction->setText("未连接");
+        connectUserStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::Plug));
+        connectUserStateAction->setText("未连接");
     });
 
     // 启动连接，开始自动重连
