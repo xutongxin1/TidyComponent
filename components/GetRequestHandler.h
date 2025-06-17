@@ -115,7 +115,7 @@ void getRequest(const QString &url,
                 SuccessHandler onSuccess,
                 std::function<void(QNetworkReply::NetworkError)> onError = nullptr,
                 std::function<void()> onTimeOut = nullptr,
-                int timeout = 3000) {
+                int timeout = 8000) {
     // 创建请求处理器
     new GetRequestHandler(url, onSuccess, onError, onTimeOut, timeout);
 }

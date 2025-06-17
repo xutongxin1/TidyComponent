@@ -286,7 +286,7 @@ void MainWindow::AddComponentLogic_1() {
         ShowWarningInfo("该元器件已经存在");
         return;
     }
-    getRequest("http://127.0.0.1:8000/item/" + _addingComponent_CID, [&](const QJsonObject &jsonObj) {
+    getRequest("https://api.h49591b27.nyat.app:10268/item/" + _addingComponent_CID, [&](const QJsonObject &jsonObj) {
                    qDebug() << jsonObj;
 
                    AnalyzeAddingComponentData(_addingComponent_CID, jsonObj, *_addingComponentObj);

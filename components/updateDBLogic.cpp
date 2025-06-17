@@ -356,7 +356,8 @@ void MainWindow::updateSearchKey(component_record_struct &_addingComponentObj) {
     }
 }
 void MainWindow::updateOneComponent(const QString &CID) {
-    getRequest("http://127.0.0.1:8000/item/" + CID, [&,CID](const QJsonObject &jsonObj) {
+    qDebug()<<"https://api.h49591b27.nyat.app:10268/item/" + CID;
+    getRequest("https://api.h49591b27.nyat.app:10268/item/" + CID, [&,CID](const QJsonObject &jsonObj) {
                    qDebug() << jsonObj;
                    component_record_struct _tmpComponentObj;
                    AnalyzeComponentData(CID, jsonObj, _tmpComponentObj);
