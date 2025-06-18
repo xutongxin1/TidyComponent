@@ -47,7 +47,7 @@ using namespace std;
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 QT_END_NAMESPACE
@@ -64,7 +64,6 @@ class MainWindow : public ElaWindow {
         QWidget *_showInfo_Widget;
         ElaDockWidget *_infoDockWidget;
 
-        ElaToolButton *_addComponent_BeginButton;
         ElaScrollPageArea *_addComponent_DockhArea;
         ElaLineEdit *_addComponent_EditBox;
         ElaProgressBar *_addComponent_ProgressBar;
@@ -128,6 +127,7 @@ class MainWindow : public ElaWindow {
         bool _serial_is_inWriteMOde;
         EDAChromeHttpServer *EDA_Server;
         ElaToolButton *_openEDAChromeButton;
+        ElaToolButton * _addComponent_B53_Button;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -177,6 +177,7 @@ class MainWindow : public ElaWindow {
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;
+        QString _addComponent_Type=QString();
 
         void GetConstructConfig();
         void SaveConstructConfig();
@@ -184,11 +185,6 @@ class MainWindow : public ElaWindow {
         void updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
-        // static QLabel *createHyperlinkLabel(const QString &text, const QString &url);
-        // void ShowAllComponents();
-        // void ShowSomeComponents();
-        // void loadData() const;
-        // void SaveData() const;
 
         void loadDataFromFolder();
         void SaveDataToFolder();
@@ -250,6 +246,7 @@ class MainWindow : public ElaWindow {
         void AnalyzeComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json,
                                         component_record_struct &component);
+        void AddComponentLogic_0(const QString &type);
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();

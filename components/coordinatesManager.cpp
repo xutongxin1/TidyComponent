@@ -214,7 +214,7 @@ QPair<QString, QString> MainWindow::allocateCoordinateForType(const QString &typ
     qDebug() << "Allocated coordinate:" << coordToAllocate
              << "on device:" << bestDevice->MAC
              << "of type:" << type;
-
+    saveDeviceConfig();
     return result;
 }
 

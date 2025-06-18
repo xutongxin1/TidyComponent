@@ -29,6 +29,7 @@ void MainWindow::initSerialPort() {
         qDebug() << "成功连接到串口!";
         connectUserStateAction->setProperty("ElaIconType", QChar((unsigned short) ElaIconType::PlugCircleCheck));
         connectUserStateAction->setText("已连接");
+        if (serialManager->writeData("AT\r\n")){}
     });
 
     serialManager->setDisconnectedCallback([&]() {

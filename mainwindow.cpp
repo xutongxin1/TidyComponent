@@ -91,6 +91,10 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     _showInfo_tableView->setColumnWidth(0, 100);
     if (DEBUG) {
         updateTypeStatistics();
+        // connect(_addComponent_B53_Button, &ElaToolButton::clicked, this, [&] {
+        //     // 添加B53设备
+        //     qDebug() << allocateNextAvailableCoordinateForType("B53");
+        // });
     }
     // ui_->label_nowSearch->hide();
     initSerialPort();
@@ -107,7 +111,6 @@ void MainWindow::GetConstructConfig() {
 
 void MainWindow::SaveConstructConfig() {
 }
-
 
 void MainWindow::InitConfig() {
     config_main_ini_ = new ConfigClass("main.ini", QSettings::IniFormat);

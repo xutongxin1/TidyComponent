@@ -265,7 +265,35 @@ void MainWindow::AnalyzeAddingComponentData(const QString &CID, const QJsonObjec
         component.pcb_svg_FileUrl.append(filename);
     }
 }
+void MainWindow::AddComponentLogic_0(const QString &type) {
+    _addComponent_Type=type;
+    _addComponent_DockhArea->show();
+    _showInfo_Widget->hide();
+    _infoDockWidget->setWindowTitle("新增元器件向导");
+    _infoDockWidget->setWidget(_addComponent_DockhArea);
+    _addComponent_WaitText->hide();
+    _addComponent_busyRing->hide();
+    _addComponent_DownloadProgressRing->hide();
+    _addComponent_CheckInfoText->hide();
+    _addComponent_DownloadText->hide();
+    _addComponent_OpenText->hide();
+    _addComponent_EditBox->show();
+    _addComponent_EditBoxText->show();
+    // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
+    resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
+    _addComponent_ProgressBar->setValue(20);
 
+    isAddingComponent = true;
+    _addComponentStep = 1;
+    _addComponent_CancelButton->setEnabled(true);
+    _addComponent_B53_Button->setEnabled(false);
+    _addComponent_EditBox->clear();
+    _addComponent_EditBox->setFocus();
+    _addComponentButtonNext->setEnabled(false);
+    _addComponent_CheckInfoWidget->hide();
+
+    _addingComponentObj = new component_record_struct;
+}
 void MainWindow::AddComponentLogic_1() {
     _addComponent_EditBoxText->hide();
 
@@ -390,7 +418,7 @@ void MainWindow::AddComponentLogic_4() {
     QTimer::singleShot(2000, [&]() {
         //关闭向导
         _addComponent_WaitText->hide();
-        _addComponent_BeginButton->setEnabled(true);
+        _addComponent_B53_Button->setEnabled(true);
         _addComponent_DockhArea->hide();
         _showInfo_Widget->show();
         _infoDockWidget->setWindowTitle("元器件信息");
@@ -403,7 +431,7 @@ void MainWindow::AddComponentLogic_4() {
 void MainWindow::cancelAddComponentLogic() {
     _addComponent_ProgressBar->setValue(20);
     _addComponent_timer->stop();
-    _addComponent_BeginButton->setEnabled(true);
+    _addComponent_B53_Button->setEnabled(true);
     _addComponent_DockhArea->hide();
     _showInfo_Widget->show();
     _infoDockWidget->setWindowTitle("元器件信息");
@@ -420,36 +448,8 @@ void MainWindow::initAddComponentLogic() {
     connect(_addComponent_CancelButton, &ElaToolButton::clicked, this, [&] {
         cancelAddComponentLogic();
     });
-    connect(_addComponent_BeginButton, &ElaToolButton::clicked, this, [&] {
-        _addComponent_DockhArea->show();
-        _showInfo_Widget->hide();
-        _infoDockWidget->setWindowTitle("新增元器件向导");
-        _infoDockWidget->setWidget(_addComponent_DockhArea);
-        _addComponent_WaitText->hide();
-        _addComponent_busyRing->hide();
-        _addComponent_DownloadProgressRing->hide();
-        _addComponent_CheckInfoText->hide();
-        _addComponent_DownloadText->hide();
-        _addComponent_OpenText->hide();
-        _addComponent_EditBox->show();
-        _addComponent_EditBoxText->show();
-        // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
-        resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
-        _addComponent_ProgressBar->setValue(20);
-
-        isAddingComponent = true;
-        _addComponentStep = 1;
-        _addComponent_CancelButton->setEnabled(true);
-        _addComponent_BeginButton->setEnabled(false);
-        _addComponent_EditBox->clear();
-        _addComponent_EditBox->setFocus();
-        _addComponentButtonNext->setEnabled(false);
-        _addComponent_CheckInfoWidget->hide();
-
-        _addingComponentObj = new component_record_struct;
-        // if (DEBUG)
-        //     _addComponent_EditBox->setText("52717");
-        // AddComponentLogic();
+    connect(_addComponent_B53_Button, &ElaToolButton::clicked, this, [&] {
+        AddComponentLogic_0("B53");
     });
     connect(_addComponent_EditBox, &ElaLineEdit::textChanged, this, [&] {
         if (_addComponentStep == 1) {
