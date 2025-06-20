@@ -128,6 +128,8 @@ class MainWindow : public ElaWindow {
         EDAChromeHttpServer *EDA_Server;
         ElaToolButton *_openEDAChromeButton;
         ElaToolButton * _addComponent_B53_Button;
+        QPair<QString, QString> _addComponent_Allocate;
+        bool isConnectedToMesh=false;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);

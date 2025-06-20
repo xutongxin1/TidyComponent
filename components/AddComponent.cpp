@@ -345,12 +345,24 @@ void MainWindow::AddComponentLogic_1() {
                    _addComponent_ProgressBar->setValue(60);
                    _addComponentButtonNext->setEnabled(true);
                    _addComponentStep = 2;
-               }, [&](QNetworkReply::NetworkError error) {
+               }, [&](const QNetworkReply::NetworkError error,const QString& ErrorInfo) {
                    if (error == QNetworkReply::NetworkError::InternalServerError) {
                        ShowErrorInfo("服务端错误，请联系服务器管理员");
                    }
-                   // qWarning() << "无法获取元器件信息 " << error;
-                   ShowErrorInfo("？");
+                   qWarning() << "无法获取元器件信息 " << ErrorInfo;
+                   //如果ErrorInfo包含detail json字段
+                     if (ErrorInfo.contains("detail")) {
+                          QJsonDocument doc = QJsonDocument::fromJson(ErrorInfo.toUtf8());
+                          QJsonObject obj = doc.object();
+                          if (obj.contains("detail")) {
+                            QString detail = obj["detail"].toString();
+                            ShowWarningInfo(detail);
+                          } else {
+                            ShowErrorInfo("服务端错误，请联系服务器管理员");
+                          }
+                     } else {
+                          ShowErrorInfo("服务端错误，请联系服务器管理员");
+                     }
                    cancelAddComponentLogic();
                }, [&] {
                    ShowErrorInfo("请求超时，请检查网络连接");
@@ -396,6 +408,8 @@ void MainWindow::AddComponentLogic_3() {
     _addComponent_timeLeft = 600; // 剩余时间60秒
     // 每秒更新一次剩余时间
 
+    _addComponent_Allocate= allocateNextAvailableCoordinateForType("B53");
+    qDebug()<< "分配的坐标：" << _addComponent_Allocate;
     _addComponent_timer->start(100);
     if (DEBUG) {
         QTimer::singleShot(3000, [&]() {
@@ -460,6 +474,9 @@ void MainWindow::initAddComponentLogic() {
             }
         }
     });
+    connect(_addComponent_EditBox,&ElaLineEdit::returnPressed, this,[&] {
+        emit(_addComponentButtonNext->click());
+    });
     connect(_addComponentButtonNext, &ElaToolButton::clicked, this, [&] {
         switch (_addComponentStep) {
             case 1:
@@ -482,7 +499,7 @@ void MainWindow::initAddComponentLogic() {
             return;
         }
         _addComponent_timeLeft--; // 每秒减少1秒
-        _addComponent_WaitText->setText("请在" + QString::number((_addComponent_timeLeft / 10)) + "s内打开闪蓝灯的格子");
+        _addComponent_WaitText->setText("请在" + QString::number((_addComponent_timeLeft / 10)) + "s内打开闪蓝灯的格子\n"+"MAC地址 "+ _addComponent_Allocate.first +"\n内部地址 "+_addComponent_Allocate.second);
         if (_addComponent_timeLeft == 0) {
             qDebug() << "计时结束!";
             _addComponent_timer->stop(); // 停止计时器

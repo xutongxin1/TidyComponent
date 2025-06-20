@@ -42,7 +42,7 @@ class GetRequestHandler : public QObject {
         template<typename SuccessHandler>
         GetRequestHandler(const QString &url,
                           SuccessHandler onSuccess,
-                          std::function<void(QNetworkReply::NetworkError)> onError = nullptr,
+                          std::function<void(QNetworkReply::NetworkError,QString)> onError = nullptr,
                           std::function<void()> onTimeOut = nullptr,
                           int timeout = 5000, // 默认超时时间为 5000 毫秒
                           QObject *parent = nullptr)
@@ -85,7 +85,7 @@ class GetRequestHandler : public QObject {
                         } else {
                             // 无法转换为 QJsonObject 时调用错误处理
                             if (m_onError) {
-                                m_onError(QNetworkReply::UnknownNetworkError); // 使用HTTP 202
+                                m_onError(QNetworkReply::UnknownNetworkError,QString()); // 使用HTTP 202
                             }
                         }
                     } else {
@@ -94,7 +94,7 @@ class GetRequestHandler : public QObject {
                 } else {
                     // 调用失败的回调函数（如果提供了）
                     if (m_onError) {
-                        m_onError(reply->error());
+                        m_onError(reply->error(),reply->readAll());
                     }
                 }
                 // 清理
@@ -104,7 +104,7 @@ class GetRequestHandler : public QObject {
         }
 
     private:
-        std::function<void(QNetworkReply::NetworkError)> m_onError;
+        std::function<void(QNetworkReply::NetworkError,QString)> m_onError;
         std::function<void()> m_onTimeOut;
         int m_timeout;
 };
@@ -113,7 +113,7 @@ class GetRequestHandler : public QObject {
 template<typename SuccessHandler>
 void getRequest(const QString &url,
                 SuccessHandler onSuccess,
-                std::function<void(QNetworkReply::NetworkError)> onError = nullptr,
+                std::function<void(QNetworkReply::NetworkError,QString)> onError = nullptr,
                 std::function<void()> onTimeOut = nullptr,
                 int timeout = 8000) {
     // 创建请求处理器

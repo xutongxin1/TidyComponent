@@ -77,7 +77,7 @@ void MainWindow::getDailySection() const {
                        _promotionCard->setSubTitle(word);
                    }
                },
-               [](QNetworkReply::NetworkError error) {
+               [](QNetworkReply::NetworkError error,const QString& ErrorInfo) {
                    // 处理失败的错误信息
                    qWarning() << "无法获取每日一言 " << error;
                });

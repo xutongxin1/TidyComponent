@@ -51,10 +51,11 @@ void SerialPortManager::setDisconnectedCallback(std::function<void()> callback) 
 }
 
 bool SerialPortManager::writeData(const QString &data) const {
+
     if (m_connectionStatus != Connected || !m_serialPort->isOpen()) {
         return false;
     }
-
+    qDebug() << "串口发送" << data;
     QByteArray byteData = data.toUtf8();
     qint64 bytesWritten = m_serialPort->write(byteData);
 

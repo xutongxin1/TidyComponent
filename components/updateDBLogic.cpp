@@ -367,7 +367,7 @@ void MainWindow::updateOneComponent(const QString &CID) {
                    SaveSingleComponent(_tmpComponentObj);
                    _showInfo_updateInfoButton->setEnabled(true);
                    ShowSuccessInfo(CID + "信息更新成功");
-               }, [&](const QNetworkReply::NetworkError error) {
+               }, [&](const QNetworkReply::NetworkError error,const QString& ErrorInfo) {
                    if (error == QNetworkReply::NetworkError::InternalServerError) {
                        ShowErrorInfo("服务端错误，请联系服务器管理员");
                    }
