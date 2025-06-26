@@ -192,8 +192,8 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
         return;
     }
 
-    component_record_struct record = model->component_record_Hash.value(jlcid);
-    SaveSingleComponent(record);
+    component_record_struct *record = model->component_record_Hash.value(jlcid);
+    SaveSingleComponent(*record);
 }
 
 // 3. 更新设备配置文件
@@ -323,7 +323,7 @@ bool MainWindow::isExistingComponent(const QString &CID) const {
 }
 void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj) const {
     model->component_record.append(_addingComponentObj);
-    model->component_record_Hash.insert(_addingComponentObj.jlcid, _addingComponentObj);
+    model->component_record_Hash.insert(_addingComponentObj.jlcid, &(model->component_record.last()));
     // if (model->component_record_Hash.contains("C569043")) {
     //     const std::shared_ptr<component_record_struct> tmp = model->component_record_Hash.value("C569043");
     //     qDebug() << tmp->name;
@@ -337,11 +337,11 @@ void MainWindow::replaceComponentToLib(const component_record_struct &_replacing
             if (model->component_record[i].jlcid == _replacingComponentObj.jlcid) {
                 // 替换列表中的元素
                 model->component_record[i] = _replacingComponentObj;
+                // 更新哈希表中的元素
+                model->component_record_Hash[_replacingComponentObj.jlcid] = &(model->component_record[i]);
                 break;
             }
         }
-        // 更新哈希表中的元素
-        model->component_record_Hash[_replacingComponentObj.jlcid] = _replacingComponentObj;
     } else {
         // 如果不存在，直接添加
         addComponentToLib(_replacingComponentObj);

@@ -144,14 +144,47 @@ class ComponentTableModel : public QAbstractTableModel {
             if (!index.isValid())
                 return Qt::NoItemFlags;
 
-            Qt::ItemFlags flags = QAbstractTableModel::flags(index);
+            // Qt::ItemFlags flags = QAbstractTableModel::flags(index);
+            //
+            // // 设置所有单元格为可编辑
+            // flags |= Qt::ItemIsEditable;
+            //
+            // return flags;
 
-            // 设置所有单元格为可编辑
-            flags |= Qt::ItemIsEditable;
+            // 只允许第一列(列索引为0)可编辑
+            if (index.column() == 0) {
+                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+            }
 
-            return flags;
+            // 其他列只能选择，不能编辑
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
+        virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
+            if (value.toString().isEmpty()) {
+                // 数据不能为空，返回 false 表示修改失败
+                return false;
+            }
 
+            if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
+                return false;
+
+            if (index.column()==0) {
+                // 只允许修改第一列的颜色
+                if (role == Qt::EditRole) {
+                    QString newColor = value.toString();
+                    if (newColor.isEmpty()) {
+                        return false; // 颜色不能为空
+                    }
+                    component_record[index.row()].color = newColor;
+                    emit dataChanged(index, index, {role}); // 通知视图数据已更改
+                    return true;
+                }
+            } else {
+                // 其他列不允许编辑
+                return false;
+            }
+            return false;
+        }
         // virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
         //     if (value.toString().isEmpty()) {
         //         // 数据不能为空，返回 false 表示修改失败
@@ -265,8 +298,8 @@ class ComponentTableModel : public QAbstractTableModel {
         QVector<int> fuzzyIndex;
         QVector<int> BomIndex_NOTExist;
         QVector<int> BomIndex_Exist;
-        QVector<component_record_struct> component_record;
-        QHash<QString, component_record_struct> component_record_Hash;
+        QList<component_record_struct> component_record;
+        QHash<QString, component_record_struct*> component_record_Hash;
         struct DisplayItem {
             enum Type { Label, Data } type = Data;
             QString label = QString(); // 对于 Label 类型

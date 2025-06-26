@@ -30,34 +30,34 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
         if (const QString cid = selectedIndexes[0].sibling(selectedIndexes[0].row(), 4).data(Qt::DisplayRole).toString()
             ; model->
             component_record_Hash.contains(cid)) {
-            const component_record_struct record = model->component_record_Hash.value(cid);
+            component_record_struct *record = model->component_record_Hash.value(cid);
 
             //更新申请逻辑
             UpdateApplyLogic(record);
 
-            _showInfo_model->setComponentData(record);
+            _showInfo_model->setComponentData(*record);
 
             //设置png
-            if (record.png_FileUrl.empty()) {
+            if (record->png_FileUrl.empty()) {
                 _showInfo_PNGView->hide();
             } else {
                 _showInfo_PNGView->clearPromotionCard();
-                for (int j = 0; j < record.png_FileUrl.size(); ++j) {
+                for (int j = 0; j < record->png_FileUrl.size(); ++j) {
                     switch (j) {
                         case 0:
-                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard1, record.png_FileUrl[j]);
+                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard1, record->png_FileUrl[j]);
                             break;
                         case 1:
-                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard2, record.png_FileUrl[j]);
+                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard2, record->png_FileUrl[j]);
                             break;
                         case 2:
-                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard3, record.png_FileUrl[j]);
+                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard3, record->png_FileUrl[j]);
                             break;
                         case 3:
-                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard4, record.png_FileUrl[j]);
+                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard4, record->png_FileUrl[j]);
                             break;
                         case 4:
-                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard5, record.png_FileUrl[j]);
+                            AddCardToShow(_showInfo_PNGView, _showInfo_PNGCard5, record->png_FileUrl[j]);
                             break;
 
                         default: ;
@@ -66,12 +66,12 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
             }
 
             //设置sch和pcb
-            if (record.sch_svg_FileUrl.empty()) {
+            if (record->sch_svg_FileUrl.empty()) {
                 _showInfo_PNGView->hide();
             } else {
                 int sch_pcb_count = 0;
                 _showInfo_SCHPCBview->clearPromotionCard();
-                for (const auto &j : record.sch_svg_FileUrl) {
+                for (const auto &j : record->sch_svg_FileUrl) {
                     switch (sch_pcb_count) {
                         case 0:
                             AddCardToShow(_showInfo_SCHPCBview, _showInfo_SCHCard1, j, false);
@@ -93,7 +93,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
                     sch_pcb_count++;
                 }
                 sch_pcb_count = 0;
-                for (const auto &j : record.pcb_svg_FileUrl) {
+                for (const auto &j : record->pcb_svg_FileUrl) {
                     switch (sch_pcb_count) {
                         case 0:
                             AddCardToShow(_showInfo_SCHPCBview, _showInfo_PCBCard1, j, false);
@@ -143,7 +143,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
             //绑定_showInfo_OpenWebSiteButton按钮逻辑
             disconnect(_showInfo_OpenWebSiteButton, nullptr, nullptr, nullptr);
             connect(_showInfo_OpenWebSiteButton, &ElaToolButton::clicked, this, [=](bool check) {
-                QDesktopServices::openUrl(QUrl("https://item.szlcsc.com/" + QString(record.PID) + ".html"));
+                QDesktopServices::openUrl(QUrl("https://item.szlcsc.com/" + QString(record->PID) + ".html"));
             });
 
             disconnect(_showInfo_updateInfoButton,nullptr,nullptr,nullptr);
@@ -153,7 +153,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
             });
 
             //绑定_showInfo_OpenPDFButton按钮逻辑
-            if (record.pdf_url.isEmpty()) {
+            if (record->pdf_url.isEmpty()) {
                 _showInfo_OpenPDFButton->setDisabled(true);
             } else {
                 _showInfo_OpenPDFButton->setDisabled(false);
@@ -162,7 +162,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
                 } else {
                     disconnect(_showInfo_OpenPDFButton, nullptr, nullptr, nullptr);
                     connect(_showInfo_OpenPDFButton, &ElaToolButton::clicked, this, [=](bool check) {
-                        QDesktopServices::openUrl(QUrl(record.pdf_url.toLatin1()));
+                        QDesktopServices::openUrl(QUrl(record->pdf_url.toLatin1()));
                     });
                 }
             }
@@ -253,4 +253,9 @@ void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, c
     }
 
     view->appendPromotionCard(card);
+}
+
+void MainWindow::updateComponentColor(component_record_struct *record, QColor color) {
+    record->color=color.name();
+    // dis
 }

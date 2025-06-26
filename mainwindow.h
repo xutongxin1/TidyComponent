@@ -29,6 +29,7 @@
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
 #include "ElaText.h"
+#include "QColorAllocator.h"
 #include "SerialPortManager.h"
 
 #define CONFIGPATH QCoreApplication::applicationDirPath()+QString("/config/")
@@ -39,6 +40,12 @@
 #define TEMP_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)
 #define DATASHEET_PATH QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"/info"
 using namespace std;
+
+enum apply_type {
+    apply_type_normal=1,
+    apply_type_light=2,
+    apply_type_voice=3,
+};
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
@@ -130,6 +137,7 @@ class MainWindow : public ElaWindow {
         ElaToolButton * _addComponent_B53_Button;
         QPair<QString, QString> _addComponent_Allocate;
         bool isConnectedToMesh=false;
+        QColorAllocator * colorAllocator;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -138,7 +146,7 @@ class MainWindow : public ElaWindow {
         void findClosestRecords(
             const QVector<component_record_struct> &recordsVector,
             const QString &searchString) const;
-        void UpdateApplyLogic(const component_record_struct &record);
+        void UpdateApplyLogic(component_record_struct *record);
         void search() const;
         void InitEDAChromeHttpServer();
 
@@ -187,6 +195,7 @@ class MainWindow : public ElaWindow {
         void updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
+        void updateComponentColor(component_record_struct *record, QColor color);
 
         void loadDataFromFolder();
         void SaveDataToFolder();
@@ -242,6 +251,7 @@ class MainWindow : public ElaWindow {
         void ShowErrorInfo(const QString &info, const QString &title = QString());
         void UpdateApplyReturnUI();
         void InitApplyReturnUI();
+        void ApplyComponent(component_record_struct *record, ::apply_type apply_type, led_mode_t led_mode);
         void InitAddComponentDockUI();
         void SerialDataReceived(const QString &data);
         void getDailySection() const;

@@ -7,77 +7,83 @@
 #include <QColorDialog>
 #include <QStyledItemDelegate>
 
-// 创建自定义委托类，继承自 QStyledItemDelegate
+#include "ElaColorDialog.h"
+
 class ColorDelegate : public QStyledItemDelegate {
-    Q_OBJECT
-public:
-    explicit ColorDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+        Q_OBJECT
 
-    // 创建编辑器（颜色选择器）
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+    public:
+        explicit ColorDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
+
+        }
+        // 创建编辑器（颜色选择器）
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const override {
+            if (index.column() == 0) {
+                // 检查单元格文本，如果是"就绪"则不创建颜色选择器
+                QString cellText = index.model()->data(index, Qt::DisplayRole).toString();
+                if (cellText == "就绪") {
+                    return nullptr; // 不创建编辑器
+                }
+                // QString CID = index.model()->data(index.sibling(index.row(), index.column() + 4), Qt::DisplayRole).
+                //     toString();
+                // 使用 ElaColorDialog 替代 QColorDialog
+                ElaColorDialog * editor = new ElaColorDialog();
+                QColor color(cellText);
+                if (color.isValid()) {
+                    editor->setCurrentColor(color);
+                }
+                // connect(editor, &ElaColorDialog::colorSelected, this, [&,index](const QColor &newColor) {
+                //     // 当颜色变化时，发出信号
+                //     QAbstractItemModel *model = const_cast<QAbstractItemModel *>(index.model());
+                //     model->setData(index, newColor.name(), Qt::EditRole);
+                // });
+                return editor;
+            } else {
+                return QStyledItemDelegate::createEditor(parent, option, index);
+            }
+        }
+
+        // // 设置编辑器数据（当前颜色）
+        // void setEditorData(QWidget *editor, const QModelIndex &index) const override {
+        //     if (index.column() == 0) {
+        //         ElaColorDialog *colorDialog = qobject_cast<ElaColorDialog *>(editor);
+        //         if (colorDialog) {
+        //             QString colorName = index.model()->data(index, Qt::EditRole).toString();
+        //             QColor color(colorName);
+        //             if (color.isValid()) {
+        //                 colorDialog->setCurrentColor(color);
+        //             }
+        //         }
+        //     } else {
+        //         QStyledItemDelegate::setEditorData(editor, index);
+        //     }
+        // }
+
+        void setModelData(QWidget *editor, QAbstractItemModel *model,
                           const QModelIndex &index) const override {
-        if (index.column() == 0) {
-            QColorDialog *editor = new QColorDialog(parent);
-            editor->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::DontUseNativeDialog);
-            return editor;
-        } else {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
-    }
+            if (index.column() == 0) {
+                ElaColorDialog *colorDialog = qobject_cast<ElaColorDialog *>(editor);
+                if (colorDialog) {
+                    QColor color = colorDialog->getCurrentColor();
+                    if (color.isValid()) {
+                        // // 获取原来的颜色进行比较
+                        // QString oldColorName = model->data(index, Qt::EditRole).toString();
+                        // QColor oldColor(oldColorName);
 
-    // 设置编辑器数据（当前颜色）
-    void setEditorData(QWidget *editor, const QModelIndex &index) const override {
-        if (index.column() == 0) {
-            QColorDialog *colorDialog = qobject_cast<QColorDialog *>(editor);
-            QString colorName = index.model()->data(index, Qt::EditRole).toString();
-            QColor color(colorName);
-            if (color.isValid()) {
-                colorDialog->setCurrentColor(color);
+                        // 设置新颜色到模型
+                        model->setData(index, color.name(), Qt::EditRole);
+
+                        // // 如果颜色发生了变化，发出信号
+                        // if (oldColor != color) {
+                        //     emit colorChanged(index, color);
+                        // }
+                    }
+                }
+            } else {
+                QStyledItemDelegate::setModelData(editor, model, index);
             }
-        } else {
-            QStyledItemDelegate::setEditorData(editor, index);
         }
-    }
-
-    // 将编辑器中的数据设置回模型
-    void setModelData(QWidget *editor, QAbstractItemModel *model,
-                      const QModelIndex &index) const override {
-        if (index.column() == 0) {
-            QColorDialog *colorDialog = qobject_cast<QColorDialog *>(editor);
-            QColor color = colorDialog->currentColor();
-            if (color.isValid()) {
-                model->setData(index, color.name(), Qt::EditRole);
-                // QLinearGradient  back(0,0,100,30);
-                // back.setColorAt(0,Qt::white);
-                // back.setColorAt(0.5,Qt::green);
-                // back.setColorAt(1,Qt::blue);
-                // model->setData(index, QBrush(back), Qt::BackgroundRole);
-            }
-        } else {
-            QStyledItemDelegate::setModelData(editor, model, index);
-        }
-    }
-
-    // // **重写 paint 方法，确保背景颜色被正确绘制**
-    // void paint(QPainter *painter, const QStyleOptionViewItem &option,
-    //            const QModelIndex &index) const override {
-    //     QStyleOptionViewItem opt = option;
-    //     initStyleOption(&opt, index);
-    //
-    //     // 检查模型是否提供了背景颜色
-    //     QVariant background = index.data(Qt::BackgroundRole);
-    //     if (background.canConvert<QBrush>()) {
-    //         opt.backgroundBrush = qvariant_cast<QBrush>(background);
-    //     }
-    //
-    //     // 调用基类的 paint 方法进行绘制
-    //     QStyledItemDelegate::paint(painter, opt, index);
-    // }
 };
-
-
-
-
-
 
 #endif //COLORDELEGATE_H
