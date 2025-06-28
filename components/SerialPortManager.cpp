@@ -172,6 +172,7 @@ void SerialPortManager::onSerialPortReadyRead() {
     if (m_serialPort->isOpen()) {
         QByteArray data = m_serialPort->readAll();
         QString message = QString::fromUtf8(data);
+        qDebug()<<"串口接收" << message;
         processCompleteMessages(message);
     }
 }

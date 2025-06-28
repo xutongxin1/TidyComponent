@@ -29,8 +29,8 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
     if (selectedIndexes[0].isValid()) {
         if (const QString cid = selectedIndexes[0].sibling(selectedIndexes[0].row(), 4).data(Qt::DisplayRole).toString()
             ; model->
-            component_record_Hash.contains(cid)) {
-            component_record_struct *record = model->component_record_Hash.value(cid);
+            component_record_Hash_cid.contains(cid)) {
+            component_record_struct *record = model->component_record_Hash_cid.value(cid);
 
             //更新申请逻辑
             UpdateApplyLogic(record);

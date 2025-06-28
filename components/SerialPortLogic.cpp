@@ -80,4 +80,32 @@ void MainWindow::initSerialPort() {
         ShowSuccessInfo("MESH连接正常");
         isConnectedToMesh = true;
     });
+
+    serialManager->connectPattern("0xC302 10", [&](const QString &message) {
+        qDebug() << "元器件取出响应:" << message;
+        QStringList parts = message.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() >= 4) {
+            QString macAddress,coordinate;
+            if (parts[2] == "10") {
+                macAddress = parts[3];
+                coordinate = parts[4];
+            } else {
+                macAddress = parts[2];
+                coordinate = parts[3];
+            }
+
+            qDebug() << "提取的MAC地址:" << macAddress;
+            qDebug() << "提取的位置:" << coordinate;
+            if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
+                if (record->color != "就绪") {
+                    ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
+                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                    record->color = "就绪";
+                } else {
+                    ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请取出");
+                }
+            }
+        }
+    });
 }

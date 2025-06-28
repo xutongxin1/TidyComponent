@@ -187,12 +187,12 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     }
 }
 void MainWindow::SaveSingleComponent(const QString &jlcid) {
-    if (!model->component_record_Hash.contains(jlcid)) {
+    if (!model->component_record_Hash_cid.contains(jlcid)) {
         qWarning() << "找不到jlcid：" << jlcid;
         return;
     }
 
-    component_record_struct *record = model->component_record_Hash.value(jlcid);
+    component_record_struct *record = model->component_record_Hash_cid.value(jlcid);
     SaveSingleComponent(*record);
 }
 
@@ -319,11 +319,12 @@ void MainWindow::deleteSingleComponent(const QString &jlcid) const {
 }
 
 bool MainWindow::isExistingComponent(const QString &CID) const {
-    return model->component_record_Hash.contains(CID);
+    return model->component_record_Hash_cid.contains(CID);
 }
 void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj) const {
     model->component_record.append(_addingComponentObj);
-    model->component_record_Hash.insert(_addingComponentObj.jlcid, &(model->component_record.last()));
+    model->component_record_Hash_cid.insert(_addingComponentObj.jlcid, &(model->component_record.last()));
+    model->component_record_Hash_MACD.insert(_addingComponentObj.MAC+_addingComponentObj.coordinate, &(model->component_record.last()));
     // if (model->component_record_Hash.contains("C569043")) {
     //     const std::shared_ptr<component_record_struct> tmp = model->component_record_Hash.value("C569043");
     //     qDebug() << tmp->name;
@@ -331,14 +332,15 @@ void MainWindow::addComponentToLib(const component_record_struct &_addingCompone
 }
 void MainWindow::replaceComponentToLib(const component_record_struct &_replacingComponentObj) const {
     // 检查该 jlcid 是否已存在于哈希表中
-    if (model->component_record_Hash.contains(_replacingComponentObj.jlcid)) {
+    if (model->component_record_Hash_cid.contains(_replacingComponentObj.jlcid)) {
         // 如果存在，先在列表中找到并替换
         for (int i = 0; i < model->component_record.size(); ++i) {
             if (model->component_record[i].jlcid == _replacingComponentObj.jlcid) {
                 // 替换列表中的元素
                 model->component_record[i] = _replacingComponentObj;
                 // 更新哈希表中的元素
-                model->component_record_Hash[_replacingComponentObj.jlcid] = &(model->component_record[i]);
+                model->component_record_Hash_cid[_replacingComponentObj.jlcid] = &(model->component_record[i]);
+                model->component_record_Hash_MACD[_replacingComponentObj.MAC+_replacingComponentObj.coordinate] = &(model->component_record[i]);
                 break;
             }
         }

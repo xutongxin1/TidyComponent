@@ -299,7 +299,8 @@ class ComponentTableModel : public QAbstractTableModel {
         QVector<int> BomIndex_NOTExist;
         QVector<int> BomIndex_Exist;
         QList<component_record_struct> component_record;
-        QHash<QString, component_record_struct*> component_record_Hash;
+        QHash<QString, component_record_struct*> component_record_Hash_cid;
+        QHash<QString, component_record_struct*> component_record_Hash_MACD;
         struct DisplayItem {
             enum Type { Label, Data } type = Data;
             QString label = QString(); // 对于 Label 类型
