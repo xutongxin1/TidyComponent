@@ -14,7 +14,6 @@ class ColorDelegate : public QStyledItemDelegate {
 
     public:
         explicit ColorDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
-
         }
         // 创建编辑器（颜色选择器）
         QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -22,13 +21,13 @@ class ColorDelegate : public QStyledItemDelegate {
             if (index.column() == 0) {
                 // 检查单元格文本，如果是"就绪"则不创建颜色选择器
                 QString cellText = index.model()->data(index, Qt::DisplayRole).toString();
-                if (cellText == "就绪") {
+                if (cellText == "就绪" || cellText == "已取出") {
                     return nullptr; // 不创建编辑器
                 }
                 // QString CID = index.model()->data(index.sibling(index.row(), index.column() + 4), Qt::DisplayRole).
                 //     toString();
                 // 使用 ElaColorDialog 替代 QColorDialog
-                ElaColorDialog * editor = new ElaColorDialog();
+                ElaColorDialog *editor = new ElaColorDialog();
                 QColor color(cellText);
                 if (color.isValid()) {
                     editor->setCurrentColor(color);

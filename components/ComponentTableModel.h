@@ -112,7 +112,8 @@ class ComponentTableModel : public QAbstractTableModel {
                 case Qt::BackgroundRole:
                     if (index.column() == 0) {
                         if (item.type == DisplayItem::Data) {
-                            if (component_record[item.dataIndex].color == "就绪") {
+                            if (component_record[item.dataIndex].color == "就绪" || component_record[item.dataIndex].color
+                                == "已取出") {
                                 return QVariant();
                             } else {
                                 return QBrush(QColor(component_record[item.dataIndex].color));
@@ -168,7 +169,7 @@ class ComponentTableModel : public QAbstractTableModel {
             if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
                 return false;
 
-            if (index.column()==0) {
+            if (index.column() == 0) {
                 // 只允许修改第一列的颜色
                 if (role == Qt::EditRole) {
                     QString newColor = value.toString();
@@ -184,6 +185,15 @@ class ComponentTableModel : public QAbstractTableModel {
                 return false;
             }
             return false;
+        }
+        // 更新某一列数据的方法（带角色参数）
+        void updateColumnWithRoles(int column, const QVector<int> &roles = {Qt::DisplayRole}) {
+            // 更新你的数据...
+            QModelIndex topLeft = index(0, column);
+            QModelIndex bottomRight = index(rowCount() - 1, column);
+
+            // 指定更新的角色（如DisplayRole, BackgroundRole等）
+            emit dataChanged(topLeft, bottomRight, roles);
         }
         // virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
         //     if (value.toString().isEmpty()) {
@@ -299,8 +309,8 @@ class ComponentTableModel : public QAbstractTableModel {
         QVector<int> BomIndex_NOTExist;
         QVector<int> BomIndex_Exist;
         QList<component_record_struct> component_record;
-        QHash<QString, component_record_struct*> component_record_Hash_cid;
-        QHash<QString, component_record_struct*> component_record_Hash_MACD;
+        QHash<QString, component_record_struct *> component_record_Hash_cid;
+        QHash<QString, component_record_struct *> component_record_Hash_MACD;
         struct DisplayItem {
             enum Type { Label, Data } type = Data;
             QString label = QString(); // 对于 Label 类型

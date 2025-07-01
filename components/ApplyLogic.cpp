@@ -67,6 +67,8 @@ void MainWindow::InitApplyReturnUI() {
 void MainWindow::ApplyComponent(component_record_struct *record, apply_type apply_type,led_mode_t led_mode) {
     QColor color = colorAllocator->allocateColor(LED_MODE_STATIC);
     record->color=color.name();
+    model->updateColumnWithRoles(0);
+
     QString tmp=record->MAC+" "+record->coordinate+" "+ color.name()+" "+QString::number(led_mode);
     //TODO:分配颜色方式w
 
