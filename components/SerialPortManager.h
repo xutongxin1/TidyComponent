@@ -52,6 +52,7 @@ class SerialPortManager : public QObject {
         // 断开特定模式的连接
         void disconnectPattern(const QString &pattern);
 
+        QString m_buffer;
     private slots:
         void attemptConnection();
         void onSerialPortReadyRead();
@@ -78,7 +79,7 @@ class SerialPortManager : public QObject {
 
         // 未匹配消息的默认回调
         MessageCallback m_unmatchedCallback;
-        QString m_buffer;
+
 
         void handleDisconnection();
 };

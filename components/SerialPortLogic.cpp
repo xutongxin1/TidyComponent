@@ -78,6 +78,7 @@ void MainWindow::initSerialPort() {
         connectUserStateAction->setText("已连接到MESH网络");
         ShowSuccessInfo("MESH连接正常");
         isConnectedToMesh = true;
+        serialManager->m_buffer.clear();
     });
     serialManager->connectPattern("0xC001 10", [&](const QString &message) {
         qDebug() << "元器件放回查找响应:" << message;
@@ -97,7 +98,7 @@ void MainWindow::initSerialPort() {
                     ShowSuccessInfo("ID:" + record->jlcid, "元器件查找放回");
                 } else if (record->isApply == ComponentState_Ready) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
-                    ShowWarningInfo("ID:" + record->jlcid+"正在申请放回", "这，这对吗？");
+                    ShowWarningInfo("ID:" + record->jlcid + "正在申请放回", "这，这对吗？");
                 }
             }
         }
@@ -127,6 +128,10 @@ void MainWindow::initSerialPort() {
                     model->updateColumnWithRoles(0);
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请取出");
+                    //客观上认为已经取出了
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
                 }
             }
         }
@@ -157,6 +162,10 @@ void MainWindow::initSerialPort() {
                     model->updateColumnWithRoles(0);
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请放回");
+                    //客观上认为已经放回了
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
                 }
             }
         }
@@ -193,6 +202,29 @@ void MainWindow::initSerialPort() {
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
                 }
+            }
+        }
+    });
+    serialManager->connectPattern("C301SendError ", [&](const QString &message) {
+        QString temp = message;
+        qDebug() << "元器件请求错误:" << message;
+        QTextStream stream(&temp);
+        QString MAC, coordinate, data;
+        stream >> data >> MAC >> coordinate >> data;
+        if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+            if (record->isApply == ComponentState_APPLYIN) {
+                record->isApply = ComponentState_OUT;
+                record->color = "已取出";
+                colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                model->updateColumnWithRoles(0);
+                ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
+            } else if (record->isApply == ComponentState_APPLYOUT) {
+                record->isApply = ComponentState_Ready;
+                record->color = "就绪";
+                colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                model->updateColumnWithRoles(0);
+                ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
             }
         }
     });
