@@ -191,6 +191,7 @@ class MainWindow : public ElaWindow {
 
         void GetConstructConfig();
         void SaveConstructConfig();
+        component_record_struct *split_addr_info(const QString &message) const;
         void initSerialPort();
         void updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
@@ -251,7 +252,8 @@ class MainWindow : public ElaWindow {
         void ShowErrorInfo(const QString &info, const QString &title = QString());
         void UpdateApplyReturnUI();
         void InitApplyReturnUI();
-        void ApplyComponent(component_record_struct *record, ::apply_type apply_type, led_mode_t led_mode);
+        void ApplyComponentOUT(component_record_struct *record, ::apply_type apply_type, led_mode_t led_mode);
+        void ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode);
         void InitAddComponentDockUI();
         void SerialDataReceived(const QString &data);
         void getDailySection() const;

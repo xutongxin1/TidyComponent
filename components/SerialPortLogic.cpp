@@ -2,7 +2,6 @@
 //
 // Created by xtx on 25-5-20.
 //
-
 void MainWindow::initSerialPort() {
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &portInfo : serialPortInfos) {
@@ -80,7 +79,29 @@ void MainWindow::initSerialPort() {
         ShowSuccessInfo("MESH连接正常");
         isConnectedToMesh = true;
     });
+    serialManager->connectPattern("0xC001 10", [&](const QString &message) {
+        qDebug() << "元器件放回查找响应:" << message;
+        if (QStringList parts = message.split(' ', Qt::SkipEmptyParts); parts.size() >= 3) {
+            QString cid;
+            if (parts[2] == "10") {
+                cid = parts[3];
+            } else {
+                cid = parts[2];
+            }
 
+            qDebug() << "提取的CID:" << cid;
+            if (model->component_record_Hash_cid.contains(cid)) {
+                component_record_struct *record = model->component_record_Hash_cid.value(cid);
+                if (record->isApply == ComponentState_OUT) {
+                    ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
+                    ShowSuccessInfo("ID:" + record->jlcid, "元器件查找放回");
+                } else if (record->isApply == ComponentState_Ready) {
+                    ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
+                    ShowWarningInfo("ID:" + record->jlcid+"正在申请放回", "这，这对吗？");
+                }
+            }
+        }
+    });
     serialManager->connectPattern("0xC302 10", [&](const QString &message) {
         qDebug() << "元器件取出响应:" << message;
         QStringList parts = message.split(' ', Qt::SkipEmptyParts);
@@ -98,13 +119,79 @@ void MainWindow::initSerialPort() {
             qDebug() << "提取的位置:" << coordinate;
             if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
                 component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
-                if (record->color != "就绪" && record->color != "已取出") {
+                if (record->isApply == ComponentState_APPLYOUT) {
                     ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
                     colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
                     record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
                     model->updateColumnWithRoles(0);
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请取出");
+                }
+            }
+        }
+    });
+
+    serialManager->connectPattern("0xC303 10", [&](const QString &message) {
+        qDebug() << "元器件放回响应:" << message;
+        QStringList parts = message.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() >= 4) {
+            QString macAddress, coordinate;
+            if (parts[2] == "10") {
+                macAddress = parts[3];
+                coordinate = parts[4];
+            } else {
+                macAddress = parts[2];
+                coordinate = parts[3];
+            }
+
+            qDebug() << "提取的MAC地址:" << macAddress;
+            qDebug() << "提取的位置:" << coordinate;
+            if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
+                if (record->isApply == ComponentState_APPLYIN) {
+                    ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
+                } else {
+                    ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请放回");
+                }
+            }
+        }
+    });
+    serialManager->connectPattern("0xC304 10", [&](const QString &message) {
+        qDebug() << "元器件放回响应:" << message;
+        QStringList parts = message.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() >= 4) {
+            QString macAddress, coordinate;
+            if (parts[2] == "10") {
+                macAddress = parts[3];
+                coordinate = parts[4];
+            } else {
+                macAddress = parts[2];
+                coordinate = parts[3];
+            }
+
+            qDebug() << "提取的MAC地址:" << macAddress;
+            qDebug() << "提取的位置:" << coordinate;
+            if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
+                if (record->isApply == ComponentState_APPLYIN) {
+                    ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
+                } else if (record->isApply == ComponentState_APPLYOUT) {
+                    ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
+                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
+                } else {
+                    ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
                 }
             }
         }

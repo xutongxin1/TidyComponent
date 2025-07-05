@@ -7,7 +7,12 @@
 #include <QAbstractTableModel>
 
 #include "ColorDelegate.h"
-
+enum ComponentState {
+    ComponentState_Ready=1, // 就绪
+    ComponentState_APPLYOUT,// 申请出库
+    ComponentState_OUT, // 已出库
+    ComponentState_APPLYIN, // 申请归还
+};
 struct component_record_struct {
     //以下为展示的部分
     QString name = QString(); //元器件名称
@@ -29,7 +34,7 @@ struct component_record_struct {
     QString pdf_url = QString();
     QString searchKey = QString();
     QString color = QString("就绪");
-    bool isApply = false; //是否被申请
+    ComponentState isApply = ComponentState_Ready; //是否被申请
     // int applyType
     float weight = 0.0f; //器件重量
     QString MAC = QString(); //对应mesh地址

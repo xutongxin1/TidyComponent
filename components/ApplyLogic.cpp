@@ -6,7 +6,7 @@
 void MainWindow::UpdateApplyLogic(component_record_struct *record) {
     //进这个逻辑必然有东西选中
     _noReturnTips->hide();
-    if (record->isApply) {
+    if (record->isApply == ComponentState_OUT) {
         _returnButton->show();
         _applyButton->hide();
         _apply_LightButton->hide();
@@ -27,13 +27,13 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
             disconnect(_apply_LightButton, &ElaToolButton::clicked, this, nullptr);
             disconnect(_apply_Light_VoiceButton, &ElaToolButton::clicked, this, nullptr);
             connect(_applyButton, &ElaToolButton::clicked, this, [=] {
-                ApplyComponent(record, apply_type_normal, LED_MODE_STATIC); //申请逻辑
+                ApplyComponentOUT(record, apply_type_normal, LED_MODE_STATIC); //申请逻辑
             });
             connect(_apply_LightButton, &ElaToolButton::clicked, this, [=] {
-                ApplyComponent(record, apply_type_light, LED_MODE_STATIC); //申请逻辑
+                ApplyComponentOUT(record, apply_type_light, LED_MODE_STATIC); //申请逻辑
             });
             connect(_apply_Light_VoiceButton, &ElaToolButton::clicked, this, [=] {
-                ApplyComponent(record, apply_type_voice, LED_MODE_STATIC); //申请逻辑
+                ApplyComponentOUT(record, apply_type_voice, LED_MODE_STATIC); //申请逻辑
             });
         } else {
             _applyButton->setEnabled(false);
@@ -43,7 +43,6 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
             _apply_LightButton->setToolTip("请先插入用户侧完成连接");
             _apply_Light_VoiceButton->setToolTip("请先插入用户侧完成连接");
         }
-        //TODO: 申请逻辑
     }
 }
 
@@ -64,23 +63,42 @@ void MainWindow::InitApplyReturnUI() {
     _apply_Light_VoiceButton->hide();
 }
 
-void MainWindow::ApplyComponent(component_record_struct *record, apply_type apply_type,led_mode_t led_mode) {
+void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type apply_type, led_mode_t led_mode) {
     QColor color = colorAllocator->allocateColor(LED_MODE_STATIC);
-    record->color=color.name();
+    record->color = color.name();
     model->updateColumnWithRoles(0);
 
-    QString tmp=record->MAC+" "+record->coordinate+" "+ color.name()+" "+QString::number(led_mode);
+    QString tmp = record->MAC + " " + record->coordinate + " " + color.name() + " " + QString::number(led_mode);
     //TODO:分配颜色方式w
 
     if (apply_type == apply_type_normal) {
-        tmp="C301 "+QString::number(10)+" "+tmp;
-    }
-    else if (apply_type == apply_type_light){
-        tmp="C301 "+QString::number(11)+" "+tmp;
-    }
-    else if (apply_type == apply_type_voice){
-        tmp="C301 "+QString::number(12)+" "+tmp;
+        tmp = "C301 " + QString::number(10) + " " + tmp;
+    } else if (apply_type == apply_type_light) {
+        tmp = "C301 " + QString::number(11) + " " + tmp;
+    } else if (apply_type == apply_type_voice) {
+        tmp = "C301 " + QString::number(12) + " " + tmp;
     }
     if (serialManager->writeData(tmp)) {
     }
+    record->isApply = ComponentState_APPLYOUT;
+}
+void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode) {
+    //TODO:灯状态还没想的很清楚
+    QColor color = colorAllocator->allocateColor(LED_MODE_FLASH_FAST_3);
+    record->color = color.name();
+    model->updateColumnWithRoles(0);
+
+    QString tmp = record->MAC + " " + record->coordinate + " " + color.name() + " " + QString::number(led_mode);
+    //TODO:分配颜色方
+
+    if (apply_type == apply_type_normal) {
+        tmp = "C301 " + QString::number(20) + " " + tmp;
+    } else if (apply_type == apply_type_light) {
+        tmp = "C301 " + QString::number(21) + " " + tmp;
+    } else if (apply_type == apply_type_voice) {
+        tmp = "C301 " + QString::number(22) + " " + tmp;
+    }
+    if (serialManager->writeData(tmp)) {
+    }
+    record->isApply = ComponentState_APPLYIN;
 }
