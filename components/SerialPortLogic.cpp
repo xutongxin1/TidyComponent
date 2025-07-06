@@ -152,7 +152,16 @@ void MainWindow::initSerialPort() {
 
             qDebug() << "提取的MAC地址:" << macAddress;
             qDebug() << "提取的位置:" << coordinate;
-            if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
+            if (_addComponentStep==4) {
+                if (macAddress==_addingComponentObj->MAC && coordinate==_addingComponentObj->coordinate) {
+                    _addComponent_isPutInComponent=true;
+
+                }
+                else {
+                    ShowWarningInfo("检测到放入但似乎放错了");
+                }
+            }
+            else if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
                 component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
                 if (record->isApply == ComponentState_APPLYIN) {
                     ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
@@ -226,6 +235,19 @@ void MainWindow::initSerialPort() {
                 model->updateColumnWithRoles(0);
                 ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
             }
+        }
+    });
+    serialManager->connectPattern("0xC001 20 ", [&](const QString &message) {
+        QString temp = message;
+        qDebug() << "NFC写入返回:" << message;
+        QTextStream stream(&temp);
+        QString CID, data;
+        stream >> data >> data >> CID;
+        if (_addComponentStep==3) {
+            if (CID==_addingComponentObj->jlcid) {
+                _addComponent_isNFC_Write_success = true;
+            }
+            //TODO:写入错误处理
         }
     });
 }

@@ -102,3 +102,13 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     }
     record->isApply = ComponentState_APPLYIN;
 }
+void MainWindow::ApplyComponentIN_AddingCompnent(component_record_struct *record) {
+    QString tmp = record->MAC + " " + record->coordinate + " #0000FF " + QString::number(LED_MODE_FLASH_FAST_1);
+    //TODO:分配颜色方
+
+    tmp = "C301 " + QString::number(20) + " " + tmp;
+
+    if (serialManager->writeData(tmp)) {
+    }
+    record->isApply = ComponentState_APPLYIN;
+}

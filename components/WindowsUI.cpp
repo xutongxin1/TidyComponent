@@ -390,7 +390,9 @@ void MainWindow::InitAddComponentDockUI() {
     _addComponent_CheckInfoText->setTextPixelSize(20);
     _addComponent_DownloadText = new ElaText("3. 下载相关资源", this);
     _addComponent_DownloadText->setTextPixelSize(20);
-    _addComponent_OpenText = new ElaText("4. 分配存放点", this);
+    _addComponent_NFCText = new ElaText("4. 请在中心节点刷试管的NFC标签", this);
+    _addComponent_NFCText->setTextPixelSize(20);
+    _addComponent_OpenText = new ElaText("5. 分配存放点", this);
     _addComponent_OpenText->setTextPixelSize(20);
     _addComponent_WaitText = new ElaText("请在60s内打开闪蓝灯的格子", this);
     _addComponent_WaitText->setTextPixelSize(20);
@@ -471,6 +473,7 @@ void MainWindow::InitAddComponentDockUI() {
     addComponentLayout->addWidget(_addComponent_DownloadText);
     addComponentLayout->addWidget(_addComponent_DownloadProgressRing);
 
+    addComponentLayout->addWidget(_addComponent_NFCText);
     addComponentLayout->addWidget(_addComponent_OpenText);
     addComponentLayout->addWidget(_addComponent_WaitText);
 

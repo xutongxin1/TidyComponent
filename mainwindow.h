@@ -94,7 +94,7 @@ class MainWindow : public ElaWindow {
         QTimer *_addComponent_timer;
         int _addComponent_timeLeft;
         int _addComponentStep;
-        bool isAddingComponent;
+        bool _addComponent_isPutInComponent;
 
         ElaPromotionView *_showInfo_PNGView;
         ElaPromotionView *_showInfo_SCHPCBview;
@@ -138,6 +138,8 @@ class MainWindow : public ElaWindow {
         QPair<QString, QString> _addComponent_Allocate;
         bool isConnectedToMesh=false;
         QColorAllocator * colorAllocator;
+        ElaText * _addComponent_NFCText;
+        bool _addComponent_isNFC_Write_success;
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -252,8 +254,9 @@ class MainWindow : public ElaWindow {
         void ShowErrorInfo(const QString &info, const QString &title = QString());
         void UpdateApplyReturnUI();
         void InitApplyReturnUI();
-        void ApplyComponentOUT(component_record_struct *record, ::apply_type apply_type, led_mode_t led_mode);
+        void ApplyComponentOUT(component_record_struct *record, apply_type apply_type, led_mode_t led_mode);
         void ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode);
+        void ApplyComponentIN_AddingCompnent(component_record_struct *record);
         void InitAddComponentDockUI();
         void SerialDataReceived(const QString &data);
         void getDailySection() const;
@@ -265,6 +268,7 @@ class MainWindow : public ElaWindow {
         void AddComponentLogic_2();
         void AddComponentLogic_3();
         void AddComponentLogic_4();
+        void AddComponentLogic_5();
         void cancelAddComponentLogic();
         void initAddComponentLogic();
         QString version_;

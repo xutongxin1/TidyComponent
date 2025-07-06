@@ -266,7 +266,7 @@ void MainWindow::AnalyzeAddingComponentData(const QString &CID, const QJsonObjec
     }
 }
 void MainWindow::AddComponentLogic_0(const QString &type) {
-    _addComponent_Type=type;
+    _addComponent_Type = type;
     _addComponent_DockhArea->show();
     _showInfo_Widget->hide();
     _infoDockWidget->setWindowTitle("新增元器件向导");
@@ -276,6 +276,7 @@ void MainWindow::AddComponentLogic_0(const QString &type) {
     _addComponent_DownloadProgressRing->hide();
     _addComponent_CheckInfoText->hide();
     _addComponent_DownloadText->hide();
+    _addComponent_NFCText->hide();
     _addComponent_OpenText->hide();
     _addComponent_EditBox->show();
     _addComponent_EditBoxText->show();
@@ -283,7 +284,7 @@ void MainWindow::AddComponentLogic_0(const QString &type) {
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     _addComponent_ProgressBar->setValue(20);
 
-    isAddingComponent = true;
+    _addComponent_isPutInComponent = true;
     _addComponentStep = 1;
     _addComponent_CancelButton->setEnabled(true);
     _addComponent_B53_Button->setEnabled(false);
@@ -345,24 +346,24 @@ void MainWindow::AddComponentLogic_1() {
                    _addComponent_ProgressBar->setValue(60);
                    _addComponentButtonNext->setEnabled(true);
                    _addComponentStep = 2;
-               }, [&](const QNetworkReply::NetworkError error,const QString& ErrorInfo) {
+               }, [&](const QNetworkReply::NetworkError error, const QString &ErrorInfo) {
                    if (error == QNetworkReply::NetworkError::InternalServerError) {
                        ShowErrorInfo("服务端错误，请联系服务器管理员");
                    }
                    qWarning() << "无法获取元器件信息 " << ErrorInfo;
                    //如果ErrorInfo包含detail json字段
-                     if (ErrorInfo.contains("detail")) {
-                          QJsonDocument doc = QJsonDocument::fromJson(ErrorInfo.toUtf8());
-                          QJsonObject obj = doc.object();
-                          if (obj.contains("detail")) {
-                            QString detail = obj["detail"].toString();
-                            ShowWarningInfo(detail);
-                          } else {
-                            ShowErrorInfo("服务端错误，请联系服务器管理员");
-                          }
-                     } else {
-                          ShowErrorInfo("服务端错误，请联系服务器管理员");
-                     }
+                   if (ErrorInfo.contains("detail")) {
+                       QJsonDocument doc = QJsonDocument::fromJson(ErrorInfo.toUtf8());
+                       QJsonObject obj = doc.object();
+                       if (obj.contains("detail")) {
+                           QString detail = obj["detail"].toString();
+                           ShowWarningInfo(detail);
+                       } else {
+                           ShowErrorInfo("服务端错误，请联系服务器管理员");
+                       }
+                   } else {
+                       ShowErrorInfo("服务端错误，请联系服务器管理员");
+                   }
                    cancelAddComponentLogic();
                }, [&] {
                    ShowErrorInfo("请求超时，请检查网络连接");
@@ -397,27 +398,38 @@ void MainWindow::AddComponentLogic_2() {
                            _addComponent_DownloadProgressRing->setCurValue(bytesReceived * 100 / bytesTotal);
                        });
     }
-    // _addComponentStep = 3;
 }
 void MainWindow::AddComponentLogic_3() {
     _addComponent_DownloadText->hide();
     _addComponent_DownloadProgressRing->hide();
     _addComponent_WaitText->show();
-    _addComponent_OpenText->show();
-
     _addComponent_timeLeft = 600; // 剩余时间60秒
-    // 每秒更新一次剩余时间
-
-    _addComponent_Allocate= allocateNextAvailableCoordinateForType("B53");
-    qDebug()<< "分配的坐标：" << _addComponent_Allocate;
     _addComponent_timer->start(100);
-    if (DEBUG) {
-        QTimer::singleShot(3000, [&]() {
-            isAddingComponent = false;
-        });
+    _addComponent_isNFC_Write_success=false;
+    if (serialManager->writeData("C002 10 "+_addingComponentObj->jlcid+"\r\n")) {
     }
 }
 void MainWindow::AddComponentLogic_4() {
+    _addComponent_WaitText->show();
+    _addComponent_OpenText->show();
+    _addComponent_isPutInComponent = false; // 设置为false，等待用户放入元器件
+    _addComponent_timeLeft = 600; // 剩余时间60秒
+    // 每秒更新一次剩余时间
+
+    _addComponent_Allocate = allocateNextAvailableCoordinateForType("B53");
+    qDebug() << "分配的坐标：" << _addComponent_Allocate;
+    _addComponent_timer->start(100);
+    _addingComponentObj->MAC = _addComponent_Allocate.first;
+    _addingComponentObj->coordinate = _addComponent_Allocate.second;
+    ApplyComponentIN_AddingCompnent(_addingComponentObj);
+    // if (DEBUG) {
+    //     QTimer::singleShot(3000, [&]() {
+    //         isAddingComponent = false;
+    //     });
+    // }
+}
+
+void MainWindow::AddComponentLogic_5() {
     //清理现场
     _addComponent_WaitText->setText("已完成添加向导");
     _addComponent_ProgressBar->setValue(100);
@@ -474,7 +486,7 @@ void MainWindow::initAddComponentLogic() {
             }
         }
     });
-    connect(_addComponent_EditBox,&ElaLineEdit::returnPressed, this,[&] {
+    connect(_addComponent_EditBox, &ElaLineEdit::returnPressed, this, [&] {
         emit(_addComponentButtonNext->click());
     });
     connect(_addComponentButtonNext, &ElaToolButton::clicked, this, [&] {
@@ -491,15 +503,28 @@ void MainWindow::initAddComponentLogic() {
                 break;
         }
     });
+
     connect(_addComponent_timer, &QTimer::timeout, this, [&] {
-        if (!isAddingComponent) {
-            _addComponent_timer->stop(); // 停止计时器
-            _addComponentStep = 4;
-            AddComponentLogic_4(); //处理下一个逻辑
-            return;
-        }
         _addComponent_timeLeft--; // 每秒减少1秒
-        _addComponent_WaitText->setText("请在" + QString::number((_addComponent_timeLeft / 10)) + "s内打开闪蓝灯的格子\n"+"MAC地址 "+ _addComponent_Allocate.first +"\n内部地址 "+_addComponent_Allocate.second);
+        if (_addComponentStep == 3) {
+            _addComponent_WaitText->setText(
+                "请在" + QString::number((_addComponent_timeLeft / 10)) + "s内将试管的NFC贴到中心节点的NFC区域");
+            if (_addComponent_isNFC_Write_success) {
+                _addComponent_timer->stop(); // 停止计时器
+                _addComponentStep=4;
+                AddComponentLogic_4();
+            }
+        } else {
+            _addComponent_WaitText->setText(
+                "请在" + QString::number((_addComponent_timeLeft / 10)) + "s内打开闪蓝灯的格子\n" + "MAC地址 " +
+                _addComponent_Allocate.first + "\n内部地址 " + _addComponent_Allocate.second);
+            if (_addComponent_isPutInComponent) {
+                _addComponent_timer->stop(); // 停止计时器
+                _addComponentStep = 5;
+                AddComponentLogic_5(); //处理下一个逻辑
+                return;
+            }
+        }
         if (_addComponent_timeLeft == 0) {
             qDebug() << "计时结束!";
             _addComponent_timer->stop(); // 停止计时器
