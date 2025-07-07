@@ -242,6 +242,7 @@ class MainWindow : public ElaWindow {
         QString findDeviceByCoordinate(const QString &type, const QString &coordinate);
 
         bool isExistingComponent(const QString &CID) const;
+        void reactComponentHash() const;
         void addComponentToLib(const component_record_struct &_addingComponentObj) const;
         void replaceComponentToLib(const component_record_struct &_replacingComponentObj) const;
         static void updateSearchKey(component_record_struct &_addingComponentObj);
