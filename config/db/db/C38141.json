@@ -1,0 +1,30 @@
+{
+    "MAC": "D6:3B:46:E5:66:E4",
+    "PID": "39123",
+    "aliases": [
+    ],
+    "coordinate": "112",
+    "device_type": "",
+    "discription": "100nF ±10% 50V",
+    "inventory": "广东仓：8075600\n江苏仓：0",
+    "jlcid": "C38141",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：100nF；精度：±10%；额定电压：50V；温度系数：X7R；",
+    "name": "0805B104K500NT",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C38141/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "C486355_26A10D38EF8C2A5C37091D0039909270.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20200305/C486355_26A10D38EF8C2A5C37091D0039909270.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C38141/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C38141/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C38141/img_2.jpg"
+    ],
+    "price": "1+：0.0246\n10+：0.0189\n40+：0.0164\n80+：0.0145\n480+：0.0137\n1000+：0.0132",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C38141/sch_svg_1.png"
+    ],
+    "weight": 0.043747998774051666
+}
