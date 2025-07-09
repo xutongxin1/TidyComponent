@@ -5,25 +5,6 @@
 
 #include "mainwindow.h"
 
-// 计算两个字符串的相似度（简单实现，可以替换为更复杂的算法）
-// double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
-//     if (a.isEmpty() || b.isEmpty()) return 0.0;
-//     int common = 0;
-//     QStringList wordsA = a.split(' ', Qt::SkipEmptyParts);
-//     QStringList wordsB = b.split(' ', Qt::SkipEmptyParts);
-//
-//     for (const QString &wordA : wordsA) {
-//         for (const QString &wordB : wordsB) {
-//             if (wordA.contains(wordB, Qt::CaseInsensitive) || wordB.contains(wordA, Qt::CaseInsensitive)) {
-//                 common++;
-//                 break;
-//             }
-//         }
-//     }
-//
-//     return static_cast<double>(common) / (wordsA.size() + wordsB.size() - common);
-// }
-
 // 计算两个字符串的Levenshtein距离
 double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
     if (a.isEmpty() || b.isEmpty()) return 0.0;
@@ -68,7 +49,9 @@ bool MainWindow::isExactMatch(const component_record_struct &record, const QStri
         bool found = false;
         if (record.name.contains(word, Qt::CaseInsensitive) ||
             record.discription.contains(word, Qt::CaseInsensitive) ||
-            record.package.contains(word, Qt::CaseInsensitive)) {
+            record.package.contains(word, Qt::CaseInsensitive) ||
+            record.jlcid.contains(word, Qt::CaseInsensitive) ||
+            record.more_data.contains(word, Qt::CaseInsensitive)) {
             found = true;
         } else {
             for (const auto &alias : record.aliases) {
