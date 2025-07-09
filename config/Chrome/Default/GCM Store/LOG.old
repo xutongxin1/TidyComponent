@@ -1,3 +1,2 @@
-2025/06/05-16:47:10.331 514c Reusing MANIFEST C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\GCM Store/MANIFEST-000001
-2025/06/05-16:47:10.332 514c Recovering log #3
-2025/06/05-16:47:10.333 514c Reusing old log C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\GCM Store/000003.log 
+2025/07/09-18:36:19.589 1a0b4 Creating DB C:\GitProject\TidyComponent\cmake\config\Chrome\Default\GCM Store since it was missing.
+2025/07/09-18:36:19.601 1a0b4 Reusing MANIFEST C:\GitProject\TidyComponent\cmake\config\Chrome\Default\GCM Store/MANIFEST-000001

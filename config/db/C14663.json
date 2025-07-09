@@ -1,0 +1,30 @@
+{
+    "MAC": "D6:3B:46:E5:66:E4",
+    "PID": "15331",
+    "aliases": [
+    ],
+    "coordinate": "211",
+    "device_type": "",
+    "discription": "100nF ±10% 50V",
+    "inventory": "广东仓：31884400\n江苏仓：14064700",
+    "jlcid": "C14663",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：100nF；精度：±10%；额定电压：50V；温度系数：X7R；",
+    "name": "CC0603KRX7R9BB104",
+    "package": "0603",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C14663/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "096C4C206003071F5D32E5F0D8E7F8DF.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250214/096C4C206003071F5D32E5F0D8E7F8DF.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C14663/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C14663/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C14663/img_2.jpg"
+    ],
+    "price": "1+：0.0155\n10+：0.0115\n40+：0.0092\n80+：0.0081\n480+：0.0073\n482+：0.0073",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C14663/sch_svg_1.png"
+    ],
+    "weight": 0.03906799852848053
+}

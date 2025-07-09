@@ -1,3 +1,2 @@
-2025/06/05-16:47:08.071 353c Reusing MANIFEST C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\Service Worker\Database/MANIFEST-000001
-2025/06/05-16:47:08.079 353c Recovering log #3
-2025/06/05-16:47:08.079 353c Reusing old log C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\Service Worker\Database/000003.log 
+2025/07/09-18:36:32.691 1a494 Creating DB C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Service Worker\Database since it was missing.
+2025/07/09-18:36:32.700 1a494 Reusing MANIFEST C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Service Worker\Database/MANIFEST-000001

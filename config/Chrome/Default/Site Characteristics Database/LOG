@@ -1,3 +1,15 @@
-2025/06/05-16:50:05.541 7e5c Reusing MANIFEST C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\Site Characteristics Database/MANIFEST-000001
-2025/06/05-16:50:05.542 7e5c Recovering log #3
-2025/06/05-16:50:05.542 7e5c Reusing old log C:\GitProject\TidyComponent\cmakeconfig\Chrome\Default\Site Characteristics Database/000003.log 
+2025/07/09-21:49:57.579 30b00 Reusing MANIFEST C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Site Characteristics Database/MANIFEST-000001
+2025/07/09-21:49:57.582 30b00 Recovering log #3
+2025/07/09-21:49:57.582 30b00 Level-0 table #10: started
+2025/07/09-21:49:57.587 30b00 Level-0 table #10: 376 bytes OK
+2025/07/09-21:49:57.587 30b00 Recovering log #10
+2025/07/09-21:49:57.587 30b00 Reusing old log C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Site Characteristics Database/000010.log 
+2025/07/09-21:49:57.594 30b00 Delete type=0 #3
+2025/07/09-21:49:57.594 30a74 Compacting 4@0 + 0@1 files
+2025/07/09-21:49:57.599 30a74 Generated table #11@0: 5 keys, 381 bytes
+2025/07/09-21:49:57.599 30a74 Compacted 4@0 + 0@1 files => 381 bytes
+2025/07/09-21:49:57.603 30a74 compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/07/09-21:49:57.603 30a74 Delete type=2 #4
+2025/07/09-21:49:57.603 30a74 Delete type=2 #7
+2025/07/09-21:49:57.603 30a74 Delete type=2 #8
+2025/07/09-21:49:57.603 30a74 Delete type=2 #10
