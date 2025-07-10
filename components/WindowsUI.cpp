@@ -215,7 +215,7 @@ void MainWindow::initElaWindow() {
     _searchTypeButton->setIsTransparent(false);
     _searchTypeButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     _searchTypeButton->setBorderRadius(8);
-    _searchTypeButton->setText("搜索方式");
+    _searchTypeButton->setText("搜索模式：模糊");
     _searchTypeButton->setElaIcon(ElaIconType::Filters);
     _searchTypeButton->setIconSize(QSize(35, 35));
     _searchTypeButton->setFixedSize(100, 75);

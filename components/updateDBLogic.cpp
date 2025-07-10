@@ -325,7 +325,8 @@ void MainWindow::reactComponentHash() const {
     model->component_record_Hash_cid.clear();
     model->component_record_Hash_MACD.clear();
     for (int i = 0; i < model->component_record.size(); ++i) {
-        const component_record_struct &record = model->component_record[i];
+        component_record_struct &record = model->component_record[i];
+        updateSearchKey(record);
         model->component_record_Hash_cid.insert(record.jlcid, &model->component_record[i]);
         model->component_record_Hash_MACD.insert(record.MAC + record.coordinate, &model->component_record[i]);
     }

@@ -150,6 +150,7 @@ class MainWindow : public ElaWindow {
             const QString &searchString) const;
         void UpdateApplyLogic(component_record_struct *record);
         void search() const;
+        void searchLogicInit();
         void InitEDAChromeHttpServer();
 
         ~MainWindow() override;

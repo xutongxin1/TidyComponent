@@ -90,15 +90,6 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
         if (isExactMatch(record, searchWords)) {
             model->exacIndex.append(index);
         } else {
-            // 计算模糊相似度
-            // totalSimilarity += calculateSimilarity(record.name, searchString);
-            // totalSimilarity += calculateSimilarity(record.discription, searchString);
-            // totalSimilarity += calculateSimilarity(record.package, searchString);
-            //
-            // for (const auto &alias : record.aliases) {
-            //     totalSimilarity += calculateSimilarity(alias, searchString);
-            // }
-
             // 将相似度存入Map中，键是相似度，值是记录
             if (double totalSimilarity = calculateSimilarity(record.searchKey, searchString); totalSimilarity > 0.0) {
                 similarityMap.insert(totalSimilarity, index);
@@ -111,13 +102,14 @@ void MainWindow::findClosestRecords(const QVector<component_record_struct> &comp
     auto it = similarityMap.end();
     int count = 0;
 
-    while (it != similarityMap.begin() && count < 5) {
-        --it;
-        model->fuzzyIndex.append(it.value());
-        count++;
+    if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
+        while (it != similarityMap.begin() && count < 5) {
+            --it;
+            model->fuzzyIndex.append(it.value());
+            count++;
+        }
     }
 
-    // 你的代码
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
     std::cout << "搜索用时: " << duration << " ms\n";
@@ -149,4 +141,33 @@ void MainWindow::search() const {
     model->updateData();
     //显示搜索结果
     // ShowSomeComponents();
+}
+
+void MainWindow::searchLogicInit() {
+    connect(_searchBox, &QLineEdit::textChanged, this, &MainWindow::search);
+    connect(_searchBox, &QLineEdit::editingFinished, this, [&] {
+        if (_searchBox->text().isEmpty()) {
+            search(); //防止刷新两次
+        }
+    });
+    connect(_resetSearchButton, &ElaToolButton::clicked, this, [&] {
+        _searchBox->clear();
+        search();
+    });
+    connect(_searchTypeButton, &ElaToolButton::clicked, this, [&] {
+        if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
+            model->searchType = ComponentTableModel::SEARCH_EXACT;
+            _searchTypeButton->setText("搜索模式：精确");
+            search();
+        } else if (model->searchType == ComponentTableModel::SEARCH_EXACT) {
+            model->searchType = ComponentTableModel::SEARCH_FUZZY;
+            _searchTypeButton->setText("搜索模式：模糊");
+            search();
+        } else {
+            model->searchType = ComponentTableModel::SEARCH_FUZZY;
+            _searchTypeButton->setText("搜索模式：模糊");
+            _searchBox->clear();
+            search();
+        }
+    });
 }

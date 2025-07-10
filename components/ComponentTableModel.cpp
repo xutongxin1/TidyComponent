@@ -18,7 +18,7 @@ void ComponentTableModel::updateDisplayItems() {
                 // 未搜索到结果
                 DisplayItem item;
                 item.type = DisplayItem::Label;
-                item.label = "未搜索到相关元器件";
+                item.label = "未找到结果";
                 displayItems.append(item);
             } else {
                 if (!exacIndex.isEmpty()) {
@@ -62,7 +62,7 @@ void ComponentTableModel::updateDisplayItems() {
                 // 未搜索到结果
                 DisplayItem item;
                 item.type = DisplayItem::Label;
-                item.label = "未搜索到相关元器件";
+                item.label = "未找到结果";
                 displayItems.append(item);
             } else {
                 // 添加“精确搜索结果：”标签
@@ -87,7 +87,7 @@ void ComponentTableModel::updateDisplayItems() {
                 // 未搜索到结果
                 DisplayItem item;
                 item.type = DisplayItem::Label;
-                item.label = "未搜索到相关元器件";
+                item.label = "未找到结果";
                 displayItems.append(item);
             } else {
                 // 添加“精确搜索结果：”标签

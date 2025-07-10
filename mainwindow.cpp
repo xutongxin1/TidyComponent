@@ -70,12 +70,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     tableView->resizeRowsToContents();
     tableView->horizontalHeader()->setMinimumSectionSize(100);
 
-    connect(_searchBox, &QLineEdit::textChanged, this, &MainWindow::search);
-    connect(_searchBox, &QLineEdit::editingFinished, this, [&] {
-        if (_searchBox->text().isEmpty()) {
-            search(); //防止刷新两次
-        }
-    });
+    searchLogicInit();
 
     //绑定数据更新动作
     // connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
