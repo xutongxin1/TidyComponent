@@ -154,10 +154,6 @@ class MainWindow : public ElaWindow {
 
         ~MainWindow() override;
 
-        // QVector<component_record_struct> recordsVector;
-
-        // QVector<int> exacIndex;// 精确结果
-        // QVector<int> fuzzyIndex;// 模糊结果
         // 设备配置结构体
         struct DeviceInfo {
             QString MAC;
