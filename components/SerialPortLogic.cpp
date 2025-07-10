@@ -95,7 +95,7 @@ void MainWindow::initSerialPort() {
                 component_record_struct *record = model->component_record_Hash_cid.value(cid);
                 if (record->isApply == ComponentState_OUT) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
-                    ShowSuccessInfo("ID:" + record->jlcid, "元器件查找放回");
+                    ShowInfoInfo("ID:" + record->jlcid, "元器件NFC查找放回");
                 } else if (record->isApply == ComponentState_Ready) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
                     ShowWarningInfo("ID:" + record->jlcid + "正在申请放回", "这，这对吗？");

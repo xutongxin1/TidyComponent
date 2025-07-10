@@ -170,10 +170,10 @@ void MainWindow::InitEDAChromeHttpServer() {
                 }
             }
 
-            // 解析器件名称
+            // 解析器件型号
             QString deviceName;
-            if (fullString.contains("器件名称:")) {
-                int nameStart = fullString.indexOf("器件名称:") + QString("器件名称:").length();
+            if (fullString.contains("器件型号:")) {
+                int nameStart = fullString.indexOf("器件型号:") + QString("器件型号:").length();
                 int nameEnd = fullString.indexOf(",", nameStart);
                 if (nameEnd == -1) {
                     nameEnd = fullString.indexOf("封装:");
@@ -191,12 +191,20 @@ void MainWindow::InitEDAChromeHttpServer() {
                 package = fullString.mid(packageStart).trimmed();
             }
 
+            QString value;
+            if (fullString.contains("值:")) {
+                int valueStart = fullString.indexOf("值:") + QString("值:").length();
+                value = fullString.mid(valueStart).trimmed();
+            }
+
             // 根据器件编号是否为undefined决定搜索内容
             QString searchText;
             if (deviceId != "undefined" && !deviceId.isEmpty()) {
                 searchText = deviceId;
             } else if (!deviceName.isEmpty() && !package.isEmpty()) {
                 searchText = deviceName + " " + package;
+            } else if (!value.isEmpty() ) {
+                searchText = value;
             }
 
             // 设置搜索框文本并触发搜索
