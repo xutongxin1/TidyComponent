@@ -196,6 +196,7 @@ class MainWindow : public ElaWindow {
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
         void updateComponentColor(component_record_struct *record, QColor color);
+        void onShowInfoTableViewDoubleClicked(const QModelIndex &index);
 
         void loadDataFromFolder();
         void SaveDataToFolder();

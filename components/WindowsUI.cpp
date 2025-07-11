@@ -109,6 +109,8 @@ void MainWindow::initElaWindow() {
     _showInfo_tableView->horizontalHeader()->setHidden(true);
     _showInfo_tableView->verticalHeader()->setHidden(true);
     infoDockLayout->addWidget(_showInfo_tableView);
+    connect(_showInfo_tableView, &QTableView::doubleClicked,
+        this, &MainWindow::onShowInfoTableViewDoubleClicked);
 
     //图片初始化
     _showInfo_PNGView = new ElaPromotionView(this);

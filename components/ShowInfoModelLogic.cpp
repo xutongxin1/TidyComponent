@@ -3,6 +3,8 @@
 //
 #include <QSvgRenderer>
 #include <ElaText.h>
+#include <QApplication>
+#include <QClipboard>
 #include <QDesktopServices>
 
 #include "ShowInfoModel.h"
@@ -258,4 +260,21 @@ void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, c
 void MainWindow::updateComponentColor(component_record_struct *record, QColor color) {
     record->color=color.name();
     // dis
+}
+// 槽函数实现
+void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index)
+{
+    if (!index.isValid()) return;
+
+    QModelIndex firstColumnIndex = _showInfo_model->index(index.row(), 0);
+    QString firstData = _showInfo_model->data(firstColumnIndex, Qt::DisplayRole).toString();
+
+    // 获取同一行第二列的数据（列索引为1）
+    QModelIndex secondColumnIndex = _showInfo_model->index(index.row(), 1);
+    QString secondData = _showInfo_model->data(secondColumnIndex, Qt::DisplayRole).toString();
+
+    // 复制到剪贴板
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(secondData);
+    ShowInfoInfo(firstData,"已复制");
 }
