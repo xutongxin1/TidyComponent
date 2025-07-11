@@ -91,9 +91,10 @@ void MainWindow::loadDataFromFolder() {
             record.pcb_svg_FileUrl.append(value.toString());
         }
 
-        addComponentToLib(record);
+        addComponentToLib(record,true);
     }
     loadDeviceConfig();
+    reactComponentHash();// 手动更新组件哈希表
 }
 
 void MainWindow::SaveDataToFolder() {
@@ -182,7 +183,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty()&& !record.device_type.isEmpty()) {
+    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty() && !record.device_type.isEmpty()) {
         updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
@@ -197,8 +198,8 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
 }
 
 // 3. 更新设备配置文件
-void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate,const QString &type) {
-        // 查找是否已存在该MAC
+void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate, const QString &type) {
+    // 查找是否已存在该MAC
     bool found = false;
     for (DeviceInfo &device : _config.devices) {
         if (device.MAC == MAC) {
@@ -262,13 +263,13 @@ bool MainWindow::saveDeviceConfig() {
 }
 
 // 5. 读取设备配置文件
-void MainWindow::loadDeviceConfig()  {
+void MainWindow::loadDeviceConfig() {
     QString configPath = CONFIGPATH + "device_config.json";
     QFile file(configPath);
 
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "设备配置文件不存在，创建新配置";
-        return ;
+        return;
     }
 
     QByteArray jsonData = file.readAll();
@@ -279,7 +280,7 @@ void MainWindow::loadDeviceConfig()  {
 
     if (parseError.error != QJsonParseError::NoError) {
         qWarning() << "设备配置文件JSON解析错误：" << parseError.errorString();
-        return ;
+        return;
     }
 
     QJsonObject rootObj = doc.object();
@@ -331,9 +332,11 @@ void MainWindow::reactComponentHash() const {
         model->component_record_Hash_MACD.insert(record.MAC + record.coordinate, &model->component_record[i]);
     }
 }
-void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj) const {
+void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj, const bool isReacting) const {
     model->component_record.append(_addingComponentObj);
-    reactComponentHash();
+    if (!isReacting) {
+        reactComponentHash();
+    }
 }
 void MainWindow::replaceComponentToLib(const component_record_struct &_replacingComponentObj) const {
     // 检查该 jlcid 是否已存在于哈希表中
@@ -362,7 +365,7 @@ void MainWindow::updateSearchKey(component_record_struct &_addingComponentObj) {
     }
 }
 void MainWindow::updateOneComponent(const QString &CID) {
-    qDebug()<<"https://api.h49591b27.nyat.app:10268/item/" + CID;
+    qDebug() << "https://api.h49591b27.nyat.app:10268/item/" + CID;
     getRequest("https://api.h49591b27.nyat.app:10268/item/" + CID, [&,CID](const QJsonObject &jsonObj) {
                    qDebug() << jsonObj;
                    component_record_struct _tmpComponentObj;
@@ -373,7 +376,7 @@ void MainWindow::updateOneComponent(const QString &CID) {
                    SaveSingleComponent(_tmpComponentObj);
                    _showInfo_updateInfoButton->setEnabled(true);
                    ShowSuccessInfo(CID + "信息更新成功");
-               }, [&](const QNetworkReply::NetworkError error,const QString& ErrorInfo) {
+               }, [&](const QNetworkReply::NetworkError error, const QString &ErrorInfo) {
                    if (error == QNetworkReply::NetworkError::InternalServerError) {
                        ShowErrorInfo("服务端错误，请联系服务器管理员");
                    }

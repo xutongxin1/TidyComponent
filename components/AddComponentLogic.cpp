@@ -324,8 +324,8 @@ void MainWindow::AddComponentLogic_1() {
                    _addComponent_busyRing->hide();
                    _addComponent_CheckInfoWidget_Text->setText(
                        "<b>元器件名称：</b>" + _addingComponentObj->name + "<br><b>元器件编号：</b>" + _addingComponent_CID +
-                       "<br><b>元器件描述：</b>"
-                       + _addingComponentObj->discription +
+                       "<br><b>元器件参数：</b>"
+                       + _addingComponentObj->more_data +
                        "<br><b>元器件封装：</b>" + _addingComponentObj->package);
                    // for (int j = 0; j < _addingComponentObj->png_FileUrl.size(); j++) {
                    //     if (j == 0) {

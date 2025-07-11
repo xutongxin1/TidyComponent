@@ -42,9 +42,9 @@
 using namespace std;
 
 enum apply_type {
-    apply_type_normal=1,
-    apply_type_light=2,
-    apply_type_voice=3,
+    apply_type_normal = 1,
+    apply_type_light = 2,
+    apply_type_voice = 3,
 };
 
 #if _MSC_VER >= 1600
@@ -54,7 +54,7 @@ enum apply_type {
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 QT_END_NAMESPACE
@@ -134,11 +134,11 @@ class MainWindow : public ElaWindow {
         bool _serial_is_inWriteMOde;
         EDAChromeHttpServer *EDA_Server;
         ElaToolButton *_openEDAChromeButton;
-        ElaToolButton * _addComponent_B53_Button;
+        ElaToolButton *_addComponent_B53_Button;
         QPair<QString, QString> _addComponent_Allocate;
-        bool isConnectedToMesh=false;
-        QColorAllocator * colorAllocator;
-        ElaText * _addComponent_NFCText;
+        bool isConnectedToMesh = false;
+        QColorAllocator *colorAllocator;
+        ElaText *_addComponent_NFCText;
         bool _addComponent_isNFC_Write_success;
 
         void initElaWindow();
@@ -186,7 +186,7 @@ class MainWindow : public ElaWindow {
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;
-        QString _addComponent_Type=QString();
+        QString _addComponent_Type = QString();
 
         void GetConstructConfig();
         void SaveConstructConfig();
@@ -240,7 +240,7 @@ class MainWindow : public ElaWindow {
 
         bool isExistingComponent(const QString &CID) const;
         void reactComponentHash() const;
-        void addComponentToLib(const component_record_struct &_addingComponentObj) const;
+        void addComponentToLib(const component_record_struct &_addingComponentObj, bool isReacting = false) const;
         void replaceComponentToLib(const component_record_struct &_replacingComponentObj) const;
         static void updateSearchKey(component_record_struct &_addingComponentObj);
         void updateOneComponent(const QString &CID);
