@@ -8,8 +8,8 @@
 
 #include "ColorDelegate.h"
 enum ComponentState {
-    ComponentState_Ready=1, // 就绪
-    ComponentState_APPLYOUT,// 申请出库
+    ComponentState_Ready = 1, // 就绪
+    ComponentState_APPLYOUT, // 申请出库
     ComponentState_OUT, // 已出库
     ComponentState_APPLYIN, // 申请归还
 };
@@ -21,6 +21,7 @@ struct component_record_struct {
     QString more_data = QString(); //元器件参数
     QString package = QString(); //元器件封装
     QVector<QString> aliases = QVector<QString>(5, QString()); //元器件别名
+    bool isAlias = false; //是否有别名
     QVector<QString> png_FileUrl = {}; //元器件实物图文件路径
     QVector<QString> sch_svg_FileUrl = {}; //元器件sch_svg文件路径
     QVector<QString> pcb_svg_FileUrl = {}; //元器件pcb_svg文件路径
@@ -67,7 +68,7 @@ class ComponentTableModel : public QAbstractTableModel {
                 return QVariant();
 
             const DisplayItem &item = displayItems[index.row()];
-
+            QString text;
             switch (role) {
                 case Qt::DisplayRole:
                     if (item.type == DisplayItem::Label) {
@@ -84,7 +85,19 @@ class ComponentTableModel : public QAbstractTableModel {
                             case 1:
                                 return record.name;
                             case 2:
-                                return record.discription;
+                                text = record.discription;
+                                if (record.isAlias) {
+                                    text += " (";
+                                    for (const auto & aliase : record.aliases) {
+                                        if (!aliase.isEmpty()) {
+                                            text += aliase;
+                                            text += "，";
+                                        }
+                                    }
+                                    text.removeLast();
+                                    text += ")";
+                                }
+                                return text;
                             case 3:
                                 return record.package;
                             case 4:

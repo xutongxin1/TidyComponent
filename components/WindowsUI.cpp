@@ -103,14 +103,19 @@ void MainWindow::initElaWindow() {
     _showInfo_tableView = new ElaTableView(this);
     _showInfo_model = new ShowInfoModel(this);
     _showInfo_tableView->setModel(_showInfo_model);
+    connect(_showInfo_model, &ShowInfoModel::dataChanged, this, [&]() {
+        emit(model->dataChanged(QModelIndex(), QModelIndex()));
+        SaveSingleComponent(*_showInfo_model->m_record);
+    });
     _showInfo_tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _showInfo_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _showInfo_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     _showInfo_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); // Make the table read-only
     _showInfo_tableView->horizontalHeader()->setHidden(true);
     _showInfo_tableView->verticalHeader()->setHidden(true);
     infoDockLayout->addWidget(_showInfo_tableView);
     connect(_showInfo_tableView, &QTableView::doubleClicked,
-        this, &MainWindow::onShowInfoTableViewDoubleClicked);
+            this, &MainWindow::onShowInfoTableViewDoubleClicked);
 
     //图片初始化
     _showInfo_PNGView = new ElaPromotionView(this);
@@ -358,6 +363,7 @@ void MainWindow::initElaWindow() {
     addPageNode("HOME", centerWidget, ElaIconType::House);
 
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中时一行整体选中
+    tableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     // tableView->setTextElideMode(Qt::ElideNone);
     // connect(model, &ComponentTableModel::dataChanged, tableView, &ElaTableView::resizeRowsToContents);

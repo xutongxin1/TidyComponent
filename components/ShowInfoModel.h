@@ -18,7 +18,7 @@ class ShowInfoModel : public QAbstractTableModel {
         explicit ShowInfoModel(QObject *parent = nullptr) : QAbstractTableModel(parent) {
         }
 
-        void setComponentData(const component_record_struct &record);
+        void setComponentData(component_record_struct *record);
 
         [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override; // NOLINT(*-default-arguments)
 
@@ -28,11 +28,12 @@ class ShowInfoModel : public QAbstractTableModel {
 
         [[nodiscard]] Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    private:
-        component_record_struct m_record;
+        bool setData(const QModelIndex &index, const QVariant &value, int role);
+        bool m_editModeEnabled = false;
+        component_record_struct *m_record=nullptr;
 };
 
-inline void ShowInfoModel::setComponentData(const component_record_struct &record) {
+inline void ShowInfoModel::setComponentData(component_record_struct *record) {
     // const auto start = std::chrono::high_resolution_clock::now();
     beginResetModel();
     m_record = record;
@@ -42,7 +43,9 @@ inline void ShowInfoModel::setComponentData(const component_record_struct &recor
     // qDebug() << "渲染用时: " << duration << " ms\n";
 }
 inline int ShowInfoModel::rowCount(const QModelIndex &parent) const {
-    return static_cast<int>(m_record.aliases.size()) + 7; // 5 fields + aliases rows
+    if (m_record==nullptr)
+        return 0;
+    return static_cast<int>(m_record->aliases.size()) + 7; // 5 fields + aliases rows
 }
 inline int ShowInfoModel::columnCount(const QModelIndex &parent) const {
     return 2; // Field, Value
@@ -52,7 +55,7 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DisplayRole|| role == Qt::EditRole) {
         if (index.column() == 0) {
             switch (index.row()) {
                 case 0:
@@ -71,30 +74,30 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                     return "立创库存";
                 default:
                     if (index.row() < 12)
-                        return "别名" + QString::number(index.row() - 7);
+                        return "别名" + QString::number(index.row() - 6);
                     else
                         return QVariant();
             }
         } else {
             switch (index.row()) {
                 case 0:
-                    return m_record.name; // Name
+                    return m_record->name; // Name
                 case 1:
-                    return m_record.jlcid; // CID
+                    return m_record->jlcid; // CID
                 case 2:
-                    return m_record.discription; // Description
+                    return m_record->discription; // Description
                 case 3:
-                    return m_record.more_data; // More Data
+                    return m_record->more_data; // More Data
                 case 4:
-                    return m_record.package; // Package
+                    return m_record->package; // Package
                 case 5:
-                    return m_record.price; // price
+                    return m_record->price; // price
                 case 6:
-                    return m_record.inventory; // inventory
+                    return m_record->inventory; // inventory
                 default:
                     if (index.row() < 12)
                         // For aliases
-                        return m_record.aliases[index.row() - 7]; // Aliases start from row 5
+                        return m_record->aliases[index.row() - 7]; // Aliases start from row 5
                     else
                         return QVariant();
             }
@@ -107,8 +110,38 @@ inline Qt::ItemFlags ShowInfoModel::flags(const QModelIndex &index) const {
     if (!index.isValid()) {
         return Qt::NoItemFlags;
     }
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled; // Cells are selectable but not editable
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+
+    // 只有在编辑模式开启且是指定行时才可编辑
+    if (index.row() >=7 && index.row() < 12) {
+        flags |= Qt::ItemIsEditable;
+    }
+
+    return flags;
 }
 
+// 重写setData方法，处理编辑后的数据
+inline bool ShowInfoModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (role != Qt::EditRole || !index.isValid()) {
+        return false;
+    }
+
+    m_record->aliases[index.row() - 7]=value.toString();
+
+    //更新搜索索引
+    m_record->searchKey = m_record->name + m_record->jlcid + m_record->
+        discription + m_record->package + m_record->more_data;
+    bool isAlias = false;
+    for (const auto &alias : m_record->aliases) {
+        if (!alias.isEmpty()) {
+            isAlias = true;
+            m_record->searchKey += alias;
+        }
+    }
+    m_record->isAlias = isAlias;
+
+    emit dataChanged(index, index, {role});
+    return true;
+}
 
 #endif //SHOWINFOMODEL_H

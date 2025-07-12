@@ -37,7 +37,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
             //更新申请逻辑
             UpdateApplyLogic(record);
 
-            _showInfo_model->setComponentData(*record);
+            _showInfo_model->setComponentData(record);
 
             //设置png
             if (record->png_FileUrl.empty()) {
@@ -265,16 +265,31 @@ void MainWindow::updateComponentColor(component_record_struct *record, QColor co
 void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index)
 {
     if (!index.isValid()) return;
+    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+        // 启用编辑模式
+        _showInfo_model->m_editModeEnabled=true;
 
-    QModelIndex firstColumnIndex = _showInfo_model->index(index.row(), 0);
-    QString firstData = _showInfo_model->data(firstColumnIndex, Qt::DisplayRole).toString();
+        // 手动触发编辑
+        _showInfo_tableView->edit(index);
 
-    // 获取同一行第二列的数据（列索引为1）
-    QModelIndex secondColumnIndex = _showInfo_model->index(index.row(), 1);
-    QString secondData = _showInfo_model->data(secondColumnIndex, Qt::DisplayRole).toString();
+        // 连接编辑完成信号，用于关闭编辑模式
+        connect(_showInfo_tableView->itemDelegate(), &QAbstractItemDelegate::closeEditor,
+                this, [this]() {
+                    _showInfo_model->m_editModeEnabled=false;
+                }, Qt::UniqueConnection);
+    }
+    else {
+        QModelIndex firstColumnIndex = _showInfo_model->index(index.row(), 0);
+        QString firstData = _showInfo_model->data(firstColumnIndex, Qt::DisplayRole).toString();
 
-    // 复制到剪贴板
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(secondData);
-    ShowInfoInfo(firstData,"已复制");
+        // 获取同一行第二列的数据（列索引为1）
+        QModelIndex secondColumnIndex = _showInfo_model->index(index.row(), 1);
+        QString secondData = _showInfo_model->data(secondColumnIndex, Qt::DisplayRole).toString();
+
+        // 复制到剪贴板
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(secondData);
+        ShowInfoInfo(firstData,"已复制");
+    }
+
 }

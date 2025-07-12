@@ -357,12 +357,18 @@ void MainWindow::replaceComponentToLib(const component_record_struct &_replacing
     }
 }
 
-void MainWindow::updateSearchKey(component_record_struct &_addingComponentObj) {
-    _addingComponentObj.searchKey = _addingComponentObj.name + _addingComponentObj.jlcid + _addingComponentObj.
-        discription + _addingComponentObj.package + _addingComponentObj.more_data;
-    for (const auto &alias : _addingComponentObj.aliases) {
-        _addingComponentObj.searchKey += alias;
+void MainWindow::updateSearchKey(component_record_struct &record) {
+    record.searchKey = record.name + record.jlcid + record.
+        discription + record.package + record.more_data;
+    bool isAlias = false;
+    for (const auto &alias : record.aliases) {
+        if (!alias.isEmpty()) {
+            isAlias = true;
+            record.searchKey += alias;
+
+        }
     }
+    record.isAlias = isAlias;
 }
 void MainWindow::updateOneComponent(const QString &CID) {
     qDebug() << "https://api.h49591b27.nyat.app:10268/item/" + CID;
