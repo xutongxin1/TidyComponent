@@ -81,7 +81,15 @@ class ComponentTableModel : public QAbstractTableModel {
                         const component_record_struct &record = component_record[item.dataIndex];
                         switch (index.column()) {
                             case 0:
-                                return record.color;
+                                if (record.isApply== ComponentState_Ready) {
+                                    return "就绪";
+                                } else if (record.isApply == ComponentState_APPLYOUT) {
+                                    return "正在申请出库";
+                                } else if (record.isApply == ComponentState_OUT) {
+                                    return "已取出";
+                                } else if (record.isApply == ComponentState_APPLYIN) {
+                                    return "正在申请归还";
+                                }
                             case 1:
                                 return record.name;
                             case 2:
