@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 // 1. 仅添加设备的函数
-bool MainWindow::addDevice(const QString &MAC, const QString &type) {
+bool MainWindow::addDevice(const QString &MAC, const DeviceType &type) {
     // 检查MAC是否已存在
     if (_config.deviceMap.contains(MAC)) {
         qWarning() << "设备MAC已存在:" << MAC;
@@ -27,7 +27,7 @@ void MainWindow::initializeCoordinatesCache() {
     _typeCoordinatesCache.clear();
 
     // 获取所有设备类型
-    QSet<QString> types;
+    QSet<DeviceType> types;
     for (const auto &device : _config.devices) {
         types.insert(device.type);
     }
@@ -39,10 +39,10 @@ void MainWindow::initializeCoordinatesCache() {
 }
 
 // 根据设备类型生成所有可能的坐标
-QStringList MainWindow::generateAllCoordinatesForType(const QString &type) {
+QStringList MainWindow::generateAllCoordinatesForType(const DeviceType &type) {
     QStringList coordinates;
 
-    if (type == "B53") {
+    if (type == DeviceType_B53) {
         // B53: 111-115, 121-125, 131-135, 211-215, 221-225, ..., 831-835
         for (int row = 1; row <= 8; row++) {          // 8行
             for (int group = 1; group <= 3; group++) { // 每行3组
@@ -53,7 +53,7 @@ QStringList MainWindow::generateAllCoordinatesForType(const QString &type) {
             }
         }
     }
-    else if (type == "A43") {
+    else if (type == DeviceType_A42) {
         // A43: 11-13, 21-23, 31-33, 41-43
         for (int row = 1; row <= 4; row++) {          // 4行
             for (int slot = 1; slot <= 3; slot++) {   // 每行3个位置
@@ -62,7 +62,7 @@ QStringList MainWindow::generateAllCoordinatesForType(const QString &type) {
             }
         }
     }
-    else if (type == "A2") {
+    else if (type == DeviceType_A21) {
         // A2: 11, 12, 21, 22
         for (int row = 1; row <= 2; row++) {          // 2行
             for (int slot = 1; slot <= 2; slot++) {   // 每行2个位置
@@ -76,7 +76,7 @@ QStringList MainWindow::generateAllCoordinatesForType(const QString &type) {
 }
 
 // 获取特定类型的总坐标数
-int MainWindow::getTotalCoordinatesCountForType(const QString &type) {
+int MainWindow::getTotalCoordinatesCountForType(const DeviceType &type) {
     if (!_typeCoordinatesCache.contains(type)) {
         _typeCoordinatesCache[type] = generateAllCoordinatesForType(type);
     }
@@ -84,7 +84,7 @@ int MainWindow::getTotalCoordinatesCountForType(const QString &type) {
 }
 
 // 获取特定类型的已使用坐标数
-int MainWindow::getUsedCoordinatesCountForType(const QString &type) {
+int MainWindow::getUsedCoordinatesCountForType(const DeviceType &type) {
     int usedCount = 0;
 
     for (const auto &device : _config.devices) {
@@ -97,14 +97,14 @@ int MainWindow::getUsedCoordinatesCountForType(const QString &type) {
 }
 
 // 获取特定类型的可用坐标数
-int MainWindow::getAvailableCoordinatesCountForType(const QString &type) {
+int MainWindow::getAvailableCoordinatesCountForType(const DeviceType &type) {
     int totalCount = getTotalCoordinatesCountForType(type);
     int usedCount = getUsedCoordinatesCountForType(type);
     return totalCount * getDeviceCountForType(type) - usedCount;
 }
 
 // 辅助函数：获取特定类型的设备数量
-int MainWindow::getDeviceCountForType(const QString &type) {
+int MainWindow::getDeviceCountForType(const DeviceType &type) {
     int count = 0;
     for (const auto &device : _config.devices) {
         if (device.type == type) {
@@ -115,7 +115,7 @@ int MainWindow::getDeviceCountForType(const QString &type) {
 }
 
 // 获取特定类型的所有可用坐标（返回所有设备的可用坐标列表）
-QStringList MainWindow::getAvailableCoordinatesForType(const QString &type) {
+QStringList MainWindow::getAvailableCoordinatesForType(const DeviceType &type) {
     QStringList availableCoords;
 
     if (!_typeCoordinatesCache.contains(type)) {
@@ -143,7 +143,7 @@ QStringList MainWindow::getAvailableCoordinatesForType(const QString &type) {
 }
 
 // 为指定类型分配坐标（可指定偏好坐标）
-QPair<QString, QString> MainWindow::allocateCoordinateForType(const QString &type, const QString &preferredCoordinate) {
+QPair<QString, QString> MainWindow::allocateCoordinateForType(const DeviceType &type, const QString &preferredCoordinate) {
     QPair<QString, QString> result; // <MAC, coordinate>
 
     if (!_typeCoordinatesCache.contains(type)) {
@@ -219,12 +219,12 @@ QPair<QString, QString> MainWindow::allocateCoordinateForType(const QString &typ
 }
 
 // 为指定类型分配下一个可用坐标
-QPair<QString, QString> MainWindow::allocateNextAvailableCoordinateForType(const QString &type) {
+QPair<QString, QString> MainWindow::allocateNextAvailableCoordinateForType(const DeviceType &type) {
     return allocateCoordinateForType(type);
 }
 
 // 释放指定类型的坐标（需要遍历所有该类型设备）
-bool MainWindow::releaseCoordinate(const QString &type, const QString &coordinate) {
+bool MainWindow::releaseCoordinate(const DeviceType &type, const QString &coordinate) {
     for (auto &device : _config.devices) {
         if (device.type == type) {
             int index = device.coordinates.indexOf(coordinate);
@@ -262,7 +262,7 @@ bool MainWindow::releaseCoordinateByMAC(const QString &MAC, const QString &coord
 }
 
 // 获取指定类型的所有设备及其坐标使用情况
-QVector<QPair<QString, int>> MainWindow::getDeviceUsageForType(const QString &type) {
+QVector<QPair<QString, int>> MainWindow::getDeviceUsageForType(const DeviceType &type) {
     QVector<QPair<QString, int>> usage;
 
     for (const auto &device : _config.devices) {
@@ -275,11 +275,11 @@ QVector<QPair<QString, int>> MainWindow::getDeviceUsageForType(const QString &ty
 }
 // 更新类型统计信息
 void MainWindow::updateTypeStatistics() {
-    QHash<QString, QPair<int, int>> stats = getAllTypeStatistics();
+    QHash<DeviceType, QPair<int, int>> stats = getAllTypeStatistics();
 
     qDebug() << "=== Type Coordinate Statistics ===";
     for (auto it = stats.begin(); it != stats.end(); ++it) {
-        QString type = it.key();
+        DeviceType type = it.key();
         int used = it.value().first;
         int total = it.value().second;
         int available = total - used;
@@ -307,8 +307,8 @@ void MainWindow::updateTypeStatistics() {
 }
 
 // 获取所有类型的统计信息
-QHash<QString, QPair<int, int>> MainWindow::getAllTypeStatistics() {
-    QHash<QString, QPair<int, int>> stats; // type -> (used, total)
+QHash<DeviceType, QPair<int, int>> MainWindow::getAllTypeStatistics() {
+    QHash<DeviceType, QPair<int, int>> stats; // type -> (used, total)
 
     // 按类型统计
     for (const auto &device : _config.devices) {
@@ -323,7 +323,7 @@ QHash<QString, QPair<int, int>> MainWindow::getAllTypeStatistics() {
 }
 
 // 批量分配坐标
-QVector<QPair<QString, QString>> MainWindow::allocateMultipleCoordinatesForType(const QString &type, int count) {
+QVector<QPair<QString, QString>> MainWindow::allocateMultipleCoordinatesForType(const DeviceType &type, int count) {
     QVector<QPair<QString, QString>> allocated;
 
     for (int i = 0; i < count; i++) {
@@ -340,7 +340,7 @@ QVector<QPair<QString, QString>> MainWindow::allocateMultipleCoordinatesForType(
 }
 
 // 查找指定坐标在哪个设备上
-QString MainWindow::findDeviceByCoordinate(const QString &type, const QString &coordinate) {
+QString MainWindow::findDeviceByCoordinate(const DeviceType &type, const QString &coordinate) {
     for (const auto &device : _config.devices) {
         if (device.type == type && device.coordinates.contains(coordinate)) {
             return device.MAC;

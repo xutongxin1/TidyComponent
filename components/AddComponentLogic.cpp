@@ -416,7 +416,7 @@ void MainWindow::AddComponentLogic_4() {
     _addComponent_timeLeft = 600; // 剩余时间60秒
     // 每秒更新一次剩余时间
 
-    _addComponent_Allocate = allocateNextAvailableCoordinateForType("B53");
+    _addComponent_Allocate = allocateNextAvailableCoordinateForType(DeviceType_B53);
     qDebug() << "分配的坐标：" << _addComponent_Allocate;
     _addComponent_timer->start(100);
     _addingComponentObj->MAC = _addComponent_Allocate.first;

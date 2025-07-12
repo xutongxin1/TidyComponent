@@ -6,13 +6,13 @@
 void MainWindow::UpdateApplyLogic(component_record_struct *record) {
     //进这个逻辑必然有东西选中
     _noReturnTips->hide();
-    if (record->isApply == ComponentState_OUT) {
-        _returnButton->show();
+    if (record->isApply == ComponentState_OUT &&record->device_type==DeviceType_B53) {
+        _returnTips->show();
         _applyButton->hide();
         _apply_LightButton->hide();
         _apply_Light_VoiceButton->hide();
     } else {
-        _returnButton->hide();
+        _returnTips->hide();
         _applyButton->show();
         _apply_LightButton->show();
         _apply_Light_VoiceButton->show();
@@ -57,7 +57,7 @@ void MainWindow::UpdateApplyReturnUI() {
 ///初始化时调用
 void MainWindow::InitApplyReturnUI() {
     _return_ALLButton->hide();
-    _returnButton->hide();
+    _returnTips->hide();
     _applyButton->hide();
     _apply_LightButton->hide();
     _apply_Light_VoiceButton->hide();
@@ -81,6 +81,7 @@ void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type a
     if (serialManager->writeData(tmp)) {
     }
     record->isApply = ComponentState_APPLYOUT;
+    UpdateApplyLogic(record);//刷新申请逻辑
 }
 void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode) {
     //TODO:灯状态还没想的很清楚

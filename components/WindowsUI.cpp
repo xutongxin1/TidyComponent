@@ -268,14 +268,9 @@ void MainWindow::initElaWindow() {
     _return_ALLButton->setIconSize(QSize(35, 35));
     _return_ALLButton->setFixedSize(100, 75);
 
-    _returnButton = new ElaToolButton(this);
-    _returnButton->setIsTransparent(false);
-    _returnButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    _returnButton->setBorderRadius(8);
-    _returnButton->setText("归还该元件");
-    _returnButton->setElaIcon(ElaIconType::ArrowDownToBracket);
-    _returnButton->setIconSize(QSize(35, 35));
-    _returnButton->setFixedSize(100, 75);
+    _returnTips = new ElaText("对于B53元器件，请直接使用NFC触碰归还", this);
+    _returnTips->setWordWrap(false);
+    _returnTips->setTextPixelSize(20);
 
     _applyButton = new ElaToolButton(this);
     _applyButton->setIsTransparent(false);
@@ -311,7 +306,7 @@ void MainWindow::initElaWindow() {
     auto *applyArea = new QWidget(this);
     auto *applyAreaLayout = new QHBoxLayout(applyArea);
     applyAreaLayout->addWidget(_return_ALLButton);
-    applyAreaLayout->addWidget(_returnButton);
+    applyAreaLayout->addWidget(_returnTips);
     applyAreaLayout->addWidget(_applyButton);
     applyAreaLayout->addWidget(_applyButton);
     applyAreaLayout->addWidget(_apply_LightButton);

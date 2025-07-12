@@ -21,7 +21,7 @@ void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItem
         _applyButton->hide();
         _apply_LightButton->hide();
         _apply_Light_VoiceButton->hide();
-        _returnButton->hide();
+        _returnTips->hide();
         _showInfo_NoComponentTips->show();
         if (ApplyComponentNum==0) {
             _noReturnTips->show();

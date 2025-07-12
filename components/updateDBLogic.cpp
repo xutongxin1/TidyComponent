@@ -64,10 +64,19 @@ void MainWindow::loadDataFromFolder() {
         record.inventory = obj.value("inventory").toString();
         record.PID = obj.value("PID").toString();
         record.MAC = obj.value("MAC").toString();
-        record.device_type = obj.value("device_type").toString();
+
         record.coordinate = obj.value("coordinate").toString();
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
 
+        if (QString device_type = obj.value("device_type").toString(); device_type == "A42") {
+            record.device_type = DeviceType_A42;
+        } else if (device_type == "A21") {
+            record.device_type = DeviceType_A21;
+        } else if (device_type == "B53") {
+            record.device_type = DeviceType_B53;
+        } else {
+            record.device_type = DeviceType_B53; // 默认值
+        }
         // 解析数组
         QJsonArray aliasesArray = obj.value("aliases").toArray();
         record.aliases.clear();
@@ -147,10 +156,19 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     obj["inventory"] = record.inventory;
     obj["PID"] = record.PID;
     obj["MAC"] = record.MAC;
-    obj["device_type"] = record.device_type;
+
     obj["coordinate"] = record.coordinate;
     obj["pdf_FileUrl"] = record.pdf_FileUrl;
 
+    if (record.device_type == DeviceType_A42) {
+        obj["device_type"] = "A42";
+    } else if (record.device_type == DeviceType_A21) {
+        obj["device_type"] = "A21";
+    } else if (record.device_type == DeviceType_B53) {
+        obj["device_type"] = "B53";
+    } else {
+        obj["device_type"] = "B53"; // 默认值
+    }
     // 转换数组
     QJsonArray aliasesArray;
     for (const QString &alias : record.aliases) {
@@ -183,7 +201,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty() && !record.device_type.isEmpty()) {
+    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty() && record.device_type!=0) {
         updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
@@ -198,7 +216,7 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
 }
 
 // 3. 更新设备配置文件
-void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate, const QString &type) {
+void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate, const DeviceType &type) {
     // 查找是否已存在该MAC
     bool found = false;
     for (DeviceInfo &device : _config.devices) {
@@ -241,7 +259,15 @@ bool MainWindow::saveDeviceConfig() {
     for (const DeviceInfo &device : _config.devices) {
         QJsonObject deviceObj;
         deviceObj.insert("MAC", device.MAC);
-        deviceObj.insert("type", device.type);
+        if (device.type==DeviceType_A42) {
+            deviceObj.insert("type", "A42");
+        } else if (device.type == DeviceType_A21) {
+            deviceObj.insert("type", "A21");
+        } else if (device.type == DeviceType_B53) {
+            deviceObj.insert("type", "B53");
+        } else {
+            deviceObj.insert("type", "B53"); // 默认值
+        }
 
         QJsonArray coordArray;
         for (const QString &coord : device.coordinates) {
@@ -290,7 +316,15 @@ void MainWindow::loadDeviceConfig() {
         QJsonObject deviceObj = value.toObject();
         DeviceInfo device;
         device.MAC = deviceObj.value("MAC").toString();
-        device.type = deviceObj.value("type").toString();
+        if (QString deviceName = deviceObj.value("name").toString(); deviceName== "A42") {
+            device.type = DeviceType_A42;
+        } else if (deviceName == "A21") {
+            device.type = DeviceType_A21;
+        } else if (deviceName == "B53") {
+            device.type = DeviceType_B53;
+        } else {
+            device.type = DeviceType_B53; // 默认值
+        }
 
         QJsonArray coordArray = deviceObj.value("coordinates").toArray();
         for (const QJsonValue &coordValue : coordArray) {

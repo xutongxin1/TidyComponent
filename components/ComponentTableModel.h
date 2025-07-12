@@ -13,6 +13,12 @@ enum ComponentState {
     ComponentState_OUT, // 已出库
     ComponentState_APPLYIN, // 申请归还
 };
+
+enum DeviceType {
+    DeviceType_A42=1,
+    DeviceType_A21,
+    DeviceType_B53
+};
 struct component_record_struct {
     //以下为展示的部分
     QString name = QString(); //元器件名称
@@ -40,7 +46,7 @@ struct component_record_struct {
     float weight = 0.0f; //器件重量
     QString MAC = QString(); //对应mesh地址
     QString coordinate = QString(); //对应内部地址
-    QString device_type = QString();
+    DeviceType device_type = DeviceType_B53; //设备类型
 };
 const QStringList titles = {
     "显示状态", "名称", "描述", "封装", "立创编号", "商品参数"

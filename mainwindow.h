@@ -124,7 +124,7 @@ class MainWindow : public ElaWindow {
         QAction *connectUserStateAction;
         ElaToolButton *_searchTypeButton;
         ElaToolButton *_return_ALLButton;
-        ElaToolButton *_returnButton;
+        ElaText * _returnTips;
         ElaToolButton *_applyButton;
         ElaToolButton *_apply_LightButton;
         ElaToolButton *_apply_Light_VoiceButton;
@@ -140,6 +140,7 @@ class MainWindow : public ElaWindow {
         QColorAllocator *colorAllocator;
         ElaText *_addComponent_NFCText;
         bool _addComponent_isNFC_Write_success;
+
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -159,7 +160,7 @@ class MainWindow : public ElaWindow {
         struct DeviceInfo {
             QString MAC;
             QVector<QString> coordinates;
-            QString type;
+            DeviceType type;
         };
 
         // 设备配置管理结构体
@@ -202,42 +203,42 @@ class MainWindow : public ElaWindow {
         void SaveDataToFolder();
         void SaveSingleComponent(component_record_struct record);
         void SaveSingleComponent(const QString &jlcid);
-        void updateDeviceConfig(const QString &MAC, const QString &coordinate, const QString &type);
-        bool addDevice(const QString &MAC, const QString &type);
+        void updateDeviceConfig(const QString &MAC, const QString &coordinate, const DeviceType &type);
+        bool addDevice(const QString &MAC, const DeviceType &type);
         bool saveDeviceConfig();
         void loadDeviceConfig();
         DeviceInfo *getDeviceByMAC(const QString &MAC) const;
         void deleteSingleComponent(const QString &jlcid) const;
 
         // 缓存每种类型的所有可能坐标
-        QHash<QString, QStringList> _typeCoordinatesCache;
+        QHash<DeviceType, QStringList> _typeCoordinatesCache;
 
         // 辅助函数
         void initializeCoordinatesCache();
-        QStringList generateAllCoordinatesForType(const QString &type);
+        QStringList generateAllCoordinatesForType(const DeviceType &type);
 
         // 按类型统计坐标
-        int getTotalCoordinatesCountForType(const QString &type);
-        int getUsedCoordinatesCountForType(const QString &type);
-        int getAvailableCoordinatesCountForType(const QString &type);
-        int getDeviceCountForType(const QString &type);
-        QStringList getAvailableCoordinatesForType(const QString &type);
+        int getTotalCoordinatesCountForType(const DeviceType &type);
+        int getUsedCoordinatesCountForType(const DeviceType &type);
+        int getAvailableCoordinatesCountForType(const DeviceType &type);
+        int getDeviceCountForType(const DeviceType &type);
+        QStringList getAvailableCoordinatesForType(const DeviceType &type);
 
         // 坐标分配和释放
-        QPair<QString, QString> allocateCoordinateForType(const QString &type,
+        QPair<QString, QString> allocateCoordinateForType(const DeviceType &type,
                                                           const QString &preferredCoordinate = QString());
-        QPair<QString, QString> allocateNextAvailableCoordinateForType(const QString &type);
-        bool releaseCoordinate(const QString &type, const QString &coordinate);
+        QPair<QString, QString> allocateNextAvailableCoordinateForType(const DeviceType &type);
+        bool releaseCoordinate(const DeviceType &type, const QString &coordinate);
         bool releaseCoordinateByMAC(const QString &MAC, const QString &coordinate);
 
         // 获取类型的所有设备及其坐标使用情况
-        QVector<QPair<QString, int> > getDeviceUsageForType(const QString &type);
+        QVector<QPair<QString, int> > getDeviceUsageForType(const DeviceType &type);
 
         // 统计和报告
         void updateTypeStatistics();
-        QHash<QString, QPair<int, int> > getAllTypeStatistics(); // type -> (used, total)
-        QVector<QPair<QString, QString> > allocateMultipleCoordinatesForType(const QString &type, int count);
-        QString findDeviceByCoordinate(const QString &type, const QString &coordinate);
+        QHash<DeviceType, QPair<int, int>> getAllTypeStatistics(); // type -> (used, total)
+        QVector<QPair<QString, QString> > allocateMultipleCoordinatesForType(const DeviceType &type, int count);
+        QString findDeviceByCoordinate(const DeviceType &type, const QString &coordinate);
 
         bool isExistingComponent(const QString &CID) const;
         void reactComponentHash() const;

@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     _showInfo_tableView->setColumnWidth(0, 100);
     if (DEBUG) {
         updateTypeStatistics();
-        isConnectedToMesh=true;
+        // isConnectedToMesh=true;
         // // 前20次分配会优先使用基础颜色池中的高对比度颜色
         // for (int i = 0; i < 25; i++) {
         //     QColor color = colorAllocator->allocateColor(LED_MODE_FLASH_FAST_1);
