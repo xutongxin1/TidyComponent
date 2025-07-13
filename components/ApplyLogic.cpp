@@ -68,7 +68,7 @@ void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type a
     record->color = color.name();
     model->updateColumnWithRoles(0);
 
-    QString tmp = record->MAC + " " + record->coordinate + " " + color.name() + " " + QString::number(led_mode);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " + QString::number(led_mode);
     //TODO:分配颜色方式w
 
     if (apply_type == apply_type_normal) {
@@ -89,7 +89,7 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     record->color = color.name();
     model->updateColumnWithRoles(0);
 
-    QString tmp = record->MAC + " " + record->coordinate + " " + color.name() + " " + QString::number(led_mode);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " + QString::number(led_mode);
     //TODO:分配颜色方
 
     if (apply_type == apply_type_normal) {
@@ -104,7 +104,7 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     record->isApply = ComponentState_APPLYIN;
 }
 void MainWindow::ApplyComponentIN_AddingCompnent(component_record_struct *record) {
-    QString tmp = record->MAC + " " + record->coordinate + " #0000FF " + QString::number(LED_MODE_FLASH_FAST_1);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " #0000FF " + QString::number(LED_MODE_FLASH_FAST_1);
     //TODO:分配颜色方
 
     tmp = "C301 " + QString::number(20) + " " + tmp;

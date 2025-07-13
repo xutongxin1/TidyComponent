@@ -45,7 +45,7 @@ struct component_record_struct {
     // int applyType
     float weight = 0.0f; //器件重量
     QString MAC = QString(); //对应mesh地址
-    QString coordinate = QString(); //对应内部地址
+    int coordinate = 0; //对应内部地址
     DeviceType device_type = DeviceType_B53; //设备类型
 };
 const QStringList titles = {

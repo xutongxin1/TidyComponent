@@ -94,10 +94,9 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
         updateTypeStatistics();
         // isConnectedToMesh=true;
         // // 前20次分配会优先使用基础颜色池中的高对比度颜色
-        // for (int i = 0; i < 25; i++) {
-        //     QColor color = colorAllocator->allocateColor(LED_MODE_FLASH_FAST_1);
-        //     qDebug() << "分配颜色:" << color.name();
-        // }
+        for (int i = 0; i < 25; i++) {
+            qDebug() <<allocateNextAvailableCoordinateForType(DeviceType_B53);
+        }
         //
         // // 查看总可用颜色数
         // qDebug() << "总可用颜色数:" << colorAllocator->getTotalAvailableColors();

@@ -517,7 +517,7 @@ void MainWindow::initAddComponentLogic() {
         } else {
             _addComponent_WaitText->setText(
                 "请在" + QString::number((_addComponent_timeLeft / 10)) + "s内打开闪蓝灯的格子\n" + "MAC地址 " +
-                _addComponent_Allocate.first + "\n内部地址 " + _addComponent_Allocate.second);
+                _addComponent_Allocate.first + "\n内部地址 " + QString::number(_addComponent_Allocate.second));
             if (_addComponent_isPutInComponent) {
                 _addComponent_timer->stop(); // 停止计时器
                 _addComponentStep = 5;

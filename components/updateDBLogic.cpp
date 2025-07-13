@@ -65,7 +65,7 @@ void MainWindow::loadDataFromFolder() {
         record.PID = obj.value("PID").toString();
         record.MAC = obj.value("MAC").toString();
 
-        record.coordinate = obj.value("coordinate").toString();
+        record.coordinate = obj.value("coordinate").toInt(0);
         record.pdf_FileUrl = obj.value("pdf_FileUrl").toString();
 
         if (QString device_type = obj.value("device_type").toString(); device_type == "A42") {
@@ -201,7 +201,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate.isEmpty() && record.device_type!=0) {
+    if (!record.MAC.isEmpty() && !record.coordinate==0 && record.device_type!=0) {
         updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
@@ -216,10 +216,10 @@ void MainWindow::SaveSingleComponent(const QString &jlcid) {
 }
 
 // 3. 更新设备配置文件
-void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinate, const DeviceType &type) {
+void MainWindow::updateDeviceConfig(const QString &MAC, const int &coordinate, const DeviceType &type) {
     // 查找是否已存在该MAC
     bool found = false;
-    for (DeviceInfo &device : _config.devices) {
+    for (DeviceInfo &device : _device_config.devices) {
         if (device.MAC == MAC) {
             // 检查coordinate是否已存在
             if (!device.coordinates.contains(coordinate)) {
@@ -236,7 +236,7 @@ void MainWindow::updateDeviceConfig(const QString &MAC, const QString &coordinat
         newDevice.MAC = MAC;
         newDevice.coordinates.append(coordinate);
         newDevice.type = type;
-        _config.devices.append(newDevice);
+        _device_config.devices.append(newDevice);
     }
 
     // 保存配置文件
@@ -256,7 +256,7 @@ bool MainWindow::saveDeviceConfig() {
     QJsonObject rootObj;
     QJsonArray devicesArray;
 
-    for (const DeviceInfo &device : _config.devices) {
+    for (const DeviceInfo &device : _device_config.devices) {
         QJsonObject deviceObj;
         deviceObj.insert("MAC", device.MAC);
         if (device.type==DeviceType_A42) {
@@ -270,11 +270,13 @@ bool MainWindow::saveDeviceConfig() {
         }
 
         QJsonArray coordArray;
-        for (const QString &coord : device.coordinates) {
+        for (const int &coord : device.coordinates) {
             coordArray.append(coord);
         }
         deviceObj.insert("coordinates", coordArray);
-
+        if (device.B53_N!=0) {
+            deviceObj.insert("B53_N", device.B53_N);
+        }
         devicesArray.append(deviceObj);
     }
 
@@ -328,17 +330,18 @@ void MainWindow::loadDeviceConfig() {
 
         QJsonArray coordArray = deviceObj.value("coordinates").toArray();
         for (const QJsonValue &coordValue : coordArray) {
-            device.coordinates.append(coordValue.toString());
+            device.coordinates.append(coordValue.toInt());
         }
-
-        _config.devices.append(device);
-        _config.deviceMap.insert(device.MAC, &_config.devices.last());
+        device.B53_N= deviceObj.value("B53_N").toInt(0);
+        _device_config.devices.append(device);
+        _device_config.deviceMap.insert(device.MAC, &_device_config.devices.last());
     }
+    updateTypeCoordinateTotal();
 }
 
 // 辅助函数：获取特定MAC的设备信息
 MainWindow::DeviceInfo *MainWindow::getDeviceByMAC(const QString &MAC) const {
-    return _config.deviceMap.value(MAC, nullptr);
+    return _device_config.deviceMap.value(MAC, nullptr);
 }
 
 // 辅助函数：删除单个元件文件
@@ -363,7 +366,7 @@ void MainWindow::reactComponentHash() const {
         component_record_struct &record = model->component_record[i];
         updateSearchKey(record);
         model->component_record_Hash_cid.insert(record.jlcid, &model->component_record[i]);
-        model->component_record_Hash_MACD.insert(record.MAC + record.coordinate, &model->component_record[i]);
+        model->component_record_Hash_MACD.insert(record.MAC + QString::number(record.coordinate), &model->component_record[i]);
     }
 }
 void MainWindow::addComponentToLib(const component_record_struct &_addingComponentObj, const bool isReacting) const {

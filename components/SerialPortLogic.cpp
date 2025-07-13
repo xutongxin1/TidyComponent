@@ -139,43 +139,35 @@ void MainWindow::initSerialPort() {
 
     serialManager->connectPattern("0xC303 10", [&](const QString &message) {
         qDebug() << "元器件放回响应:" << message;
-        QStringList parts = message.split(' ', Qt::SkipEmptyParts);
-        if (parts.size() >= 4) {
-            QString macAddress, coordinate;
-            if (parts[2] == "10") {
-                macAddress = parts[3];
-                coordinate = parts[4];
+        QString temp = message;
+
+        QTextStream stream(&temp);
+        QString MAC,  data;
+        int coordinate;
+        stream >> data >> MAC >> coordinate >> data;
+
+        qDebug() << "提取的MAC地址:" << MAC;
+        qDebug() << "提取的位置:" << coordinate;
+        if (_addComponentStep == 4) {
+            if (MAC == _addingComponentObj->MAC && coordinate == _addingComponentObj->coordinate) {
+                _addComponent_isPutInComponent = true;
             } else {
-                macAddress = parts[2];
-                coordinate = parts[3];
+                ShowWarningInfo("检测到放入但似乎放错了");
             }
-
-            qDebug() << "提取的MAC地址:" << macAddress;
-            qDebug() << "提取的位置:" << coordinate;
-            if (_addComponentStep==4) {
-                if (macAddress==_addingComponentObj->MAC && coordinate==_addingComponentObj->coordinate) {
-                    _addComponent_isPutInComponent=true;
-
-                }
-                else {
-                    ShowWarningInfo("检测到放入但似乎放错了");
-                }
-            }
-            else if (model->component_record_Hash_MACD.contains(QString(macAddress + coordinate))) {
-                component_record_struct *record = model->component_record_Hash_MACD.value(macAddress + coordinate);
-                if (record->isApply == ComponentState_APPLYIN) {
-                    ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
-                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
-                    record->color = "就绪";
-                    record->isApply = ComponentState_Ready;
-                    model->updateColumnWithRoles(0);
-                } else {
-                    ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请放回");
-                    //客观上认为已经放回了
-                    record->color = "就绪";
-                    record->isApply = ComponentState_Ready;
-                    model->updateColumnWithRoles(0);
-                }
+        } else if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(coordinate)))) {
+            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(coordinate));
+            if (record->isApply == ComponentState_APPLYIN) {
+                ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
+            } else {
+                ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(coordinate), "正在尝试未申请放回");
+                //客观上认为已经放回了
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
             }
         }
     });
@@ -243,8 +235,8 @@ void MainWindow::initSerialPort() {
         QTextStream stream(&temp);
         QString CID, data;
         stream >> data >> data >> CID;
-        if (_addComponentStep==3) {
-            if (CID==_addingComponentObj->jlcid) {
+        if (_addComponentStep == 3) {
+            if (CID == _addingComponentObj->jlcid) {
                 _addComponent_isNFC_Write_success = true;
             }
             //TODO:写入错误处理
