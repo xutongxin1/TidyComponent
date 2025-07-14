@@ -139,8 +139,14 @@ void MainWindow::search() const {
     // qDebug() << "搜索结束";
 
     model->updateData();
-    //显示搜索结果
-    // ShowSomeComponents();
+
+    if (!model->exacIndex.isEmpty()|| !model->fuzzyIndex.isEmpty()) {
+        QModelIndex secondRowIndex = model->index(1, 0); // 第二行，第一列
+        tableView->selectionModel()->setCurrentIndex(
+            secondRowIndex,
+            QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows
+        );
+    }
 }
 
 void MainWindow::searchLogicInit() {

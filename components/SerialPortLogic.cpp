@@ -214,6 +214,7 @@ void MainWindow::initSerialPort() {
                     record->color = "就绪";
                     record->isApply = ComponentState_Ready;
                     model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();//刷新，使申请可用
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
                 }
