@@ -122,3 +122,5 @@ cmake-build-ubuntu/
 .idea/misc.xml
 
 cmake/
+
+.vscode/
