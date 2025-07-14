@@ -3,19 +3,61 @@
 // Created by xtx on 25-5-20.
 //
 
-void MainWindow::UpdateApplyLogic(component_record_struct *record) {
-    //进这个逻辑必然有东西选中
-    _noReturnTips->hide();
-    if (record->isApply == ComponentState_OUT &&record->device_type==DeviceType_B53) {
-        _returnTips->show();
+void MainWindow::UpdateApplyLogic() {
+    QModelIndexList selectedIndexes=tableView->selectionModel()->selection().indexes();
+    if (selectedIndexes.isEmpty()) {
+        _returnTipsB53->hide();
         _applyButton->hide();
         _apply_LightButton->hide();
         _apply_Light_VoiceButton->hide();
-    } else {
-        _returnTips->hide();
-        _applyButton->show();
-        _apply_LightButton->show();
-        _apply_Light_VoiceButton->show();
+        return;
+    }
+
+    if (const QString cid = selectedIndexes[0].sibling(selectedIndexes[0].row(), 4).data(Qt::DisplayRole).toString()
+            ; model->
+            component_record_Hash_cid.contains(cid)) {
+        UpdateApplyLogic(model->component_record_Hash_cid.value(cid));
+    }
+}
+
+void MainWindow::UpdateApplyLogic(component_record_struct *record) {
+    //进这个逻辑必然有东西选中
+    _noReturnTips->hide();
+    _applyButton->show();
+    _apply_LightButton->show();
+    _apply_Light_VoiceButton->show();
+    //逻辑分解：在取出状态下，在申请归还状态下
+    if (record->isApply == ComponentState_OUT ) {
+        //B53不可以在取出状态下申请
+        if (record->device_type==DeviceType_B53) {
+            _returnTipsB53->show();//提示B53归还方法
+            _applyButton->setEnabled(false);
+            _apply_LightButton->setEnabled(false);
+            _apply_Light_VoiceButton->setEnabled(false);
+            _applyButton->setToolTip("对于B53元器件，请归还器件后再申请");
+            _apply_LightButton->setToolTip("对于B53元器件，请归还器件后再申请");
+            _apply_Light_VoiceButton->setToolTip("对于B53元器件，请归还器件后再申请");
+        }
+    }else if (record->isApply == ComponentState_APPLYIN) {
+        _returnTipsB53->hide();
+        _applyButton->setEnabled(false);
+        _apply_LightButton->setEnabled(false);
+        _apply_Light_VoiceButton->setEnabled(false);
+        _applyButton->setToolTip("请归还器件后再申请");
+        _apply_LightButton->setToolTip("请归还器件后再申请");
+        _apply_Light_VoiceButton->setToolTip("请归还器件后再申请");
+    }
+    else if (record->isApply == ComponentState_APPLYOUT) {
+        _returnTipsB53->hide();
+        _applyButton->setEnabled(false);
+        _apply_LightButton->setEnabled(false);
+        _apply_Light_VoiceButton->setEnabled(false);
+        _applyButton->setToolTip("正在申请取出，请勿重复申请");
+        _apply_LightButton->setToolTip("正在申请取出，请勿重复申请");
+        _apply_Light_VoiceButton->setToolTip("正在申请取出，请勿重复申请");
+    }
+    else {
+        _returnTipsB53->hide();
         if (isConnectedToMesh) {
             _applyButton->setEnabled(true);
             _apply_LightButton->setEnabled(true);
@@ -57,7 +99,7 @@ void MainWindow::UpdateApplyReturnUI() {
 ///初始化时调用
 void MainWindow::InitApplyReturnUI() {
     _return_ALLButton->hide();
-    _returnTips->hide();
+    _returnTipsB53->hide();
     _applyButton->hide();
     _apply_LightButton->hide();
     _apply_Light_VoiceButton->hide();

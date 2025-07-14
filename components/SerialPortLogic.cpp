@@ -78,6 +78,7 @@ void MainWindow::initSerialPort() {
         connectUserStateAction->setText("已连接到MESH网络");
         ShowSuccessInfo("MESH连接正常");
         isConnectedToMesh = true;
+        UpdateApplyLogic();//刷新，使申请可用
         serialManager->m_buffer.clear();
     });
     serialManager->connectPattern("0xC001 10", [&](const QString &message) {

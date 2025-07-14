@@ -124,7 +124,7 @@ class MainWindow : public ElaWindow {
         QAction *connectUserStateAction;
         ElaToolButton *_searchTypeButton;
         ElaToolButton *_return_ALLButton;
-        ElaText * _returnTips;
+        ElaText * _returnTipsB53;
         ElaToolButton *_applyButton;
         ElaToolButton *_apply_LightButton;
         ElaToolButton *_apply_Light_VoiceButton;
@@ -149,6 +149,7 @@ class MainWindow : public ElaWindow {
         void findClosestRecords(
             const QVector<component_record_struct> &recordsVector,
             const QString &searchString) const;
+        void UpdateApplyLogic();
         void UpdateApplyLogic(component_record_struct *record);
         void search() const;
         void searchLogicInit();

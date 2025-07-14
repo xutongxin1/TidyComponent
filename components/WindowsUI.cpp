@@ -268,9 +268,9 @@ void MainWindow::initElaWindow() {
     _return_ALLButton->setIconSize(QSize(35, 35));
     _return_ALLButton->setFixedSize(100, 75);
 
-    _returnTips = new ElaText("对于B53元器件，请直接使用NFC触碰归还", this);
-    _returnTips->setWordWrap(false);
-    _returnTips->setTextPixelSize(20);
+    _returnTipsB53 = new ElaText("对于B53元器件，请直接使用NFC触碰归还", this);
+    _returnTipsB53->setWordWrap(false);
+    _returnTipsB53->setTextPixelSize(20);
 
     _applyButton = new ElaToolButton(this);
     _applyButton->setIsTransparent(false);
@@ -306,7 +306,7 @@ void MainWindow::initElaWindow() {
     auto *applyArea = new QWidget(this);
     auto *applyAreaLayout = new QHBoxLayout(applyArea);
     applyAreaLayout->addWidget(_return_ALLButton);
-    applyAreaLayout->addWidget(_returnTips);
+    applyAreaLayout->addWidget(_returnTipsB53);
     applyAreaLayout->addWidget(_applyButton);
     applyAreaLayout->addWidget(_applyButton);
     applyAreaLayout->addWidget(_apply_LightButton);
@@ -359,7 +359,12 @@ void MainWindow::initElaWindow() {
 
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中时一行整体选中
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-
+    connect(tableView, &QTableView::clicked, this, [&](const QModelIndex &index) {
+        if (!index.isValid()) {
+            // 点击了空白区域，清除选择
+            tableView->clearSelection();
+        }
+    });
     // tableView->setTextElideMode(Qt::ElideNone);
     // connect(model, &ComponentTableModel::dataChanged, tableView, &ElaTableView::resizeRowsToContents);
     // connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, [=](int index, int /*oldSize*/, int /*newSize*/) {
