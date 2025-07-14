@@ -152,21 +152,20 @@ void MainWindow::initSerialPort() {
         QString temp = message;
 
         QTextStream stream(&temp);
-        QString MAC, data;
-        int coordinate;
-        stream >> data >> MAC >> coordinate >> data;
+        QString MAC, coordinate,data;
+        stream >> data >>data>> MAC >> coordinate >> data;
 
         qDebug() << "提取的MAC地址:" << MAC;
         qDebug() << "提取的位置:" << coordinate;
         if (_addComponentStep == 4) {
-            if (MAC == _addingComponentObj->MAC && coordinate == _addingComponentObj->coordinate) {
+            if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate) {
                 _addComponent_isPutInComponent = true;
             } else {
                 ShowWarningInfo("检测到放入但似乎放错了");
             }
-        } else if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(coordinate)))) {
+        } else if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
             component_record_struct *record = model->component_record_Hash_MACD.
-                value(MAC + QString::number(coordinate));
+                value(MAC + coordinate);
             if (record->isApply == ComponentState_APPLYIN) {
                 ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
                 colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
@@ -177,7 +176,7 @@ void MainWindow::initSerialPort() {
                     _searchBox->setText(""); //清空搜索框
                 }
             } else {
-                ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(coordinate), "正在尝试未申请放回");
+                ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
                 //客观上认为已经放回了
                 record->color = "就绪";
                 record->isApply = ComponentState_Ready;

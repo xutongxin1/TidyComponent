@@ -260,7 +260,7 @@ class MainWindow : public ElaWindow {
         void ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode);
         void ApplyComponentIN_AddingCompnent(component_record_struct *record);
         void InitAddComponentDockUI();
-        void SerialDataReceived(const QString &data);
+        void SerialDataReceived(const QString &data) = delete;
         void getDailySection() const;
         void AnalyzeComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json,
