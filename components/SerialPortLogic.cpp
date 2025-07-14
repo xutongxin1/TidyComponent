@@ -96,9 +96,19 @@ void MainWindow::initSerialPort() {
                 if (record->isApply == ComponentState_OUT) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
                     ShowInfoInfo("ID:" + record->jlcid, "元器件NFC查找放回");
+                    if (_searchBox->text().isEmpty())
+                    {
+                        _searchBox->setText(record->jlcid);
+                    }
+                    // search(); //刷新搜索结果
                 } else if (record->isApply == ComponentState_Ready) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
                     ShowWarningInfo("ID:" + record->jlcid + "正在申请放回", "这，这对吗？");
+                    if (_searchBox->text().isEmpty())
+                    {
+                        _searchBox->setText(record->jlcid);
+                    }
+                    // search(); //刷新搜索结果
                 }
             }
         }
@@ -142,7 +152,7 @@ void MainWindow::initSerialPort() {
         QString temp = message;
 
         QTextStream stream(&temp);
-        QString MAC,  data;
+        QString MAC, data;
         int coordinate;
         stream >> data >> MAC >> coordinate >> data;
 
@@ -155,13 +165,17 @@ void MainWindow::initSerialPort() {
                 ShowWarningInfo("检测到放入但似乎放错了");
             }
         } else if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(coordinate)))) {
-            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(coordinate));
+            component_record_struct *record = model->component_record_Hash_MACD.
+                value(MAC + QString::number(coordinate));
             if (record->isApply == ComponentState_APPLYIN) {
                 ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
                 colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
                 record->color = "就绪";
                 record->isApply = ComponentState_Ready;
-                model->updateColumnWithRoles(0);
+                // model->updateColumnWithRoles(0);
+                if (_searchBox->text()== record->jlcid) {
+                    _searchBox->setText(""); //清空搜索框
+                }
             } else {
                 ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(coordinate), "正在尝试未申请放回");
                 //客观上认为已经放回了

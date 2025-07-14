@@ -147,7 +147,7 @@ QPair<QString, int> MainWindow::allocateCoordinateForType(const DeviceType &type
         if (type == DeviceType_B53) {
             //清除大于B53_N*100的坐标
             Coordinates_All.erase(std::remove_if(Coordinates_All.begin(), Coordinates_All.end(),
-                                                 [device](int coord) { return coord > (device.B53_N+1) * 100; }),
+                                                 [device](int coord) { return coord > (device.B53_N + 1) * 100; }),
                                   Coordinates_All.end());
         }
 
@@ -159,8 +159,8 @@ QPair<QString, int> MainWindow::allocateCoordinateForType(const DeviceType &type
                 result.first = device.MAC;
                 result.second = coord;
                 qDebug() << "Allocated coordinate:" << coord
-                         << "on device:" << device.MAC
-                         << "of type:" << type;
+                    << "on device:" << device.MAC
+                    << "of type:" << type;
                 saveDeviceConfig();
                 return result; // 成功分配
             }
