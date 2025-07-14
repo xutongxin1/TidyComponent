@@ -222,7 +222,6 @@ class MainWindow : public ElaWindow {
 
         // 按类型统计坐标
         int getUsedCoordinatesCountForType(const DeviceType &type);
-        int getAvailableCoordinatesCountForType(const DeviceType &type);
         int getDeviceCountForType(const DeviceType &type);
         QList<int> getAvailableCoordinatesForType(const DeviceType &type);
 
