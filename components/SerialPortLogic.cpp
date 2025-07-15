@@ -78,7 +78,7 @@ void MainWindow::initSerialPort() {
         connectUserStateAction->setText("已连接到MESH网络");
         ShowSuccessInfo("MESH连接正常");
         isConnectedToMesh = true;
-        UpdateApplyLogic();//刷新，使申请可用
+        UpdateApplyLogic(); //刷新，使申请可用
         serialManager->m_buffer.clear();
     });
     serialManager->connectPattern("0xC001 10", [&](const QString &message) {
@@ -97,16 +97,14 @@ void MainWindow::initSerialPort() {
                 if (record->isApply == ComponentState_OUT) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
                     ShowInfoInfo("ID:" + record->jlcid, "元器件NFC查找放回");
-                    if (_searchBox->text().isEmpty())
-                    {
+                    if (_searchBox->text().isEmpty()) {
                         _searchBox->setText(record->jlcid);
                     }
                     // search(); //刷新搜索结果
                 } else if (record->isApply == ComponentState_Ready) {
                     ApplyComponentIN(record, apply_type_normal, LED_MODE_FLASH_FAST_3);
                     ShowWarningInfo("ID:" + record->jlcid + "正在申请放回", "这，这对吗？");
-                    if (_searchBox->text().isEmpty())
-                    {
+                    if (_searchBox->text().isEmpty()) {
                         _searchBox->setText(record->jlcid);
                     }
                     // search(); //刷新搜索结果
@@ -137,12 +135,14 @@ void MainWindow::initSerialPort() {
                     record->color = "已取出";
                     record->isApply = ComponentState_OUT;
                     model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "正在尝试未申请取出");
                     //客观上认为已经取出了
                     record->color = "已取出";
                     record->isApply = ComponentState_OUT;
                     model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
                 }
             }
         }
@@ -153,8 +153,8 @@ void MainWindow::initSerialPort() {
         QString temp = message;
 
         QTextStream stream(&temp);
-        QString MAC, coordinate,data;
-        stream >> data >>data>> MAC >> coordinate >> data;
+        QString MAC, coordinate, data;
+        stream >> data >> data >> MAC >> coordinate >> data;
 
         qDebug() << "提取的MAC地址:" << MAC;
         qDebug() << "提取的位置:" << coordinate;
@@ -173,15 +173,17 @@ void MainWindow::initSerialPort() {
                 record->color = "就绪";
                 record->isApply = ComponentState_Ready;
                 // model->updateColumnWithRoles(0);
-                if (_searchBox->text()== record->jlcid) {
+                if (_searchBox->text() == record->jlcid) {
                     _searchBox->setText(""); //清空搜索框
                 }
+                UpdateApplyLogic();
             } else {
                 ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
                 //客观上认为已经放回了
                 record->color = "就绪";
                 record->isApply = ComponentState_Ready;
                 model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
             }
         }
     });
@@ -208,13 +210,14 @@ void MainWindow::initSerialPort() {
                     record->color = "已取出";
                     record->isApply = ComponentState_OUT;
                     model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
                 } else if (record->isApply == ComponentState_APPLYOUT) {
                     ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
                     colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
                     record->color = "就绪";
                     record->isApply = ComponentState_Ready;
                     model->updateColumnWithRoles(0);
-                    UpdateApplyLogic();//刷新，使申请可用
+                    UpdateApplyLogic();
                 } else {
                     ShowErrorInfo("MAC:" + macAddress + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
                 }
@@ -235,12 +238,14 @@ void MainWindow::initSerialPort() {
                 colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
                 model->updateColumnWithRoles(0);
                 ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
+                UpdateApplyLogic();
             } else if (record->isApply == ComponentState_APPLYOUT) {
                 record->isApply = ComponentState_Ready;
                 record->color = "就绪";
                 colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
                 model->updateColumnWithRoles(0);
                 ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
+                UpdateApplyLogic();
             }
         }
     });

@@ -8,8 +8,10 @@
 #include <QDesktopServices>
 
 #include "ShowInfoModel.h"
-
-void MainWindow::updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected)  {
+void MainWindow::updateComponentShowInfo_Clear() {
+    updateComponentShowInfo(QItemSelection(), QItemSelection());
+}
+void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected)  {
     //  展示元器件信息
     QModelIndexList selectedIndexes = selected.indexes();
     if (selectedIndexes.isEmpty()) {

@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     //绑定数据更新动作
     // connect(tableView, &QTableView::clicked, this, &MainWindow::updateContent);
     connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this,
-            &MainWindow::updateComponentInfo);
+            &MainWindow::updateComponentShowInfo);
 
     getDailySection();
     initAddComponentLogic();

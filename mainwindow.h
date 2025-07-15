@@ -152,6 +152,7 @@ class MainWindow : public ElaWindow {
         void UpdateApplyLogic();
         void UpdateApplyLogic(component_record_struct *record);
         void search() const;
+        void searchBoxClear();
         void searchLogicInit();
         void InitEDAChromeHttpServer();
 
@@ -197,7 +198,8 @@ class MainWindow : public ElaWindow {
         void SaveConstructConfig();
         component_record_struct *split_addr_info(const QString &message) const;
         void initSerialPort();
-        void updateComponentInfo(const QItemSelection &selected, const QItemSelection &deselected);
+        void updateComponentShowInfo_Clear();
+        void updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
         void updateComponentColor(component_record_struct *record, QColor color);

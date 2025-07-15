@@ -149,6 +149,11 @@ void MainWindow::search() const {
     }
 }
 
+void MainWindow::searchBoxClear() {
+    _searchBox->clear();
+    tableView->selectionModel()->clear();
+    updateComponentShowInfo_Clear();
+}
 void MainWindow::searchLogicInit() {
     connect(_searchBox, &QLineEdit::textChanged, this, &MainWindow::search);
     connect(_searchBox, &QLineEdit::editingFinished, this, [&] {
@@ -157,8 +162,7 @@ void MainWindow::searchLogicInit() {
         }
     });
     connect(_resetSearchButton, &ElaToolButton::clicked, this, [&] {
-        _searchBox->clear();
-        search();
+        searchBoxClear();
     });
     connect(_searchTypeButton, &ElaToolButton::clicked, this, [&] {
         if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
@@ -172,8 +176,7 @@ void MainWindow::searchLogicInit() {
         } else {
             model->searchType = ComponentTableModel::SEARCH_FUZZY;
             _searchTypeButton->setText("搜索模式：模糊");
-            _searchBox->clear();
-            search();
+            searchBoxClear();
         }
     });
 }

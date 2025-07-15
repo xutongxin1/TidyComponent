@@ -414,7 +414,7 @@ void MainWindow::updateOneComponent(const QString &CID) {
                    component_record_struct _tmpComponentObj;
                    AnalyzeComponentData(CID, jsonObj, _tmpComponentObj);
                    replaceComponentToLib(_tmpComponentObj);
-                   updateComponentInfo(tableView->selectionModel()->selection(), QItemSelection());
+                   updateComponentShowInfo(tableView->selectionModel()->selection(), QItemSelection());
                    model->updateDataWithNoRowChange();
                    SaveSingleComponent(_tmpComponentObj);
                    _showInfo_updateInfoButton->setEnabled(true);
