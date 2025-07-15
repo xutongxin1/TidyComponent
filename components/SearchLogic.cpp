@@ -73,48 +73,112 @@ bool MainWindow::isExactMatch(const component_record_struct &record, const QStri
 }
 
 // 查找最接近的记录
-void MainWindow::findClosestRecords(const QVector<component_record_struct> &component_record,
-                                    const QString &searchString) const {
+void MainWindow::fuzzy_search_records(const QString &searchString) const {
     auto start = std::chrono::high_resolution_clock::now();
 
     //清空记录
-    model->exacIndex.clear();
-    model->fuzzyIndex.clear();
+    model->exactPoint.clear();
+    model->fuzzyPoint.clear();
 
-    QMultiMap<double, int> similarityMap;
-    QStringList searchWords = searchString.split(' ', Qt::SkipEmptyParts);
+    QMultiMap<double, component_record_struct *> similarityMap;
+    const QStringList searchWords = searchString.split(' ', Qt::SkipEmptyParts);
 
-    int index = 0;
-    for (const auto &record : component_record) {
+    for (auto &record : model->component_record) {
         // 首先进行精确匹配检查
         if (isExactMatch(record, searchWords)) {
-            model->exacIndex.append(index);
+            model->exactPoint.append(&record);
         } else {
             // 将相似度存入Map中，键是相似度，值是记录
             if (double totalSimilarity = calculateSimilarity(record.searchKey, searchString); totalSimilarity > 0.0) {
-                similarityMap.insert(totalSimilarity, index);
+                similarityMap.insert(totalSimilarity, &record);
             }
         }
-        index++;
     }
 
     // 添加前5个最接近的模糊匹配结果
     auto it = similarityMap.end();
     int count = 0;
 
-    if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
-        while (it != similarityMap.begin() && count < 5) {
-            --it;
-            model->fuzzyIndex.append(it.value());
-            count++;
-        }
+    while (it != similarityMap.begin() && count < 5) {
+        --it;
+        model->fuzzyPoint.append(it.value());
+        count++;
     }
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
     std::cout << "搜索用时: " << duration << " ms\n";
 }
+void MainWindow::exact_search_records(const QString &searchString) const {
+    //清空记录
+    model->exactPoint.clear();
+    model->fuzzyPoint.clear();
+    model->noExitString.clear();
+    // 分解searchString，以分号，或者逗号（考虑全角和半角）分割
+    QStringList searchTerms;
+    QString currentTerm = "";
 
+    for (int i = 0; i < searchString.length(); ++i) {
+        QChar ch = searchString.at(i);
+
+        // 检查是否为分隔符（半角和全角的逗号、分号）
+        if (ch == QChar(0x002C) || ch == QChar(0x003B) || ch == QChar(0xFF0C) || ch == QChar(0xFF1B)) {
+            if (!currentTerm.trimmed().isEmpty()) {
+                searchTerms.append(currentTerm.trimmed());
+                currentTerm = "";
+            }
+        } else {
+            currentTerm += ch;
+        }
+    }
+
+    // 添加最后一个词条
+    if (!currentTerm.trimmed().isEmpty()) {
+        searchTerms.append(currentTerm.trimmed());
+    }
+
+    // 处理每个搜索词条，确保格式正确
+    QStringList validSearchTerms;
+
+    for (const QString &term : searchTerms) {
+        QString processedTerm = term.trimmed().toUpper();
+
+        if (processedTerm.isEmpty()) {
+            continue;
+        }
+
+        // 如果是小写c开头，转换为大写C
+        if (processedTerm.startsWith('c') || processedTerm.startsWith('C')) {
+            // 检查C后面是否跟着数字
+            QString numberPart = processedTerm.mid(1);
+            bool isValidNumber = false;
+            numberPart.toInt(&isValidNumber);
+
+            if (isValidNumber && !numberPart.isEmpty()) {
+                validSearchTerms.append("C" + numberPart);
+            }
+        }
+        // 如果是纯数字，在前面添加C
+        else {
+            bool isNumber = false;
+            processedTerm.toInt(&isNumber);
+
+            if (isNumber) {
+                validSearchTerms.append("C" + processedTerm);
+            }
+            // 其他情况直接舍弃（不符合C+数字格式）
+        }
+    }
+    qDebug() << "有效词条" << validSearchTerms;
+
+    for (const QString &searchTerm : validSearchTerms) {
+        if (model->component_record_Hash_cid.contains(searchTerm)) {
+            model->exactPoint.append(model->component_record_Hash_cid[searchTerm]);
+        } else {
+            model->noExitString.append(searchTerm);
+        }
+    }
+}
 void MainWindow::search() const {
     // QString searchString = ui_->input_search->text();
     const QString searchString = _searchBox->text();
@@ -125,7 +189,11 @@ void MainWindow::search() const {
         return;
     }
     model->showAll = false;
-    findClosestRecords(model->component_record, searchString);
+    if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
+        fuzzy_search_records(searchString);
+    } else if (model->searchType == ComponentTableModel::SEARCH_EXACT) {
+        exact_search_records(searchString);
+    }
 
     // for (const auto &record : model.exacIndex) {
     //     qDebug() << "精确结果: " << model.component_record[record].name << ", " << model.component_record[record].value << ", " <<
@@ -140,7 +208,7 @@ void MainWindow::search() const {
 
     model->updateData();
 
-    if (!model->exacIndex.isEmpty()|| !model->fuzzyIndex.isEmpty()) {
+    if (!model->exactPoint.isEmpty() || !model->fuzzyPoint.isEmpty()) {
         QModelIndex secondRowIndex = model->index(1, 0); // 第二行，第一列
         tableView->selectionModel()->setCurrentIndex(
             secondRowIndex,
@@ -167,15 +235,15 @@ void MainWindow::searchLogicInit() {
     connect(_searchTypeButton, &ElaToolButton::clicked, this, [&] {
         if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
             model->searchType = ComponentTableModel::SEARCH_EXACT;
-            _searchTypeButton->setText("搜索模式：精确");
+            _searchTypeButton->setText("搜索模式：\nCID精确");
             search();
         } else if (model->searchType == ComponentTableModel::SEARCH_EXACT) {
             model->searchType = ComponentTableModel::SEARCH_FUZZY;
-            _searchTypeButton->setText("搜索模式：模糊");
+            _searchTypeButton->setText("搜索模式：\n模糊");
             search();
         } else {
             model->searchType = ComponentTableModel::SEARCH_FUZZY;
-            _searchTypeButton->setText("搜索模式：模糊");
+            _searchTypeButton->setText("搜索模式：\n模糊");
             searchBoxClear();
         }
     });

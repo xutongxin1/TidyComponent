@@ -124,7 +124,7 @@ class MainWindow : public ElaWindow {
         QAction *connectUserStateAction;
         ElaToolButton *_searchTypeButton;
         ElaToolButton *_return_ALLButton;
-        ElaText * _returnTipsB53;
+        ElaText *_returnTipsB53;
         ElaToolButton *_applyButton;
         ElaToolButton *_apply_LightButton;
         ElaToolButton *_apply_Light_VoiceButton;
@@ -141,16 +141,16 @@ class MainWindow : public ElaWindow {
         ElaText *_addComponent_NFCText;
         bool _addComponent_isNFC_Write_success;
 
-
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
         static double calculateSimilarity(const QString &a, const QString &b);
         static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
-        void findClosestRecords(
-            const QVector<component_record_struct> &recordsVector,
+        void fuzzy_search_records(
             const QString &searchString) const;
         void UpdateApplyLogic();
         void UpdateApplyLogic(component_record_struct *record);
+        void exact_search_records(
+            const QString &searchString) const;
         void search() const;
         void searchBoxClear();
         void searchLogicInit();
@@ -163,15 +163,15 @@ class MainWindow : public ElaWindow {
             QString MAC;
             QList<int> coordinates;
             DeviceType type;
-            int B53_N=0;
-            int coordinates_total=0;
+            int B53_N = 0;
+            int coordinates_total = 0;
         };
 
         // 设备配置管理结构体
         struct DeviceConfig {
             QVector<DeviceInfo> devices;
             QHash<QString, DeviceInfo *> deviceMap; // 快速查找
-            QHash<DeviceType,int> typeCoordinateTotal; // 统计每种类型的坐标数量
+            QHash<DeviceType, int> typeCoordinateTotal; // 统计每种类型的坐标数量
         };
         DeviceConfig _device_config;
 
@@ -217,7 +217,7 @@ class MainWindow : public ElaWindow {
         void deleteSingleComponent(const QString &jlcid) const;
 
         // 缓存每种类型的所有可能坐标
-        QHash<DeviceType, QList<int>> _typeCoordinatesCache;
+        QHash<DeviceType, QList<int> > _typeCoordinatesCache;
 
         // 辅助函数
         void initializeCoordinatesCache();
@@ -241,8 +241,8 @@ class MainWindow : public ElaWindow {
         void updateTypeCoordinateTotal();
         // 统计和报告
         void updateTypeStatistics();
-        QHash<DeviceType, QPair<int, int>> getAllTypeStatistics(); // type -> (used, total)
-        QVector<QPair<QString, int>> allocateMultipleCoordinatesForType(const DeviceType &type, int count);
+        QHash<DeviceType, QPair<int, int> > getAllTypeStatistics(); // type -> (used, total)
+        QVector<QPair<QString, int> > allocateMultipleCoordinatesForType(const DeviceType &type, int count);
         QString findDeviceByCoordinate(const DeviceType &type, const int &coordinate);
 
         bool isExistingComponent(const QString &CID) const;

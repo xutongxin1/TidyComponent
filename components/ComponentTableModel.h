@@ -84,25 +84,25 @@ class ComponentTableModel : public QAbstractTableModel {
                         else
                             return QVariant(); // 其他列为空
                     } else if (item.type == DisplayItem::Data) {
-                        const component_record_struct &record = component_record[item.dataIndex];
+                        const component_record_struct *record = item.dataPoint;
                         switch (index.column()) {
                             case 0:
-                                if (record.isApply== ComponentState_Ready) {
+                                if (record->isApply== ComponentState_Ready) {
                                     return "就绪";
-                                } else if (record.isApply == ComponentState_APPLYOUT) {
+                                } else if (record->isApply == ComponentState_APPLYOUT) {
                                     return "正在申请出库";
-                                } else if (record.isApply == ComponentState_OUT) {
+                                } else if (record->isApply == ComponentState_OUT) {
                                     return "已取出";
-                                } else if (record.isApply == ComponentState_APPLYIN) {
+                                } else if (record->isApply == ComponentState_APPLYIN) {
                                     return "正在申请归还";
                                 }
                             case 1:
-                                return record.name;
+                                return record->name;
                             case 2:
-                                text = record.discription;
-                                if (record.isAlias) {
+                                text = record->discription;
+                                if (record->isAlias) {
                                     text += " (";
-                                    for (const auto & aliase : record.aliases) {
+                                    for (const auto & aliase : record->aliases) {
                                         if (!aliase.isEmpty()) {
                                             text += aliase;
                                             text += "，";
@@ -113,11 +113,11 @@ class ComponentTableModel : public QAbstractTableModel {
                                 }
                                 return text;
                             case 3:
-                                return record.package;
+                                return record->package;
                             case 4:
-                                return record.jlcid;
+                                return record->jlcid;
                             case 5:
-                                return record.more_data;
+                                return record->more_data;
                             default:
                                 return QVariant();
                         }
@@ -144,11 +144,11 @@ class ComponentTableModel : public QAbstractTableModel {
                 case Qt::BackgroundRole:
                     if (index.column() == 0) {
                         if (item.type == DisplayItem::Data) {
-                            if (component_record[item.dataIndex].color == "就绪" || component_record[item.dataIndex].color
+                            if (item.dataPoint->color == "就绪" || item.dataPoint->color
                                 == "已取出") {
                                 return QVariant();
                             } else {
-                                return QBrush(QColor(component_record[item.dataIndex].color));
+                                return QBrush(QColor(item.dataPoint->color));
                             }
                         } else { return QVariant(); }
                     } else {
@@ -336,17 +336,18 @@ class ComponentTableModel : public QAbstractTableModel {
         };
         SEARCH_TYPE searchType = SEARCH_FUZZY;
         // 存储精确和模糊搜索的索引
-        QVector<int> exacIndex;
-        QVector<int> fuzzyIndex;
-        QVector<int> BomIndex_NOTExist;
-        QVector<int> BomIndex_Exist;
-        QList<component_record_struct> component_record;
+        QVector<component_record_struct *> exactPoint;
+        QVector<component_record_struct *> fuzzyPoint;
+        QStringList noExitString;
+        // QVector<int> BomIndex_NOTExist;
+        // QVector<int> BomIndex_Exist;
+        QVector<component_record_struct> component_record;
         QHash<QString, component_record_struct *> component_record_Hash_cid;
         QHash<QString, component_record_struct *> component_record_Hash_MACD;
         struct DisplayItem {
             enum Type { Label, Data } type = Data;
             QString label = QString(); // 对于 Label 类型
-            int dataIndex = 0; // 对于 Data 类型，对应 component_records 中的索引
+            component_record_struct * dataPoint = nullptr; // 对于 Data 类型，对应 component_records 中的索引
         };
         // 存储要显示的项目列表
         QVector<DisplayItem> displayItems;
