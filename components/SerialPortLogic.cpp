@@ -256,14 +256,14 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
                 component_record_struct *record = model->component_record_Hash_MACD.
                     value(MAC + coordinate);
                 if (record->isApply == ComponentState_APPLYIN) {
-                    //A42不会对放回成功发出说明
-                    // ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                    ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
                     colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
                     record->color = "就绪";
                     record->isApply = ComponentState_Ready;
-                    // model->updateColumnWithRoles(0);
+                    model->updateColumnWithRoles(0);
                     if (_searchBox->text() == record->jlcid) {
-                        _searchBox->setText(""); //清空搜索框
+                        //清空搜索框
+                        searchBoxClear();
                     }
                     UpdateApplyLogic();
                 } else {
