@@ -423,12 +423,18 @@ void MainWindow::AddComponentLogic_4() {
     // 每秒更新一次剩余时间
 
     _addComponent_Allocate = allocateNextAvailableCoordinateForType(_addComponent_Type);
-    qDebug() << "分配的坐标：" << _addComponent_Allocate;
-    _addComponent_timer->start(100);
-    _addingComponentObj->MAC = _addComponent_Allocate.first;
-    _addingComponentObj->coordinate = _addComponent_Allocate.second;
-    _addingComponentObj->device_type = _addComponent_Type;
-    ApplyComponentIN_AddingCompnent(_addingComponentObj);
+    if (_addComponent_Allocate.first.isEmpty()) {
+        cancelAddComponentLogic();
+        ShowErrorInfo("该型号可用空间不足，无法添加元器件");
+    }
+    else {
+        qDebug() << "分配的坐标：" << _addComponent_Allocate;
+        _addComponent_timer->start(100);
+        _addingComponentObj->MAC = _addComponent_Allocate.first;
+        _addingComponentObj->coordinate = _addComponent_Allocate.second;
+        _addingComponentObj->device_type = _addComponent_Type;
+        ApplyComponentIN_AddingCompnent(_addingComponentObj);
+    }
     // if (DEBUG) {
     //     QTimer::singleShot(3000, [&]() {
     //         isAddingComponent = false;
