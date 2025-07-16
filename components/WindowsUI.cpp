@@ -323,6 +323,15 @@ void MainWindow::initElaWindow() {
     _addComponent_B53_Button->setIconSize(QSize(35, 35));
     _addComponent_B53_Button->setFixedSize(100, 75);
 
+    _addComponent_A42_Button = new ElaToolButton(this);
+    _addComponent_A42_Button->setIsTransparent(false);
+    _addComponent_A42_Button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _addComponent_A42_Button->setBorderRadius(8);
+    _addComponent_A42_Button->setText("分配A42元器件");
+    _addComponent_A42_Button->setElaIcon(ElaIconType::Plus);
+    _addComponent_A42_Button->setIconSize(QSize(35, 35));
+    _addComponent_A42_Button->setFixedSize(100, 75);
+
     // _delComponentButton = new ElaToolButton(this);
     // _delComponentButton->setIsTransparent(false);
     // _delComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -337,6 +346,7 @@ void MainWindow::initElaWindow() {
     // searchArea->setMinimumHeight(0);
     // searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *editAreaLayout = new QHBoxLayout(editArea);
+    editAreaLayout->addWidget(_addComponent_A42_Button);
     editAreaLayout->addWidget(_addComponent_B53_Button);
     // editAreaLayout->addWidget(_delComponentButton);
     editAreaLayout->addStretch();
@@ -392,14 +402,14 @@ void MainWindow::InitAddComponentDockUI() {
     _addComponent_ProgressBar = new ElaProgressBar(this);
     _addComponent_ProgressBar->setValue(20);
 
-    _addComponent_EditBoxText = new ElaText("1. 输入器件CID查找", this);
+    _addComponent_EditBoxText = new ElaText("1. 输入元器件CID查找，或在中心节点处扫码", this);
     _addComponent_EditBoxText->setTextPixelSize(20);
     _addComponent_CheckInfoText = new ElaText("2. 请检查元器件信息是否正确", this);
     _addComponent_CheckInfoText->setTextPixelSize(20);
     _addComponent_DownloadText = new ElaText("3. 下载相关资源", this);
     _addComponent_DownloadText->setTextPixelSize(20);
-    _addComponent_NFCText = new ElaText("4. 请在中心节点刷试管的NFC标签", this);
-    _addComponent_NFCText->setTextPixelSize(20);
+    // _addComponent_NFCText = new ElaText("4. 请在中心节点刷试管的NFC标签", this);
+    // _addComponent_NFCText->setTextPixelSize(20);
     _addComponent_OpenText = new ElaText("5. 分配存放点", this);
     _addComponent_OpenText->setTextPixelSize(20);
     _addComponent_WaitText = new ElaText("请在60s内打开闪蓝灯的格子", this);
@@ -481,7 +491,7 @@ void MainWindow::InitAddComponentDockUI() {
     addComponentLayout->addWidget(_addComponent_DownloadText);
     addComponentLayout->addWidget(_addComponent_DownloadProgressRing);
 
-    addComponentLayout->addWidget(_addComponent_NFCText);
+    // addComponentLayout->addWidget(_addComponent_NFCText);
     addComponentLayout->addWidget(_addComponent_OpenText);
     addComponentLayout->addWidget(_addComponent_WaitText);
 

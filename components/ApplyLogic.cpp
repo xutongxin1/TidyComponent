@@ -4,7 +4,7 @@
 //
 
 void MainWindow::UpdateApplyLogic() {
-    QModelIndexList selectedIndexes=tableView->selectionModel()->selection().indexes();
+    QModelIndexList selectedIndexes = tableView->selectionModel()->selection().indexes();
     if (selectedIndexes.isEmpty()) {
         _returnTipsB53->hide();
         _applyButton->hide();
@@ -14,8 +14,8 @@ void MainWindow::UpdateApplyLogic() {
     }
 
     if (const QString cid = selectedIndexes[0].sibling(selectedIndexes[0].row(), 4).data(Qt::DisplayRole).toString()
-            ; model->
-            component_record_Hash_cid.contains(cid)) {
+        ; model->
+        component_record_Hash_cid.contains(cid)) {
         UpdateApplyLogic(model->component_record_Hash_cid.value(cid));
     }
 }
@@ -27,10 +27,10 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
     _apply_LightButton->show();
     _apply_Light_VoiceButton->show();
     //逻辑分解：在取出状态下，在申请归还状态下
-    if (record->isApply == ComponentState_OUT ) {
+    if (record->isApply == ComponentState_OUT) {
         //B53不可以在取出状态下申请
-        if (record->device_type==DeviceType_B53) {
-            _returnTipsB53->show();//提示B53归还方法
+        if (record->device_type == DeviceType_B53) {
+            _returnTipsB53->show(); //提示B53归还方法
             _applyButton->setEnabled(false);
             _apply_LightButton->setEnabled(false);
             _apply_Light_VoiceButton->setEnabled(false);
@@ -38,7 +38,7 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
             _apply_LightButton->setToolTip("对于B53元器件，请归还器件后再申请");
             _apply_Light_VoiceButton->setToolTip("对于B53元器件，请归还器件后再申请");
         }
-    }else if (record->isApply == ComponentState_APPLYIN) {
+    } else if (record->isApply == ComponentState_APPLYIN) {
         _returnTipsB53->hide();
         _applyButton->setEnabled(false);
         _apply_LightButton->setEnabled(false);
@@ -46,8 +46,7 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
         _applyButton->setToolTip("请归还器件后再申请");
         _apply_LightButton->setToolTip("请归还器件后再申请");
         _apply_Light_VoiceButton->setToolTip("请归还器件后再申请");
-    }
-    else if (record->isApply == ComponentState_APPLYOUT) {
+    } else if (record->isApply == ComponentState_APPLYOUT) {
         _returnTipsB53->hide();
         _applyButton->setEnabled(false);
         _apply_LightButton->setEnabled(false);
@@ -55,8 +54,7 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
         _applyButton->setToolTip("正在申请取出，请勿重复申请");
         _apply_LightButton->setToolTip("正在申请取出，请勿重复申请");
         _apply_Light_VoiceButton->setToolTip("正在申请取出，请勿重复申请");
-    }
-    else {
+    } else {
         _returnTipsB53->hide();
         if (isConnectedToMesh) {
             _applyButton->setEnabled(true);
@@ -110,7 +108,8 @@ void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type a
     record->color = color.name();
     model->updateColumnWithRoles(0);
 
-    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " + QString::number(led_mode);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " +
+        QString::number(led_mode);
     //TODO:分配颜色方式w
 
     if (apply_type == apply_type_normal) {
@@ -123,7 +122,7 @@ void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type a
     if (serialManager->writeData(tmp)) {
     }
     record->isApply = ComponentState_APPLYOUT;
-    UpdateApplyLogic(record);//刷新申请逻辑
+    UpdateApplyLogic(record); //刷新申请逻辑
 }
 void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type apply_type, led_mode_t led_mode) {
     //TODO:灯状态还没想的很清楚
@@ -131,7 +130,8 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     record->color = color.name();
     model->updateColumnWithRoles(0);
 
-    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " + QString::number(led_mode);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " +
+        QString::number(led_mode);
     //TODO:分配颜色方
 
     if (apply_type == apply_type_normal) {
@@ -146,10 +146,17 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     record->isApply = ComponentState_APPLYIN;
 }
 void MainWindow::ApplyComponentIN_AddingCompnent(component_record_struct *record) {
-    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " #0000FF " + QString::number(LED_MODE_FLASH_FAST_1);
+    QString tmp = record->MAC + " " + QString::number(record->coordinate) + " #0000FF " + QString::number(
+        LED_MODE_FLASH_FAST_1);
     //TODO:分配颜色方
 
-    tmp = "C301 " + QString::number(20) + " " + tmp;
+    if (record->device_type == DeviceType_B53) {
+        tmp = "C301 " + QString::number(30) + " " + tmp;
+    } else if (record->device_type == DeviceType_A42) {
+        tmp = "C101 " + QString::number(30) + " " + tmp;
+    } else if (record->device_type == DeviceType_A21) {
+        tmp = "C201 " + QString::number(30) + " " + tmp;
+    }
 
     if (serialManager->writeData(tmp)) {
     }

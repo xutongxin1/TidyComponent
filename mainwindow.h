@@ -135,11 +135,13 @@ class MainWindow : public ElaWindow {
         EDAChromeHttpServer *EDA_Server;
         ElaToolButton *_openEDAChromeButton;
         ElaToolButton *_addComponent_B53_Button;
+        ElaToolButton * _addComponent_A42_Button;
         QPair<QString, int> _addComponent_Allocate;
         bool isConnectedToMesh = false;
         QColorAllocator *colorAllocator;
-        ElaText *_addComponent_NFCText;
+        // ElaText *_addComponent_NFCText;
         bool _addComponent_isNFC_Write_success;
+
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
@@ -192,12 +194,15 @@ class MainWindow : public ElaWindow {
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;
-        QString _addComponent_Type = QString();
+        DeviceType _addComponent_Type = DeviceType_B53;
 
         void GetConstructConfig();
         void SaveConstructConfig();
-        component_record_struct *split_addr_info(const QString &message) const;
         void initSerialPort();
+        void CX02_SerialRecive(const QString &message, DeviceType device_type);
+        void CX03_SerialRecive(const QString &message, DeviceType device_type);
+        void CX04_SerialRecive(const QString &message, DeviceType device_type);
+        void CX01Error_SerialRecive(const QString &message, DeviceType device_type);
         void updateComponentShowInfo_Clear();
         void updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected);
         static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
@@ -268,7 +273,7 @@ class MainWindow : public ElaWindow {
         void AnalyzeComponentData(const QString &CID, const QJsonObject &json, component_record_struct &component);
         void AnalyzeAddingComponentData(const QString &CID, const QJsonObject &json,
                                         component_record_struct &component);
-        void AddComponentLogic_0(const QString &type);
+        void AddComponentLogic_0(const DeviceType &type);
         void AddComponentLogic_1();
         void AddComponentLogic_2();
         void AddComponentLogic_3();

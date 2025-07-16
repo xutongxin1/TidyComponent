@@ -318,11 +318,11 @@ void MainWindow::loadDeviceConfig() {
         QJsonObject deviceObj = value.toObject();
         DeviceInfo device;
         device.MAC = deviceObj.value("MAC").toString();
-        if (QString deviceName = deviceObj.value("name").toString(); deviceName== "A42") {
+        if (QString type = deviceObj.value("type").toString(); type== "A42") {
             device.type = DeviceType_A42;
-        } else if (deviceName == "A21") {
+        } else if (type == "A21") {
             device.type = DeviceType_A21;
-        } else if (deviceName == "B53") {
+        } else if (type == "B53") {
             device.type = DeviceType_B53;
         } else {
             device.type = DeviceType_B53; // 默认值

@@ -265,7 +265,7 @@ void MainWindow::AnalyzeAddingComponentData(const QString &CID, const QJsonObjec
         component.pcb_svg_FileUrl.append(filename);
     }
 }
-void MainWindow::AddComponentLogic_0(const QString &type) {
+void MainWindow::AddComponentLogic_0(const DeviceType &type) {
     _addComponent_Type = type;
     _addComponent_DockhArea->show();
     _showInfo_Widget->hide();
@@ -276,7 +276,7 @@ void MainWindow::AddComponentLogic_0(const QString &type) {
     _addComponent_DownloadProgressRing->hide();
     _addComponent_CheckInfoText->hide();
     _addComponent_DownloadText->hide();
-    _addComponent_NFCText->hide();
+    // _addComponent_NFCText->hide();
     _addComponent_OpenText->hide();
     _addComponent_EditBox->show();
     _addComponent_EditBoxText->show();
@@ -288,6 +288,7 @@ void MainWindow::AddComponentLogic_0(const QString &type) {
     _addComponentStep = 1;
     _addComponent_CancelButton->setEnabled(true);
     _addComponent_B53_Button->setEnabled(false);
+    _addComponent_A42_Button->setEnabled(false);
     _addComponent_EditBox->clear();
     _addComponent_EditBox->setFocus();
     _addComponentButtonNext->setEnabled(false);
@@ -403,10 +404,15 @@ void MainWindow::AddComponentLogic_3() {
     _addComponent_DownloadText->hide();
     _addComponent_DownloadProgressRing->hide();
     _addComponent_WaitText->show();
-    _addComponent_timeLeft = 600; // 剩余时间60秒
-    _addComponent_timer->start(100);
-    _addComponent_isNFC_Write_success=false;
-    if (serialManager->writeData("C002 10 "+_addingComponentObj->jlcid+"\r\n")) {
+    if (_addComponent_Type == DeviceType_A42 || _addComponent_Type == DeviceType_A21) {
+        _addComponentStep = 4;
+        AddComponentLogic_4();
+    } else {
+        _addComponent_timeLeft = 600; // 剩余时间60秒
+        _addComponent_timer->start(100);
+        _addComponent_isNFC_Write_success = false;
+        if (serialManager->writeData("C002 10 " + _addingComponentObj->jlcid + "\r\n")) {
+        }
     }
 }
 void MainWindow::AddComponentLogic_4() {
@@ -416,11 +422,12 @@ void MainWindow::AddComponentLogic_4() {
     _addComponent_timeLeft = 600; // 剩余时间60秒
     // 每秒更新一次剩余时间
 
-    _addComponent_Allocate = allocateNextAvailableCoordinateForType(DeviceType_B53);
+    _addComponent_Allocate = allocateNextAvailableCoordinateForType(_addComponent_Type);
     qDebug() << "分配的坐标：" << _addComponent_Allocate;
     _addComponent_timer->start(100);
     _addingComponentObj->MAC = _addComponent_Allocate.first;
     _addingComponentObj->coordinate = _addComponent_Allocate.second;
+    _addingComponentObj->device_type = _addComponent_Type;
     ApplyComponentIN_AddingCompnent(_addingComponentObj);
     // if (DEBUG) {
     //     QTimer::singleShot(3000, [&]() {
@@ -445,6 +452,7 @@ void MainWindow::AddComponentLogic_5() {
         //关闭向导
         _addComponent_WaitText->hide();
         _addComponent_B53_Button->setEnabled(true);
+        _addComponent_A42_Button->setEnabled(true);
         _addComponent_DockhArea->hide();
         _showInfo_Widget->show();
         _infoDockWidget->setWindowTitle("元器件信息");
@@ -458,6 +466,7 @@ void MainWindow::cancelAddComponentLogic() {
     _addComponent_ProgressBar->setValue(20);
     _addComponent_timer->stop();
     _addComponent_B53_Button->setEnabled(true);
+    _addComponent_A42_Button->setEnabled(true);
     _addComponent_DockhArea->hide();
     _showInfo_Widget->show();
     _infoDockWidget->setWindowTitle("元器件信息");
@@ -475,7 +484,10 @@ void MainWindow::initAddComponentLogic() {
         cancelAddComponentLogic();
     });
     connect(_addComponent_B53_Button, &ElaToolButton::clicked, this, [&] {
-        AddComponentLogic_0("B53");
+        AddComponentLogic_0(DeviceType_B53);
+    });
+    connect(_addComponent_A42_Button, &ElaToolButton::clicked, this, [&] {
+        AddComponentLogic_0(DeviceType_A42);
     });
     connect(_addComponent_EditBox, &ElaLineEdit::textChanged, this, [&] {
         if (_addComponentStep == 1) {
@@ -511,7 +523,7 @@ void MainWindow::initAddComponentLogic() {
                 "请在" + QString::number((_addComponent_timeLeft / 10)) + "s内将试管的NFC贴到中心节点的NFC区域");
             if (_addComponent_isNFC_Write_success) {
                 _addComponent_timer->stop(); // 停止计时器
-                _addComponentStep=4;
+                _addComponentStep = 4;
                 AddComponentLogic_4();
             }
         } else {
