@@ -460,7 +460,7 @@ void MainWindow::AddComponentLogic_5() {
         // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
         resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     });
-    _addComponentStep = 1;
+    _addComponentStep = 0;
 }
 void MainWindow::cancelAddComponentLogic() {
     _addComponent_ProgressBar->setValue(20);
@@ -473,7 +473,7 @@ void MainWindow::cancelAddComponentLogic() {
     _infoDockWidget->setWidget(_showInfo_scrollArea);
     // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
-    _addComponentStep = 1;
+    _addComponentStep = 0;
     if (_addingComponentObj != nullptr) {
         delete _addingComponentObj;
         _addingComponentObj = nullptr;
