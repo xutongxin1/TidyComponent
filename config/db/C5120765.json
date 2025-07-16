@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "5706124",
+    "aliases": [
+    ],
+    "coordinate": 312,
+    "device_type": "B53",
+    "discription": "此款LDO采用SOT-223封装，他具有低功耗特性，静态电流小，最大输出电流可达1A，能够支持较大的负载需求，被广泛应用于各种电子设备的电源管理，如笔记本电脑、小型计算机系统、电池供电的仪器、手机以及其他便携式电子设备等。",
+    "inventory": "广东仓：210110\n江苏仓：155230",
+    "jlcid": "C5120765",
+    "more_data": "商品目录：线性稳压器(LDO)；输出类型：固定；工作电压：12V；输出电压：3.3V；输出电流：1A；压差：1.4V@(1A)；静态电流(Iq)：12mA；特性：过流保护；过热保护；工作温度：0℃~+125℃@(Ta)；输出极性：正极；输出通道数：1；",
+    "name": "AMS1117-3.3V",
+    "package": "SOT-223",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "3FE84CD7C81F21235F2E57A711447FA6.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250702/3FE84CD7C81F21235F2E57A711447FA6.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/img_3.jpg"
+    ],
+    "price": "1+：0.2325\n10+：0.1861\n30+：0.1623\n250+：0.1327\n500+：0.1259\n1000+：0.1213",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5120765/sch_svg_1.png"
+    ],
+    "weight": 0.2199999988079071
+}

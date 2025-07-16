@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "21832",
+    "aliases": [
+    ],
+    "coordinate": 112,
+    "device_type": "B53",
+    "discription": "220nF ±10% 25V",
+    "inventory": "广东仓：460800\n江苏仓：0",
+    "jlcid": "C21120",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：220nF；精度：±10%；额定电压：25V；温度系数：X7R；",
+    "name": "CL10B224KA8NNNC",
+    "package": "0603",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C21120/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707763339.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20160218/1457707763339.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C21120/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C21120/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C21120/img_2.jpg"
+    ],
+    "price": "1+：0.0361\n10+：0.0291\n40+：0.0234\n80+：0.0211\n480+：0.0201\n1000+：0.0195",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C21120/sch_svg_1.png"
+    ],
+    "weight": 0.03500000014901161
+}

@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "9529",
+    "aliases": [
+    ],
+    "coordinate": 311,
+    "device_type": "B53",
+    "discription": "全国产 贴片金属 频点：32MHZ 负载：12PF 常温频差：±10PPM 工作温度：-40~85℃ 型号升级变更为：XL2EL89COI-111YLC-32M",
+    "inventory": "广东仓：44500\n江苏仓：50350",
+    "jlcid": "C9009",
+    "more_data": "商品目录：无源晶振；晶振类型：贴片晶振；频率：32MHz；常温频差：±10ppm；负载电容：12pF；频率稳定度：±20ppm；工作温度：-40℃~+85℃；",
+    "name": "X322532MOB4SI",
+    "package": "SMD3225-4P",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "19D5F850207469550BEB00D7DFEDBC7A.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20240329/19D5F850207469550BEB00D7DFEDBC7A.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/img_3.jpg"
+    ],
+    "price": "1+：0.4384\n10+：0.3459\n30+：0.2984\n300+：0.237\n600+：0.2233\n900+：0.214",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C9009/sch_svg_1.png"
+    ],
+    "weight": 0.04699999839067459
+}

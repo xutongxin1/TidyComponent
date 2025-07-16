@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "291005",
+    "aliases": [
+    ],
+    "coordinate": 314,
+    "device_type": "B53",
+    "discription": "100nF ±10% 50V",
+    "inventory": "广东仓：3152400\n江苏仓：0",
+    "jlcid": "C307331",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：100nF；精度：±10%；额定电压：50V；温度系数：X7R；",
+    "name": "CL05B104KB54PNC",
+    "package": "0402",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C307331/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707763339.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20160218/1457707763339.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C307331/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C307331/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C307331/img_2.jpg"
+    ],
+    "price": "1+：0.0295\n10+：0.023\n30+：0.0202\n200+：0.018\n400+：0.0171\n1000+：0.0165",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C307331/sch_svg_1.png"
+    ],
+    "weight": 0.03571600094437599
+}

@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "3081328",
+    "aliases": [
+    ],
+    "coordinate": 212,
+    "device_type": "B53",
+    "discription": "无需外围元器件，有反接保护和过压保护，游乐设备，消费类电子，电竞领域，电脑周边及设备",
+    "inventory": "广东仓：180825\n江苏仓：44970",
+    "jlcid": "C2874885",
+    "more_data": "商品目录：RGB LED(内置IC)；波长：-；发光强度：-；PWM频率：-；数据速率：-；工作电压：-；静态电流：-；透镜颜色：-；",
+    "name": "WS2812B-V5/W",
+    "package": "SMD5050",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "615CE05766148E9C4DD7D8CE8DBC7337.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20241202/615CE05766148E9C4DD7D8CE8DBC7337.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/img_3.jpg"
+    ],
+    "price": "1+：0.5544\n10+：0.4384\n30+：0.3788\n200+：0.2881\n400+：0.271\n1000+：0.2594",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874885/sch_svg_1.png"
+    ],
+    "weight": 0.1599999964237213
+}

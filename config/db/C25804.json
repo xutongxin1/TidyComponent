@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "26547",
+    "aliases": [
+    ],
+    "coordinate": 233,
+    "device_type": "B53",
+    "discription": "厚膜电阻 10kΩ ±1% 100mW",
+    "inventory": "广东仓：13683600\n江苏仓：0",
+    "jlcid": "C25804",
+    "more_data": "商品目录：贴片电阻；电阻类型：厚膜电阻；阻值：10kΩ；精度：±1%；功率：100mW；工作电压：75V；温度系数：±100ppm/℃；工作温度：-55℃~+155℃；",
+    "name": "0603WAF1002T5E",
+    "package": "0603",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "C422600_1E6D84923E4A46A82E41ADD87F860B5C.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20200306/C422600_1E6D84923E4A46A82E41ADD87F860B5C.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/img_3.jpg"
+    ],
+    "price": "1+：0.0063\n10+：0.0049\n50+：0.0042\n100+：0.0038\n500+：0.0034\n502+：0.0034",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C25804/sch_svg_1.png"
+    ],
+    "weight": 0.02574099972844124
+}

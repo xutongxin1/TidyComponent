@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "33310",
+    "aliases": [
+    ],
+    "coordinate": 135,
+    "device_type": "B53",
+    "discription": "FC-135     32.768000 kHz 12.5 +20.0-20.0，3.2 x 1.5 x 0.9 mm",
+    "inventory": "广东仓：621630\n江苏仓：10765",
+    "jlcid": "C32346",
+    "more_data": "商品目录：无源晶振；晶振类型：贴片晶振；频率：32.768kHz；常温频差：±20ppm；负载电容：12.5pF；等效串联电阻(ESR)：70kΩ；工作温度：-40℃~+85℃；",
+    "name": "Q13FC13500004",
+    "package": "SMD3215-2P",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "87C7E20A5DC81A46E37D04BB93AE2FDC.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250619/87C7E20A5DC81A46E37D04BB93AE2FDC.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/img_3.jpg"
+    ],
+    "price": "1+：1.2504\n10+：0.9842\n30+：0.8542\n100+：0.7383\n600+：0.5982\n1200+：0.579",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C32346/sch_svg_1.png"
+    ],
+    "weight": 0.04600000008940697
+}

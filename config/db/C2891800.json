@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "3119719",
+    "aliases": [
+    ],
+    "coordinate": 225,
+    "device_type": "B53",
+    "discription": "S9013",
+    "inventory": "广东仓：77600\n江苏仓：164300",
+    "jlcid": "C2891800",
+    "more_data": "商品目录：三极管(BJT)；晶体管类型：NPN；集电极电流(Ic)：500mA；集射极击穿电压(Vceo)：25V；耗散功率(Pd)：300mW；直流电流增益(hFE)：400@50mA,1V；特征频率(fT)：-；集电极截止电流(Icbo)：1uA；集射极饱和电压(VCE(sat))：500mV@500mA,50mA；工作温度：-；射基极击穿电压(Vebo)：5V；数量：1个NPN；",
+    "name": "S9013",
+    "package": "SOT-23",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "D431C9F57CC026183A9A17AA4C687C10.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20210901/D431C9F57CC026183A9A17AA4C687C10.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/img_3.jpg"
+    ],
+    "price": "1+：0.0375\n10+：0.0294\n30+：0.0233\n90+：0.0206\n510+：0.0182\n990+：0.017",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2891800/sch_svg_1.png"
+    ],
+    "weight": 0.032999999821186066
+}

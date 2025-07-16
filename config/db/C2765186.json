@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "2901843",
+    "aliases": [
+    ],
+    "coordinate": 214,
+    "device_type": "B53",
+    "discription": "带定位柱 不锈钢外壳 2次模顶",
+    "inventory": "广东仓：401500\n江苏仓：319340",
+    "jlcid": "C2765186",
+    "more_data": "商品目录：USB连接器；连接器类型：Type-C；协议标准：USB 3.1；公母：母；安装方式：卧贴；触点数量：16P；端口数量：1；额定电流 - 电源：3A；额定电压：5V；插拔寿命：5千次；附加特征：-；中心高度(CH)：-；体长(L)：-；胶芯颜色：黑色；工作温度：-25℃~+85℃；",
+    "name": "TYPE-C 16PIN 2MD(073)",
+    "package": "SMD",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "FFB74EDFDFA0AC372CE4A8E4F739CCEF.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250506/FFB74EDFDFA0AC372CE4A8E4F739CCEF.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/img_3.jpg"
+    ],
+    "price": "1+：0.3751\n10+：0.3005\n30+：0.2621\n100+：0.2305\n500+：0.2194\n1000+：0.2119",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2765186/sch_svg_1.png"
+    ],
+    "weight": 0.8700000047683716
+}

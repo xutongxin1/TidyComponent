@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "20382442",
+    "aliases": [
+    ],
+    "coordinate": 321,
+    "device_type": "B53",
+    "discription": "发光二极管（LED)   红灯",
+    "inventory": "广东仓：9700\n江苏仓：280900",
+    "jlcid": "C19171391",
+    "more_data": "商品目录：发光二极管/LED；灯头类型：-；发光颜色：红色；正向压降(Vf)：1.8V~2.4V；功率：60mW；正向电流：20mA；波长：615nm~630nm；峰值波长：645nm；二极管配置：-；透镜颜色：-；色温：-；发光强度：48mcd~120mcd；发光角度：120°；载带方式：-；工作温度：-40℃~+85℃；",
+    "name": "YLED0805R",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "AB486D22E6D71BC59190C48A798367E6.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20231027/AB486D22E6D71BC59190C48A798367E6.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/img_3.jpg"
+    ],
+    "price": "1+：0.0473\n10+：0.0386\n30+：0.0302\n90+：0.0274\n510+：0.0249\n990+：0.0235",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C19171391/sch_svg_1.png"
+    ],
+    "weight": 0.02500000037252903
+}

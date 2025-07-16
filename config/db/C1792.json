@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "2144",
+    "aliases": [
+    ],
+    "coordinate": 315,
+    "device_type": "B53",
+    "discription": "12pF ±5% 50V",
+    "inventory": "广东仓：23200\n江苏仓：0",
+    "jlcid": "C1792",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：12pF；精度：±5%；额定电压：50V；温度系数：C0G；",
+    "name": "0805CG120J500NT",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C1792/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "C486355_26A10D38EF8C2A5C37091D0039909270.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20200305/C486355_26A10D38EF8C2A5C37091D0039909270.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C1792/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C1792/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C1792/img_2.jpg"
+    ],
+    "price": "1+：0.032\n10+：0.0255\n40+：0.0203\n80+：0.0181\n480+：0.0162\n1000+：0.0152",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C1792/sch_svg_1.png"
+    ],
+    "weight": 0.027000000700354576
+}

@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "5810",
+    "aliases": [
+    ],
+    "coordinate": 234,
+    "device_type": "B53",
+    "discription": "220nF ±10% 50V",
+    "inventory": "广东仓：281300\n江苏仓：0",
+    "jlcid": "C5378",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：220nF；精度：±10%；额定电压：50V；温度系数：X7R；",
+    "name": "CL21B224KBFNNNE",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5378/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707763339.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20160218/1457707763339.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5378/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C5378/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C5378/img_2.jpg"
+    ],
+    "price": "1+：0.0712\n10+：0.0568\n40+：0.049\n80+：0.0442\n480+：0.0423\n1000+：0.041",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C5378/sch_svg_1.png"
+    ],
+    "weight": 0.03400000184774399
+}

@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "3079893",
+    "aliases": [
+    ],
+    "coordinate": 222,
+    "device_type": "B53",
+    "discription": "4.2*3.25*2.5mm 立贴 轻触开关",
+    "inventory": "广东仓：1540\n江苏仓：7980",
+    "jlcid": "C2874599",
+    "more_data": "商品目录：轻触开关；电路结构：单刀单掷；按钮形状：椭圆形按钮；作用力：2.5N；安装方式：立贴；开关长度：4.2mm；开关宽度：3.25mm；开关高度：2.5mm；带支架：不带支架；触点电流：50mA；额定电压：12V；按钮/盖帽颜色：白色；引脚样式：SMD接片；工作寿命：10万次；",
+    "name": "TS-KG89S-AT25F",
+    "package": "SMD",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "0D75E68DCC1CEC2670E8A2B9A9134A65.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20221110/0D75E68DCC1CEC2670E8A2B9A9134A65.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/img_3.jpg"
+    ],
+    "price": "1+：0.2496\n10+：0.2008\n30+：0.1764\n300+：0.1408\n600+：0.1262\n900+：0.1189",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2874599/sch_svg_1.png"
+    ],
+    "weight": 0.13899999856948853
+}

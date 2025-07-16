@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "2507",
+    "aliases": [
+    ],
+    "coordinate": 134,
+    "device_type": "B53",
+    "discription": "丝印Y1",
+    "inventory": "广东仓：1217550\n江苏仓：975050",
+    "jlcid": "C2150",
+    "more_data": "商品目录：三极管(BJT)；晶体管类型：NPN；集电极电流(Ic)：1.5A；集射极击穿电压(Vceo)：25V；耗散功率(Pd)：300mW；直流电流增益(hFE)：200@800mA,1V；特征频率(fT)：100MHz；集电极截止电流(Icbo)：100nA；集射极饱和电压(VCE(sat))：500mV@800mA,80mA；工作温度：-55℃~+150℃；射基极击穿电压(Vebo)：5V；数量：1个NPN；",
+    "name": "SS8050(RANGE:200-350)",
+    "package": "SOT-23",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "AEE86F4B043774EFF80CAEA14A37D9E9.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20230322/AEE86F4B043774EFF80CAEA14A37D9E9.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/img_3.jpg"
+    ],
+    "price": "1+：0.0851\n10+：0.0643\n60+：0.0551\n120+：0.0481\n480+：0.0454\n1020+：0.0435",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2150/sch_svg_1.png"
+    ],
+    "weight": 0.04430000111460686
+}

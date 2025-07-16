@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "16585",
+    "aliases": [
+    ],
+    "coordinate": 213,
+    "device_type": "B53",
+    "discription": "P沟道,-30V,-4.1A,60mΩ@-10V",
+    "inventory": "广东仓：51930\n江苏仓：73210",
+    "jlcid": "C15903",
+    "more_data": "商品目录：场效应管(MOSFET)；数量：1个P沟道；漏源电压(Vdss)：30V；连续漏极电流(Id)：4.1A；导通电阻(RDS(on))：87mΩ@4.5V,3A；耗散功率(Pd)：350mW；阈值电压(Vgs(th))：3V@250uA；栅极电荷量(Qg)：-；输入电容(Ciss)：700pF；反向传输电容(Crss)：75pF；工作温度：-；类型：P沟道；输出电容(Coss)：120pF；",
+    "name": "CJ3407",
+    "package": "SOT-23",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C15903/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457706626832.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20130726/1457706626832.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C15903/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C15903/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C15903/img_2.jpg"
+    ],
+    "price": "1+：0.2062\n10+：0.1638\n30+：0.1419\n300+：0.124\n600+：0.1177\n900+：0.1135",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C15903/sch_svg_1.png"
+    ],
+    "weight": 0.035999998450279236
+}

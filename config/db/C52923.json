@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "53938",
+    "aliases": [
+    ],
+    "coordinate": 215,
+    "device_type": "B53",
+    "discription": "1uF ±10% 25V",
+    "inventory": "广东仓：4129800\n江苏仓：0",
+    "jlcid": "C52923",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：1uF；精度：±10%；额定电压：25V；温度系数：X5R；",
+    "name": "CL05A105KA5NQNC",
+    "package": "0402",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C52923/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707763339.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20160218/1457707763339.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C52923/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C52923/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C52923/img_2.jpg"
+    ],
+    "price": "1+：0.0198\n10+：0.0155\n30+：0.0134\n100+：0.011\n500+：0.01\n502+：0.01",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C52923/sch_svg_1.png"
+    ],
+    "weight": 0.013000000268220901
+}

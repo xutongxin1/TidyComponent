@@ -1,0 +1,29 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "14623",
+    "aliases": [
+    ],
+    "coordinate": 313,
+    "device_type": "B53",
+    "discription": "470nF ±10% 50V",
+    "inventory": "广东仓：242220\n江苏仓：0",
+    "jlcid": "C13967",
+    "more_data": "商品目录：贴片电容(MLCC)；容值：470nF；精度：±10%；额定电压：50V；温度系数：X7R；",
+    "name": "CL21B474KBFNNNE",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C13967/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707763339.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20160218/1457707763339.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C13967/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C13967/img_1.jpg"
+    ],
+    "price": "1+：0.0918\n10+：0.0757\n30+：0.0667\n100+：0.0536\n500+：0.049\n1000+：0.0464",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C13967/sch_svg_1.png"
+    ],
+    "weight": 0.03400000184774399
+}

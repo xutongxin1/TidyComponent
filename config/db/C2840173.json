@@ -1,0 +1,31 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "3018322",
+    "aliases": [
+    ],
+    "coordinate": 224,
+    "device_type": "B53",
+    "discription": "微功耗   32Hz,±20Gs,全极性霍尔开关",
+    "inventory": "广东仓：65\n江苏仓：17195",
+    "jlcid": "C2840173",
+    "more_data": "商品目录：霍尔开关；工作电压：5V；工作点(Gs)：±2mT；释放点(Gs)：±1.5mT；工作温度：-40℃~+125℃；",
+    "name": "CC6207MST",
+    "package": "SOT-23",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "6D16D9B2AB6F4A7B01D3CF6AF284F402.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250312/6D16D9B2AB6F4A7B01D3CF6AF284F402.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/img_3.jpg"
+    ],
+    "price": "1+：0.6529\n10+：0.5089\n30+：0.4369\n100+：0.3829\n600+：0.3397\n1200+：0.318",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2840173/sch_svg_1.png"
+    ],
+    "weight": 0.04899999871850014
+}

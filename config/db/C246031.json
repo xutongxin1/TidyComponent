@@ -1,12 +1,12 @@
 {
-    "MAC": "1A:92:89:88:19:70",
+    "MAC": "",
     "PID": "243532",
     "aliases": [
     ],
-    "coordinate": 111,
-    "device_type": "",
+    "coordinate": 0,
+    "device_type": "B53",
     "discription": "厚膜电阻 110Ω ±1% 125mW",
-    "inventory": "广东仓：8800\n江苏仓：0",
+    "inventory": "广东仓：7900\n江苏仓：0",
     "jlcid": "C246031",
     "more_data": "商品目录：贴片电阻；电阻类型：厚膜电阻；阻值：110Ω；精度：±1%；功率：125mW；工作电压：150V；温度系数：±100ppm/℃；工作温度：-55℃~+155℃；",
     "name": "RC0805FR-07110RL",
