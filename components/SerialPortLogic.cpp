@@ -189,28 +189,48 @@ void MainWindow::CX02_SerialRecive(const QString &message, DeviceType device_typ
 
     qDebug() << "提取的MAC地址:" << MAC;
     qDebug() << "提取的位置:" << coordinate;
-    if (_addComponentStep == 4 && (_addComponent_Type == DeviceType_A42|| _addComponent_Type == DeviceType_A21)) {
-        if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate/10) {
+    if (_addComponentStep == 4 && (_addComponent_Type == DeviceType_A42 || _addComponent_Type == DeviceType_A21)) {
+        if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate / 10) {
             _addComponent_isPutInComponent = true;
         } else {
             ShowWarningInfo("检测到取出但似乎放错了");
         }
-    } else if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
-        component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
-        if (record->isApply == ComponentState_APPLYOUT) {
-            ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
-            colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
-            record->color = "已取出";
-            record->isApply = ComponentState_OUT;
-            model->updateColumnWithRoles(0);
-            UpdateApplyLogic();
-        } else {
-            ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请取出");
-            //客观上认为已经取出了
-            record->color = "已取出";
-            record->isApply = ComponentState_OUT;
-            model->updateColumnWithRoles(0);
-            UpdateApplyLogic();
+    } else {
+        if (device_type == DeviceType_B53) {
+            if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+                if (record->isApply == ComponentState_APPLYOUT) {
+                    ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
+                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                } else {
+                    ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请取出");
+                    //客观上认为已经取出了
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                }
+            }
+        } else if (device_type == DeviceType_A42) {
+            for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+                if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
+                    component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
+                    if (record->isApply == ComponentState_APPLYOUT) {
+                        //A42不会对放回成功发出说明
+                        // ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
+                        colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                    }
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                    //A42不会存在异常行为
+                }
+            }
         }
     }
 }
@@ -230,31 +250,56 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
         } else {
             ShowWarningInfo("检测到放入但似乎放错了");
         }
-    } else if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
-        component_record_struct *record = model->component_record_Hash_MACD.
-            value(MAC + coordinate);
-        if (record->isApply == ComponentState_APPLYIN) {
-            ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
-            colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
-            record->color = "就绪";
-            record->isApply = ComponentState_Ready;
-            // model->updateColumnWithRoles(0);
-            if (_searchBox->text() == record->jlcid) {
-                _searchBox->setText(""); //清空搜索框
+    } else {
+        if (device_type == DeviceType_B53) {
+            if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.
+                    value(MAC + coordinate);
+                if (record->isApply == ComponentState_APPLYIN) {
+                    //A42不会对放回成功发出说明
+                    // ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    // model->updateColumnWithRoles(0);
+                    if (_searchBox->text() == record->jlcid) {
+                        _searchBox->setText(""); //清空搜索框
+                    }
+                    UpdateApplyLogic();
+                } else {
+                    ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
+                    //客观上认为已经放回了
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                }
             }
-            UpdateApplyLogic();
-        } else {
-            ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
-            //客观上认为已经放回了
-            record->color = "就绪";
-            record->isApply = ComponentState_Ready;
-            model->updateColumnWithRoles(0);
-            UpdateApplyLogic();
+        } else if (device_type == DeviceType_A42) {
+            for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+                if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
+                    component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
+                    if (record->isApply == ComponentState_APPLYIN) {
+                        //A42不会对放回成功发出说明
+                        // ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                        if (_searchBox->text() == record->jlcid) {
+                            _searchBox->setText(""); //清空搜索框
+                        }
+                    }
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                    //A42不会存在异常行为
+                }
+            }
         }
     }
 }
+
 void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_type) {
-    qDebug() << "元器件放回响应:" << message;
+    qDebug() << "元器件超时响应:" << message;
 
     QString temp = message;
 
@@ -264,24 +309,51 @@ void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_typ
 
     qDebug() << "提取的MAC地址:" << MAC;
     qDebug() << "提取的位置:" << coordinate;
-    if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
-        component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
-        if (record->isApply == ComponentState_APPLYIN) {
-            ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
-            colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
-            record->color = "已取出";
-            record->isApply = ComponentState_OUT;
-            model->updateColumnWithRoles(0);
-            UpdateApplyLogic();
-        } else if (record->isApply == ComponentState_APPLYOUT) {
-            ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
-            colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
-            record->color = "就绪";
-            record->isApply = ComponentState_Ready;
-            model->updateColumnWithRoles(0);
-            UpdateApplyLogic();
-        } else {
-            ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
+    if (device_type == DeviceType_B53) {
+        if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+            if (record->isApply == ComponentState_APPLYIN) {
+                ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
+                colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                record->color = "已取出";
+                record->isApply = ComponentState_OUT;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else if (record->isApply == ComponentState_APPLYOUT) {
+                ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
+                colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else {
+                ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "系统错误，刚刚是否有未经授权的操作?");
+            }
+        }
+    } else if (device_type == DeviceType_A42) {
+        for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+            if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
+                if (record->isApply == ComponentState_APPLYIN) {
+                    //A42不会对超时发出警告
+                    // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                    record->color = "已取出";
+                    record->isApply = ComponentState_OUT;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                } else if (record->isApply == ComponentState_APPLYOUT) {
+                    //A42不会对超时发出警告
+                    // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
+                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                    record->color = "就绪";
+                    record->isApply = ComponentState_Ready;
+                    model->updateColumnWithRoles(0);
+                    UpdateApplyLogic();
+                } else {
+                    // ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(i), "系统错误，刚刚是否有未经授权的操作?");
+                }
+            }
         }
     }
 }

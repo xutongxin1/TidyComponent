@@ -38,6 +38,27 @@ void MainWindow::UpdateApplyLogic(component_record_struct *record) {
             _apply_LightButton->setToolTip("对于B53元器件，请归还器件后再申请");
             _apply_Light_VoiceButton->setToolTip("对于B53元器件，请归还器件后再申请");
         }
+        else {
+            _returnTipsB53->hide();
+            _applyButton->setEnabled(true);
+            _apply_LightButton->setEnabled(true);
+            _apply_Light_VoiceButton->setEnabled(true);
+            _applyButton->setToolTip("");
+            _apply_LightButton->setToolTip("");
+            _apply_Light_VoiceButton->setToolTip("");
+            disconnect(_applyButton, &ElaToolButton::clicked, this, nullptr);
+            disconnect(_apply_LightButton, &ElaToolButton::clicked, this, nullptr);
+            disconnect(_apply_Light_VoiceButton, &ElaToolButton::clicked, this, nullptr);
+            connect(_applyButton, &ElaToolButton::clicked, this, [=] {
+                ApplyComponentIN(record, apply_type_normal, LED_MODE_STATIC); //申请逻辑
+            });
+            connect(_apply_LightButton, &ElaToolButton::clicked, this, [=] {
+                ApplyComponentIN(record, apply_type_light, LED_MODE_STATIC); //申请逻辑
+            });
+            connect(_apply_Light_VoiceButton, &ElaToolButton::clicked, this, [=] {
+                ApplyComponentIN(record, apply_type_voice, LED_MODE_STATIC); //申请逻辑
+            });
+        }
     } else if (record->isApply == ComponentState_APPLYIN) {
         _returnTipsB53->hide();
         _applyButton->setEnabled(false);
@@ -111,13 +132,21 @@ void MainWindow::ApplyComponentOUT(component_record_struct *record, apply_type a
     QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " +
         QString::number(led_mode);
     //TODO:分配颜色方式w
+    QString group;
+    if (record->device_type == DeviceType_B53) {
+        group="C301 ";
+    }else if (record->device_type == DeviceType_A42) {
+        group="C101 ";
+    } else if (record->device_type == DeviceType_A21) {
+        group="C201 ";
+    }
 
     if (apply_type == apply_type_normal) {
-        tmp = "C301 " + QString::number(10) + " " + tmp;
+        tmp = group + QString::number(10) + " " + tmp;
     } else if (apply_type == apply_type_light) {
-        tmp = "C301 " + QString::number(11) + " " + tmp;
+        tmp = group + QString::number(11) + " " + tmp;
     } else if (apply_type == apply_type_voice) {
-        tmp = "C301 " + QString::number(12) + " " + tmp;
+        tmp = group + QString::number(12) + " " + tmp;
     }
     if (serialManager->writeData(tmp)) {
     }
@@ -133,17 +162,26 @@ void MainWindow::ApplyComponentIN(component_record_struct *record, apply_type ap
     QString tmp = record->MAC + " " + QString::number(record->coordinate) + " " + color.name() + " " +
         QString::number(led_mode);
     //TODO:分配颜色方
+    QString group;
+    if (record->device_type == DeviceType_B53) {
+        group="C301 ";
+    }else if (record->device_type == DeviceType_A42) {
+        group="C101 ";
+    } else if (record->device_type == DeviceType_A21) {
+        group="C201 ";
+    }
 
     if (apply_type == apply_type_normal) {
-        tmp = "C301 " + QString::number(20) + " " + tmp;
+        tmp = group + QString::number(20) + " " + tmp;
     } else if (apply_type == apply_type_light) {
-        tmp = "C301 " + QString::number(21) + " " + tmp;
+        tmp = group + QString::number(21) + " " + tmp;
     } else if (apply_type == apply_type_voice) {
-        tmp = "C301 " + QString::number(22) + " " + tmp;
+        tmp = group + QString::number(22) + " " + tmp;
     }
     if (serialManager->writeData(tmp)) {
     }
     record->isApply = ComponentState_APPLYIN;
+    UpdateApplyLogic(record); //刷新申请逻辑
 }
 void MainWindow::ApplyComponentIN_AddingCompnent(component_record_struct *record) {
     QString tmp = record->MAC + " " + QString::number(record->coordinate) + " #0000FF " + QString::number(
