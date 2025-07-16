@@ -473,6 +473,9 @@ void MainWindow::cancelAddComponentLogic() {
     _infoDockWidget->setWidget(_showInfo_scrollArea);
     // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
+    if (!_addingComponentObj->MAC.isEmpty() && _addingComponentObj->coordinate != 0) {
+        releaseCoordinateByMAC(_addingComponentObj->MAC, _addingComponentObj->coordinate);
+    }
     _addComponentStep = 0;
     if (_addingComponentObj != nullptr) {
         delete _addingComponentObj;

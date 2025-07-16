@@ -212,6 +212,7 @@ bool MainWindow::releaseCoordinateByMAC(const QString &MAC, const int &coordinat
 
     device->coordinates.remove(index);
     qDebug() << "Released coordinate:" << coordinate << "from device:" << MAC;
+    saveDeviceConfig();
     return true;
 }
 
