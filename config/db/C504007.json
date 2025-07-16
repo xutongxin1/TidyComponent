@@ -1,0 +1,31 @@
+{
+    "MAC": "05:92:89:88:19:70",
+    "PID": "516666",
+    "aliases": [
+    ],
+    "coordinate": 11,
+    "device_type": "A42",
+    "discription": "射频SMA-KE/KWE/KHD/IPEX/IPX接头 天线插座 内孔正脚立式 镀金半牙H=8MM",
+    "inventory": "广东仓：7248\n江苏仓：11242",
+    "jlcid": "C504007",
+    "more_data": "商品目录：RF射频同轴连接器；连接器类型：板端；接口类型：内孔；端口数量：1；接口直径：6.2mm；接口长度/高度：8mm；频率：-；射频系列：SMA；阻抗：-；样式：正脚；工作温度：-；",
+    "name": "KH-SMA-KE-Z",
+    "package": "插件",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "C504007_C31FA59B5EDC95FA4ACB3324B1A20151.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20200330/C504007_C31FA59B5EDC95FA4ACB3324B1A20151.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/img_3.jpg"
+    ],
+    "price": "1+：2.65\n10+：2.08\n30+：1.8\n200+：1.48\n400+：1.41\n1000+：1.37",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C504007/sch_svg_1.png"
+    ],
+    "weight": 1.4199999570846558
+}

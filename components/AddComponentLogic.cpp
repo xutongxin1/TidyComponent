@@ -441,6 +441,8 @@ void MainWindow::AddComponentLogic_5() {
     _addComponent_WaitText->setText("已完成添加向导");
     _addComponent_ProgressBar->setValue(100);
     _addComponent_CancelButton->setEnabled(false);
+    _addingComponentObj->isApply = ComponentState_Ready;
+
     ShowSuccessInfo("添加元器件成功");
     //TODO: 上传数据
     addComponentToLib(*_addingComponentObj);

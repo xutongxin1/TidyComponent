@@ -131,7 +131,7 @@ void MainWindow::initSerialPort() {
         QTextStream stream(&temp);
         QString CID, data;
         stream >> data >> data >> CID;
-        ShowInfoInfo(CID,"二维码读取成功");
+        ShowInfoInfo(CID, "二维码读取成功");
         if (_addComponentStep == 1) {
             _addComponent_EditBox->setText(CID);
         } else {
@@ -189,7 +189,13 @@ void MainWindow::CX02_SerialRecive(const QString &message, DeviceType device_typ
 
     qDebug() << "提取的MAC地址:" << MAC;
     qDebug() << "提取的位置:" << coordinate;
-    if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+    if (_addComponentStep == 4 && (_addComponent_Type == DeviceType_A42|| _addComponent_Type == DeviceType_A21)) {
+        if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate/10) {
+            _addComponent_isPutInComponent = true;
+        } else {
+            ShowWarningInfo("检测到取出但似乎放错了");
+        }
+    } else if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
         component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
         if (record->isApply == ComponentState_APPLYOUT) {
             ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
@@ -218,7 +224,7 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
 
     qDebug() << "提取的MAC地址:" << MAC;
     qDebug() << "提取的位置:" << coordinate;
-    if (_addComponentStep == 4) {
+    if (_addComponentStep == 4 && _addComponent_Type == DeviceType_B53) {
         if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate) {
             _addComponent_isPutInComponent = true;
         } else {
