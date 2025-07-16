@@ -156,6 +156,7 @@ class MainWindow : public ElaWindow {
         void search() const;
         void searchBoxClear();
         void searchLogicInit();
+        void bomSearch();
         void InitEDAChromeHttpServer();
 
         ~MainWindow() override;
@@ -190,7 +191,7 @@ class MainWindow : public ElaWindow {
 
         ElaToolButton *_enterEditButton{nullptr};
         ElaLineEdit *_searchBox{nullptr};
-        ElaToolButton *_importSearchButton;
+        ElaToolButton *_bomSearchButton;
         std::vector<ConfigClass *> config_device_ini_;
         int device_count_;
         ConfigClass *config_main_ini_;

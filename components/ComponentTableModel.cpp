@@ -91,27 +91,42 @@ void ComponentTableModel::updateDisplayItems() {
                 }
             }
         } else if (searchType == SEARCH_BOM) {
-            // if (BomIndex_Exist.isEmpty() && BomIndex_NOTExist.isEmpty()) {
-            //     // 未搜索到结果
-            //     DisplayItem item;
-            //     item.type = DisplayItem::Label;
-            //     item.label = "未找到结果";
-            //     displayItems.append(item);
-            // } else {
-            //     // 添加“精确搜索结果：”标签
-            //     DisplayItem labelItem;
-            //     labelItem.type = DisplayItem::Label;
-            //     labelItem.label = "精确搜索结果：";
-            //     displayItems.append(labelItem);
-            //
-            //     // 添加精确搜索结果的数据项
-            //     for (component_record_struct *idx : exactPoint) {
-            //         DisplayItem dataItem;
-            //         dataItem.type = DisplayItem::Data;
-            //         dataItem.dataPoint = idx;
-            //         displayItems.append(dataItem);
-            //     }
-            // }
+            if (exactPoint.isEmpty()) {
+                if (noExitString.isEmpty()) {
+                    // 未搜索到结果
+                    DisplayItem item;
+                    item.type = DisplayItem::Label;
+                    item.label = "未识别到有效信息";
+                    displayItems.append(item);
+                }
+            } else {
+                // 添加“精确搜索结果：”标签
+                DisplayItem labelItem;
+                labelItem.type = DisplayItem::Label;
+                labelItem.label = "以下器件在库：";
+                displayItems.append(labelItem);
+
+                // 添加精确搜索结果的数据项
+                for (component_record_struct *idx : exactPoint) {
+                    DisplayItem dataItem;
+                    dataItem.type = DisplayItem::Data;
+                    dataItem.dataPoint = idx;
+                    displayItems.append(dataItem);
+                }
+            }
+
+            if (!noExitString.isEmpty()) {
+                DisplayItem labelItem;
+                labelItem.type = DisplayItem::Label;
+                labelItem.label = "以下器件未入库：";
+                displayItems.append(labelItem);
+                for (const QString &cid : noExitString) {
+                    DisplayItem dataItem;
+                    dataItem.type = DisplayItem::Label;
+                    dataItem.label = cid;
+                    displayItems.append(dataItem);
+                }
+            }
         }
     }
 }

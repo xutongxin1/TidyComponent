@@ -227,15 +227,15 @@ void MainWindow::initElaWindow() {
     _searchTypeButton->setIconSize(QSize(35, 35));
     _searchTypeButton->setFixedSize(100, 75);
 
-    _importSearchButton = new ElaToolButton(this);
-    _importSearchButton->setIsTransparent(false);
-    _importSearchButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    _importSearchButton->setBorderRadius(8);
+    _bomSearchButton = new ElaToolButton(this);
+    _bomSearchButton->setIsTransparent(false);
+    _bomSearchButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _bomSearchButton->setBorderRadius(8);
     //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    _importSearchButton->setText("导入BOM表\n进行搜索");
-    _importSearchButton->setElaIcon(ElaIconType::FileImport);
-    _importSearchButton->setIconSize(QSize(35, 35));
-    _importSearchButton->setFixedSize(120, 75);
+    _bomSearchButton->setText("导入BOM表\n进行搜索");
+    _bomSearchButton->setElaIcon(ElaIconType::FileImport);
+    _bomSearchButton->setIconSize(QSize(35, 35));
+    _bomSearchButton->setFixedSize(120, 75);
 
     _openEDAChromeButton = new ElaToolButton(this);
     _openEDAChromeButton->setIsTransparent(false);
@@ -255,7 +255,7 @@ void MainWindow::initElaWindow() {
     searchAreaLayout->addWidget(_searchBox);
     searchAreaLayout->addWidget(_resetSearchButton);
     searchAreaLayout->addWidget(_searchTypeButton);
-    searchAreaLayout->addWidget(_importSearchButton);
+    searchAreaLayout->addWidget(_bomSearchButton);
     searchAreaLayout->addWidget(_openEDAChromeButton);
     searchAreaLayout->addStretch();
 
