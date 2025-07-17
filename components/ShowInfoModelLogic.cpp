@@ -11,7 +11,7 @@
 void MainWindow::updateComponentShowInfo_Clear() {
     updateComponentShowInfo(QItemSelection(), QItemSelection());
 }
-void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected)  {
+void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected) {
     //  展示元器件信息
     QModelIndexList selectedIndexes = selected.indexes();
     if (selectedIndexes.isEmpty()) {
@@ -25,7 +25,7 @@ void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const Q
         _apply_Light_VoiceButton->hide();
         _returnTipsB53->hide();
         _showInfo_NoComponentTips->show();
-        if (ApplyComponentNum==0) {
+        if (ApplyComponentNum == 0) {
             _noReturnTips->show();
         }
         return;
@@ -150,7 +150,7 @@ void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const Q
                 QDesktopServices::openUrl(QUrl("https://item.szlcsc.com/" + QString(record->PID) + ".html"));
             });
 
-            disconnect(_showInfo_updateInfoButton,nullptr,nullptr,nullptr);
+            disconnect(_showInfo_updateInfoButton, nullptr, nullptr, nullptr);
             connect(_showInfo_updateInfoButton, &ElaToolButton::clicked, this, [&,cid](bool check) {
                 _showInfo_updateInfoButton->setDisabled(true);
                 updateOneComponent(cid);
@@ -170,6 +170,20 @@ void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const Q
                     });
                 }
             }
+        } else {
+            _showInfo_tableView->hide();
+            _showInfo_PNGView->hide();
+            _showInfo_SCHPCBview->hide();
+            _showInfo_Web_Widget->hide();
+            _applyButton->hide();
+            _apply_LightButton->hide();
+            _apply_Light_VoiceButton->hide();
+            _returnTipsB53->hide();
+            _showInfo_NoComponentTips->show();
+            if (ApplyComponentNum == 0) {
+                _noReturnTips->show();
+            }
+            return;
         }
     }
 }
@@ -260,16 +274,15 @@ void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, c
 }
 
 void MainWindow::updateComponentColor(component_record_struct *record, QColor color) {
-    record->color=color.name();
+    record->color = color.name();
     // dis
 }
 // 槽函数实现
-void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index)
-{
+void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index) {
     if (!index.isValid()) return;
     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
         // 启用编辑模式
-        _showInfo_model->m_editModeEnabled=true;
+        _showInfo_model->m_editModeEnabled = true;
 
         // 手动触发编辑
         _showInfo_tableView->edit(index);
@@ -277,10 +290,9 @@ void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index)
         // 连接编辑完成信号，用于关闭编辑模式
         connect(_showInfo_tableView->itemDelegate(), &QAbstractItemDelegate::closeEditor,
                 this, [this]() {
-                    _showInfo_model->m_editModeEnabled=false;
+                    _showInfo_model->m_editModeEnabled = false;
                 }, Qt::UniqueConnection);
-    }
-    else {
+    } else {
         QModelIndex firstColumnIndex = _showInfo_model->index(index.row(), 0);
         QString firstData = _showInfo_model->data(firstColumnIndex, Qt::DisplayRole).toString();
 
@@ -291,7 +303,6 @@ void MainWindow::onShowInfoTableViewDoubleClicked(const QModelIndex &index)
         // 复制到剪贴板
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(secondData);
-        ShowInfoInfo(firstData,"已复制");
+        ShowInfoInfo(firstData, "已复制");
     }
-
 }
