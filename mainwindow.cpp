@@ -90,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     // _showInfo_tableView->resizeRowsToContents();
     _showInfo_tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
     _showInfo_tableView->setColumnWidth(0, 100);
+    _enterEditButton->hide();
     if (DEBUG) {
         updateTypeStatistics();
         // isConnectedToMesh=true;

@@ -61,6 +61,7 @@ void LogMessageHandler(QtMsgType type, const QMessageLogContext &context, const 
 }
 
 int main(int argc, char *argv[]) {
+    qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
     qSetMessagePattern(
         "%{time_ yyyy-MM-dd hh:mm:ss} [%{type}]%{if-warning}[%{function}]%{endif}%{if-fatal}[%{function}--%{line}]%{endif}:%{message}");
 
