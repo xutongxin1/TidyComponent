@@ -226,6 +226,8 @@ void MainWindow::search() const {
 void MainWindow::searchBoxClear() {
     _searchBox->clear();
     tableView->selectionModel()->clear();
+    model->showAll = true;
+    model->updateData();
     updateComponentShowInfo_Clear();
 }
 void MainWindow::searchLogicInit() {
@@ -239,6 +241,8 @@ void MainWindow::searchLogicInit() {
         searchBoxClear();
         _searchTypeButton->setEnabled(true);
         _searchBox->setEnabled(true);
+        _searchBox->setToolTip("");
+        _openEDAChromeButton->setEnabled(true);
     });
     connect(_searchTypeButton, &ElaToolButton::clicked, this, [&] {
         if (model->searchType == ComponentTableModel::SEARCH_FUZZY) {
@@ -393,6 +397,8 @@ void MainWindow::bomSearch()
     }
     _searchTypeButton->setEnabled(false);
     _searchBox->setEnabled(false);
+    _openEDAChromeButton->setEnabled(false);
+    _searchBox->setToolTip("请先复位搜索");
     model->searchType = ComponentTableModel::SEARCH_BOM;
     _searchTypeButton->setText("搜索模式：\nBOM表");
     model->showAll=false;
