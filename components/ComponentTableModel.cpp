@@ -3,6 +3,59 @@
 //
 
 #include "ComponentTableModel.h"
+bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
+double calculateSimilarity(const QString &a, const QString &b);
+QVector<component_record_struct *> ComponentTableModel::search_records_with_strategy(const QString &searchString) {
+    // 使用局部变量存储搜索结果
+    QVector<component_record_struct *> localExactPoint;
+    QVector<component_record_struct *> localFuzzyPoint;
+    QMultiMap<double, component_record_struct *> similarityMap;
+
+    const QStringList searchWords = searchString.split(' ', Qt::SkipEmptyParts);
+
+    // 遍历所有记录进行搜索
+    for (int i = 0; i < component_record.size(); ++i) {
+        auto& record = component_record[i];  // 获取引用
+        if (isExactMatch(record, searchWords)) {
+            localExactPoint.append(&record);
+        } else {
+            if (double totalSimilarity = calculateSimilarity(record.searchKey, searchString); totalSimilarity > 0.0) {
+                similarityMap.insert(totalSimilarity, &record);
+            }
+        }
+    }
+
+    // 从similarityMap中提取模糊匹配结果
+    auto it = similarityMap.end();
+    int count = 0;
+    while (it != similarityMap.begin() && count < 5) {
+        --it;
+        localFuzzyPoint.append(it.value());
+        count++;
+    }
+
+    // 根据新策略组合结果
+    QVector<component_record_struct *> result;
+
+    if (localExactPoint.size() >= 5) {
+        // 如果精确匹配结果>=5个，只返回前5个精确匹配结果
+        for (int i = 0; i < 5 && i < localExactPoint.size(); ++i) {
+            result.append(localExactPoint[i]);
+        }
+    } else {
+        // 如果精确匹配结果<5个，先添加所有精确匹配结果
+        result.append(localExactPoint);
+
+        // 然后添加模糊匹配结果，使总数达到5个
+        int remaining = 5 - localExactPoint.size();
+        for (int i = 0; i < remaining && i < localFuzzyPoint.size(); ++i) {
+            result.append(localFuzzyPoint[i]);
+        }
+    }
+
+    return result;
+}
+
 void ComponentTableModel::updateDisplayItems() {
     displayItems.clear();
     if (showAll) {
@@ -120,11 +173,17 @@ void ComponentTableModel::updateDisplayItems() {
                 labelItem.type = DisplayItem::Label;
                 labelItem.label = "以下器件未入库：";
                 displayItems.append(labelItem);
-                for (const QString &cid : noExitString) {
+                for (const QString &string : noExitString) {
                     DisplayItem dataItem;
                     dataItem.type = DisplayItem::Label;
-                    dataItem.label = cid;
+                    dataItem.label = string;
                     displayItems.append(dataItem);
+                    for (QVector<component_record_struct *> suggestion=search_records_with_strategy(string); component_record_struct *suggestionPtr : suggestion) {
+                        DisplayItem suggestionItem;
+                        suggestionItem.type = DisplayItem::Suggestion;
+                        suggestionItem.suggestionPoint = suggestionPtr;
+                        displayItems.append(suggestionItem);
+                    }
                 }
             }
         }

@@ -15,7 +15,7 @@ enum ComponentState {
 };
 
 enum DeviceType {
-    DeviceType_A42=1,
+    DeviceType_A42 = 1,
     DeviceType_A21,
     DeviceType_B53
 };
@@ -70,7 +70,7 @@ class ComponentTableModel : public QAbstractTableModel {
         }
 
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
-            if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
+            if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount()||index.row()<0)
                 return QVariant();
 
             const DisplayItem &item = displayItems[index.row()];
@@ -83,11 +83,18 @@ class ComponentTableModel : public QAbstractTableModel {
                             return item.label;
                         else
                             return QVariant(); // 其他列为空
-                    } else if (item.type == DisplayItem::Data) {
-                        const component_record_struct *record = item.dataPoint;
+                    } else if (item.type == DisplayItem::Data || item.type == DisplayItem::Suggestion) {
+                        component_record_struct *record=nullptr;
+                        if (item.type == DisplayItem::Data)
+                        {
+                            record = item.dataPoint;
+                        }
+                        else {
+                            record = item.suggestionPoint;
+                        }
                         switch (index.column()) {
                             case 0:
-                                if (record->isApply== ComponentState_Ready) {
+                                if (record->isApply == ComponentState_Ready) {
                                     return "就绪";
                                 } else if (record->isApply == ComponentState_APPLYOUT) {
                                     return "正在申请出库";
@@ -102,7 +109,7 @@ class ComponentTableModel : public QAbstractTableModel {
                                 text = record->discription;
                                 if (record->isAlias) {
                                     text += " (";
-                                    for (const auto & aliase : record->aliases) {
+                                    for (const auto &aliase : record->aliases) {
                                         if (!aliase.isEmpty()) {
                                             text += aliase;
                                             text += "，";
@@ -142,8 +149,8 @@ class ComponentTableModel : public QAbstractTableModel {
                 //         }
                 //     }
                 case Qt::BackgroundRole:
-                    if (index.column() == 0) {
-                        if (item.type == DisplayItem::Data) {
+                    if (item.type == DisplayItem::Data) {
+                        if (index.column() == 0) {
                             if (item.dataPoint->color == "就绪" || item.dataPoint->color
                                 == "已取出") {
                                 return QVariant();
@@ -151,7 +158,9 @@ class ComponentTableModel : public QAbstractTableModel {
                                 return QBrush(QColor(item.dataPoint->color));
                             }
                         } else { return QVariant(); }
-                    } else {
+                    } else if (item.type == DisplayItem::Suggestion){
+                        return QBrush(QColor("Gray"));
+                    }else {
                         return QVariant();
                     }
                 default:
@@ -227,56 +236,6 @@ class ComponentTableModel : public QAbstractTableModel {
             // 指定更新的角色（如DisplayRole, BackgroundRole等）
             emit dataChanged(topLeft, bottomRight, roles);
         }
-        // virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override {
-        //     if (value.toString().isEmpty()) {
-        //         // 数据不能为空，返回 false 表示修改失败
-        //         return false;
-        //     }
-        //
-        //     if (!index.isValid() || index.column() >= columnCount() || index.row() >= rowCount())
-        //         return false;
-        //
-        //     if (role == Qt::EditRole) {
-        //         switch (index.column()) {
-        //             case 0:
-        //                 component_record[index.row()].color = value.toString();
-        //                 break;
-        //             case 1:
-        //                 component_record[index.row()].name = value.toString();
-        //                 break;
-        //             case 2:
-        //                 component_record[index.row()].discription = value.toString();
-        //                 break;
-        //             case 3:
-        //                 component_record[index.row()].package = value.toString();
-        //                 break;
-        //             case 4:
-        //                 component_record[index.row()].jlcid = value.toString();
-        //                 break;
-        //             default:
-        //                 if (index.column() >= 5 && index.column() <= 14) {
-        //                     int aliasIndex = index.column() - 5;
-        //                     // Ensure the aliases vector is large enough
-        //                     if (aliasIndex >= component_record[index.row()].aliases.size()) {
-        //                         component_record[index.row()].aliases.resize(aliasIndex + 1);
-        //                     }
-        //                     component_record[index.row()].aliases[aliasIndex] = value.toString();
-        //                 } else {
-        //                     return false;
-        //                 }
-        //                 break;
-        //         }
-        //
-        //         // Notify the view that the data has changed
-        //         emit dataChanged(index, index, {role});
-        //
-        //         // Indicate that the data was successfully set
-        //         return true;
-        //     }
-        //
-        //     // For other roles, return false
-        //     return false;
-        // }
 
     private:
         //    行修改函数：添加多行和删除多行
@@ -315,6 +274,7 @@ class ComponentTableModel : public QAbstractTableModel {
             return true;
         }
 
+        QVector<component_record_struct *> search_records_with_strategy(const QString &searchString);
         // 更新显示项目列表
         void updateDisplayItems();
 
@@ -345,9 +305,10 @@ class ComponentTableModel : public QAbstractTableModel {
         QHash<QString, component_record_struct *> component_record_Hash_cid;
         QHash<QString, component_record_struct *> component_record_Hash_MACD;
         struct DisplayItem {
-            enum Type { Label, Data } type = Data;
+            enum Type { Label, Data, Suggestion } type = Data;
             QString label = QString(); // 对于 Label 类型
-            component_record_struct * dataPoint = nullptr; // 对于 Data 类型，对应 component_records 中的索引
+            component_record_struct *dataPoint = nullptr; // 对于 Data 类型，对应 component_records 中的索引
+            component_record_struct *suggestionPoint = nullptr; // 对于 Suggestion 类型，对应 component_records 中的索引
         };
         // 存储要显示的项目列表
         QVector<DisplayItem> displayItems;

@@ -145,8 +145,6 @@ class MainWindow : public ElaWindow {
 
         void initElaWindow();
         explicit MainWindow(QWidget *parent = nullptr);
-        static double calculateSimilarity(const QString &a, const QString &b);
-        static bool isExactMatch(const component_record_struct &record, const QStringList &searchWords);
         void fuzzy_search_records(
             const QString &searchString) const;
         void UpdateApplyLogic();
@@ -156,6 +154,7 @@ class MainWindow : public ElaWindow {
         void search() const;
         void searchBoxClear();
         void searchLogicInit();
+        QVector<component_record_struct *> search_records_with_strategy(const QString &searchString) const;
         void bomSearch();
         void InitEDAChromeHttpServer();
 

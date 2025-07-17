@@ -12,7 +12,7 @@
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
 // 计算两个字符串的Levenshtein距离
-double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
+double calculateSimilarity(const QString &a, const QString &b) {
     if (a.isEmpty() || b.isEmpty()) return 0.0;
 
     const int m = static_cast<int>(a.length());
@@ -48,7 +48,7 @@ double MainWindow::calculateSimilarity(const QString &a, const QString &b) {
 }
 
 // 检查所有词是否都在记录字段中出现
-bool MainWindow::isExactMatch(const component_record_struct &record, const QStringList &searchWords) {
+bool isExactMatch(const component_record_struct &record, const QStringList &searchWords) {
     int matchCount = 0;
 
     for (const auto &word : searchWords) {
