@@ -47,11 +47,11 @@ void EDAChromeHttpServer::start() {
         m_server->close();
         return;
     }
-
     // Start Chrome in incognito mode with blank page
     QStringList arguments;
     arguments << "--user-data-dir=" + ChromePATH << "--disable-web-security" << "--allow-file-access-from-files" <<
-        "--new-window" << "--no-first-run" << "--no-default-browser-check" << "about:blank";
+        "--new-window" << "--no-first-run" << "--no-default-browser-check" <<"--portable"<<"--no-sandbox"<<
+            "--disk-cache-size=0" << "--media-cache-size=0"<< "--aggressive-cache-discard" << "--disable-background-timer-throttling" <<"about:blank";
 
     m_chromeProcess->start(chromePath, arguments);
 

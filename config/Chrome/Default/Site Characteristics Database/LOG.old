@@ -1,1 +1,13 @@
-2025/07/09-18:36:17.439 15d30 Reusing MANIFEST C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Site Characteristics Database/MANIFEST-000001
+2025/07/18-01:32:29.081 3cd0 Reusing MANIFEST C:\GitProject\TidyComponent\cmake\config\Chrome\Default\Site Characteristics Database/MANIFEST-000001
+2025/07/18-01:32:29.082 14ec Compacting 8@0 + 0@1 files
+2025/07/18-01:32:29.086 14ec Generated table #28@0: 5 keys, 381 bytes
+2025/07/18-01:32:29.086 14ec Compacted 8@0 + 0@1 files => 381 bytes
+2025/07/18-01:32:29.087 14ec compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/07/18-01:32:29.087 14ec Delete type=2 #4
+2025/07/18-01:32:29.087 14ec Delete type=2 #7
+2025/07/18-01:32:29.087 14ec Delete type=2 #8
+2025/07/18-01:32:29.087 14ec Delete type=2 #11
+2025/07/18-01:32:29.087 14ec Delete type=2 #22
+2025/07/18-01:32:29.087 14ec Delete type=2 #23
+2025/07/18-01:32:29.087 14ec Delete type=2 #24
+2025/07/18-01:32:29.088 14ec Delete type=2 #25
