@@ -131,11 +131,15 @@ void MainWindow::initSerialPort() {
         QTextStream stream(&temp);
         QString CID, data;
         stream >> data >> data >> CID;
-        ShowInfoInfo(CID, "二维码读取成功");
-        if (_addComponentStep == 1) {
+        if (model->searchType == ComponentTableModel::SEARCH_BOM) {
+            ShowWarningInfo(CID, "二维码读取成功，但请先退出BOM表搜索模式");
+        }
+        else if (_addComponentStep == 1) {
             _addComponent_EditBox->setText(CID);
+            ShowInfoInfo(CID, "二维码读取成功");
         } else {
             _searchBox->setText(CID);
+            ShowInfoInfo(CID, "二维码读取成功");
         }
     });
 
@@ -266,7 +270,7 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
                         searchBoxClear();
                     }
                     UpdateApplyLogic();
-                }  else {
+                } else {
                     ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
                     //客观上认为已经放回了
                     record->color = "就绪";
