@@ -78,7 +78,6 @@ bool isExactMatch(const component_record_struct &record, const QStringList &sear
     return true; // 所有词都找到了
 }
 
-
 // 查找最接近的记录
 void MainWindow::fuzzy_search_records(const QString &searchString) const {
     auto start = std::chrono::high_resolution_clock::now();
@@ -239,6 +238,10 @@ void MainWindow::searchLogicInit() {
         }
     });
     connect(_resetSearchButton, &ElaToolButton::clicked, this, [&] {
+        if (model->searchType == ComponentTableModel::SEARCH_BOM) {
+            model->searchType = ComponentTableModel::SEARCH_FUZZY;
+            _searchTypeButton->setText("搜索模式：\n模糊");
+        }
         searchBoxClear();
         _searchTypeButton->setEnabled(true);
         _searchBox->setEnabled(true);
@@ -265,8 +268,7 @@ void MainWindow::searchLogicInit() {
     });
 }
 
-void MainWindow::bomSearch()
-{
+void MainWindow::bomSearch() {
     // 1. 弹出文件选择框
     QString fileName = QFileDialog::getOpenFileName(
         this,
@@ -287,9 +289,9 @@ void MainWindow::bomSearch()
     }
 
     // 获取当前工作表
-    QXlsx::Worksheet* worksheet = static_cast<QXlsx::Worksheet*>(xlsx.currentWorksheet());
+    QXlsx::Worksheet *worksheet = static_cast<QXlsx::Worksheet *>(xlsx.currentWorksheet());
     if (!worksheet) {
-       ShowErrorInfo("无法获取工作表");
+        ShowErrorInfo("无法获取工作表");
         return;
     }
 
@@ -305,7 +307,7 @@ void MainWindow::bomSearch()
 
     // 在第一行查找所需的列
     for (int col = 1; col <= maxCol; ++col) {
-        QXlsx::Cell* cell = worksheet->cellAt(1, col).get();
+        QXlsx::Cell *cell = worksheet->cellAt(1, col).get();
         if (cell) {
             QString headerValue = cell->value().toString().trimmed();
 
@@ -335,7 +337,7 @@ void MainWindow::bomSearch()
         QString searchTerm;
 
         // 获取Supplier Part列的值
-        QXlsx::Cell* supplierPartCell = worksheet->cellAt(row, supplierPartCol).get();
+        QXlsx::Cell *supplierPartCell = worksheet->cellAt(row, supplierPartCol).get();
         QString supplierPartValue = supplierPartCell ? supplierPartCell->value().toString().trimmed() : "";
 
         if (!supplierPartValue.isEmpty()) {
@@ -349,29 +351,29 @@ void MainWindow::bomSearch()
 
             // 获取Footprint列的值
             if (footprintCol != -1) {
-                QXlsx::Cell* footprintCell = worksheet->cellAt(row, footprintCol).get();
+                QXlsx::Cell *footprintCell = worksheet->cellAt(row, footprintCol).get();
                 footprintValue = footprintCell ? footprintCell->value().toString().trimmed() : "";
             }
 
             // 获取Value列的值
             if (valueCol != -1) {
-                QXlsx::Cell* valueCell = worksheet->cellAt(row, valueCol).get();
+                QXlsx::Cell *valueCell = worksheet->cellAt(row, valueCol).get();
                 valueValue = valueCell ? valueCell->value().toString().trimmed() : "";
             }
 
             // 获取Name列的值
             if (nameCol != -1) {
-                QXlsx::Cell* nameCell = worksheet->cellAt(row, nameCol).get();
+                QXlsx::Cell *nameCell = worksheet->cellAt(row, nameCol).get();
                 nameValue = nameCell ? nameCell->value().toString().trimmed() : "";
             }
 
             // 按优先级组合
             if (!valueValue.isEmpty()) {
                 // Footprint + Value
-                searchTerm = footprintValue +" "+ valueValue;
+                searchTerm = footprintValue + " " + valueValue;
             } else if (!nameValue.isEmpty()) {
                 // Footprint + Name
-                searchTerm = footprintValue +" "+ nameValue;
+                searchTerm = footprintValue + " " + nameValue;
             } else {
                 // 只有Footprint
                 searchTerm = footprintValue;
@@ -392,7 +394,7 @@ void MainWindow::bomSearch()
             model->noExitString.append(searchTerm);
         }
     }
-    if (model->exactPoint.isEmpty()&& model->noExitString.isEmpty()) {
+    if (model->exactPoint.isEmpty() && model->noExitString.isEmpty()) {
         ShowWarningInfo("未找到任何匹配的元件");
         return;
     }
@@ -402,9 +404,9 @@ void MainWindow::bomSearch()
     _searchBox->setToolTip("请先复位搜索");
     model->searchType = ComponentTableModel::SEARCH_BOM;
     _searchTypeButton->setText("搜索模式：\nBOM表");
-    model->showAll=false;
+    model->showAll = false;
     model->updateData();
 
     // 可选：显示处理结果
-   qDebug() << model->exactPoint<<model->noExitString;
+    qDebug() << model->exactPoint << model->noExitString;
 }
