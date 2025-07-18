@@ -78,7 +78,7 @@ void setupDpiScaling()
     //     (screenHeight >= 1152 && screenHeight <= 1800)) {
     //     qputenv("QT_SCALE_FACTOR", "1.25");
     //     }
-    qputenv("QT_SCALE_FACTOR", "1.5");
+    qputenv("QT_SCALE_FACTOR", "1.75");
 #endif
 }
 int main(int argc, char *argv[]) {

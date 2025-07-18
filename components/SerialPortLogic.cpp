@@ -266,7 +266,7 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
                         searchBoxClear();
                     }
                     UpdateApplyLogic();
-                } else {
+                }  else {
                     ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "正在尝试未申请放回");
                     //客观上认为已经放回了
                     record->color = "就绪";
@@ -297,7 +297,6 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
         }
     }
 }
-
 void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_type) {
     qDebug() << "元器件超时响应:" << message;
 

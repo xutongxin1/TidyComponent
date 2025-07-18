@@ -22,15 +22,8 @@ EDAChromeHttpServer::EDAChromeHttpServer(QObject *parent)
     connect(m_server.get(), &QTcpServer::newConnection,
             this, &EDAChromeHttpServer::handleNewConnection);
 
-    connect(m_chromeProcess.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, &EDAChromeHttpServer::handleChromeFinished);
-}
-
-EDAChromeHttpServer::~EDAChromeHttpServer() {
-    stop();
-}
-
-void EDAChromeHttpServer::start() {
+    // connect(m_chromeProcess.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    //         this, &EDAChromeHttpServer::handleChromeFinished);
     // Start HTTP server
     if (!m_server->listen(QHostAddress::LocalHost, m_port)) {
         qDebug() << "Failed to start HTTP server on port" << m_port
@@ -39,6 +32,14 @@ void EDAChromeHttpServer::start() {
     }
 
     qDebug() << "HTTP server listening on port" << m_port;
+}
+
+EDAChromeHttpServer::~EDAChromeHttpServer() {
+    stop();
+}
+
+void EDAChromeHttpServer::start() {
+
 
     // Check Chrome path
     QString chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
@@ -50,8 +51,7 @@ void EDAChromeHttpServer::start() {
     // Start Chrome in incognito mode with blank page
     QStringList arguments;
     arguments << "--user-data-dir=" + ChromePATH << "--disable-web-security" << "--allow-file-access-from-files" <<
-        "--new-window" << "--no-first-run" << "--no-default-browser-check" <<"--portable"<<"--no-sandbox"<<
-            "--disk-cache-size=0" << "--media-cache-size=0"<< "--aggressive-cache-discard" << "--disable-background-timer-throttling" <<"about:blank";
+        "--new-window" << "--no-first-run" << "--no-default-browser-check" <<"about:blank";
 
     m_chromeProcess->start(chromePath, arguments);
 
@@ -140,9 +140,9 @@ void EDAChromeHttpServer::handleClientData() {
 void EDAChromeHttpServer::handleChromeFinished() {
     qDebug() << "Chrome closed, stopping HTTP server";
 
-    if (m_server->isListening()) {
-        m_server->close();
-    }
+    // if (m_server->isListening()) {
+    //     m_server->close();
+    // }
 }
 
 void MainWindow::InitEDAChromeHttpServer() {
