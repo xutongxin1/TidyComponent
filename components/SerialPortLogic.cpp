@@ -216,7 +216,7 @@ void MainWindow::CX02_SerialRecive(const QString &message, DeviceType device_typ
                 }
             }
         } else if (device_type == DeviceType_A42) {
-            for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+            for (int i = coordinate.toInt() * 10 + 1; i <= coordinate.toInt() * 10 + 2; i++) {
                 if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
                     component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
                     if (record->isApply == ComponentState_APPLYOUT) {
@@ -276,13 +276,13 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
                 }
             }
         } else if (device_type == DeviceType_A42) {
-            for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+            for (int i = coordinate.toInt() * 10 + 1; i <= coordinate.toInt() * 10 + 2; i++) {
                 if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
                     component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
                     if (record->isApply == ComponentState_APPLYIN) {
                         //A42不会对放回成功发出说明
                         // ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
-                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                        colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
                         if (_searchBox->text() == record->jlcid) {
                             _searchBox->setText(""); //清空搜索框
                         }
@@ -331,7 +331,7 @@ void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_typ
             }
         }
     } else if (device_type == DeviceType_A42) {
-        for (int i = coordinate.toInt() * 10; i <= coordinate.toInt() * 10 + 1; i++) {
+        for (int i = coordinate.toInt() * 10 + 1; i <= coordinate.toInt() * 10 + 2; i++) {
             if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
                 component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
                 if (record->isApply == ComponentState_APPLYIN) {

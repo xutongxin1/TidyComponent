@@ -1,0 +1,31 @@
+{
+    "MAC": "05:92:89:88:19:70",
+    "PID": "8427551",
+    "aliases": [
+    ],
+    "coordinate": 12,
+    "device_type": "A42",
+    "discription": "黄色耐高温型号：ZX-XH2.54-4PZZ-Y 红色耐高温型号：ZX-XH2.54-4PZZ-R 配套胶壳型号：ZX-XH2.54-4PJK 配套端子型号：ZX-XH2.54-DZ 配套杜邦线型号：ZX-XH2.54-4PBXC",
+    "inventory": "广东仓：699480\n江苏仓：324600",
+    "jlcid": "C7429634",
+    "more_data": "商品目录：线对板针座；插针结构：1x4P；间距：2.5mm；安装方式：直插；参考系列：XH；总PIN数：4P；排数：1；每排PIN数：4；行距：-；额定电流：3A；触头材质：黄铜；触头镀层：锡；工作温度：-25℃~+85℃；额定电压：250V；塑料材质：PA66；阻燃等级：UL94V-0；附加特征：-；颜色：白色；Z轴-板上高度：7mm；X轴-板上底边长度(间距线)：12.5mm；Y轴-板上底边宽度：5.9mm；",
+    "name": "ZX-XH2.54-4PZZ",
+    "package": "插件,P=2.5mm",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "B529A2163E0159A644AB3383D208FB03.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20230619/B529A2163E0159A644AB3383D208FB03.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/img_3.jpg"
+    ],
+    "price": "1+：0.0627\n3+：0.0627\n5+：0.0627\n30+：0.061\n32+：0.061\n34+：0.061",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C7429634/sch_svg_1.png"
+    ],
+    "weight": 0.39070001244544983
+}

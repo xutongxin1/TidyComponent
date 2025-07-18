@@ -78,6 +78,7 @@ bool isExactMatch(const component_record_struct &record, const QStringList &sear
     return true; // 所有词都找到了
 }
 
+
 // 查找最接近的记录
 void MainWindow::fuzzy_search_records(const QString &searchString) const {
     auto start = std::chrono::high_resolution_clock::now();

@@ -56,11 +56,11 @@ QList<int> MainWindow::generateAllCoordinatesForType(const DeviceType &type) {
             }
         }
     } else if (type == DeviceType_A42) {
-        // A43: 11-13, 21-23, 31-33, 41-43
+        // A42: 11-12, 21-22, 31-32, 41-42
         for (int row = 1; row <= 4; row++) {
             // 4行
-            for (int slot = 1; slot <= 3; slot++) {
-                // 每行3个位置
+            for (int slot = 1; slot <= 2; slot++) {
+                // 每行2个位置
                 int coord = row * 10 + slot;
                 coordinates.append(coord);
             }

@@ -1,0 +1,31 @@
+{
+    "MAC": "05:92:89:88:19:70",
+    "PID": "3301204",
+    "aliases": [
+    ],
+    "coordinate": 21,
+    "device_type": "A42",
+    "discription": "额定电流(DC)：500mA 额定电压(DC)：50V 电路结构：单刀双掷 安装方式：立插 机械寿命：5000 滑钮形状：矩形柱状 引脚样式：PC引脚 工作温度：-10℃~+50℃ 开关长度：8.7mm 开关宽度：4.4mm 开关高度：4.7mm 柄的高度：3mm",
+    "inventory": "广东仓：13620\n江苏仓：19140",
+    "jlcid": "C2939725",
+    "more_data": "商品目录：滑动开关；电路结构：单刀双掷；滑钮形状：-；引脚样式：PC引脚；开关长度：8.7mm；开关宽度：4.4mm；开关高度：4.7mm；安装方式：直插；开关颜色：-；额定电流：500mA；额定电压：50V；工作寿命：5千次；工作温度：-10℃~+50℃；",
+    "name": "SS12D07VG3 087",
+    "package": "插件",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "B3DB16C36C67E4177F01762C9D0E02DE.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250430/B3DB16C36C67E4177F01762C9D0E02DE.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/img_3.jpg"
+    ],
+    "price": "1+：0.221\n10+：0.1746\n30+：0.1488\n100+：0.1277\n500+：0.1143\n1000+：0.1071",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2939725/sch_svg_1.png"
+    ],
+    "weight": 0.45500001311302185
+}
