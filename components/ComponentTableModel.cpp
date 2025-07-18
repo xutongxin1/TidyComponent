@@ -55,7 +55,6 @@ QVector<component_record_struct *> ComponentTableModel::search_records_with_stra
 
     return result;
 }
-
 void ComponentTableModel::updateDisplayItems() {
     displayItems.clear();
     if (showAll) {

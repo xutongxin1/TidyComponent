@@ -1,0 +1,30 @@
+{
+    "MAC": "D4:3B:46:E5:66:E4",
+    "PID": "228770",
+    "aliases": [
+    ],
+    "coordinate": 134,
+    "device_type": "B53",
+    "discription": "厚膜电阻 30Ω ±1% 125mW",
+    "inventory": "广东仓：4100\n江苏仓：0",
+    "jlcid": "C228740",
+    "more_data": "商品目录：贴片电阻；电阻类型：厚膜电阻；阻值：30Ω；精度：±1%；功率：125mW；工作电压：150V；温度系数：±100ppm/℃；工作温度：-55℃~+155℃；",
+    "name": "AC0805FR-0730RL",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C228740/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "4D446B3946E6DC27047BD586A1D384B4.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20241120/4D446B3946E6DC27047BD586A1D384B4.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C228740/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C228740/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C228740/img_2.jpg"
+    ],
+    "price": "1+：0.0252\n10+：0.019\n50+：0.0157\n100+：0.0142\n500+：0.0122\n502+：0.0122",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C228740/sch_svg_1.png"
+    ],
+    "weight": 0.029999999329447746
+}

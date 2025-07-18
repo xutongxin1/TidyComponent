@@ -1,0 +1,31 @@
+{
+    "MAC": "D4:3B:46:E5:66:E4",
+    "PID": "48788241",
+    "aliases": [
+    ],
+    "coordinate": 114,
+    "device_type": "B53",
+    "discription": "40mΩ 1W 1206 ±1%",
+    "inventory": "广东仓：29990\n江苏仓：0",
+    "jlcid": "C46634439",
+    "more_data": "商品目录：电流采样电阻/分流器；电阻类型：采样电阻；合金电阻；阻值：40mΩ；精度：±1%；功率：1W；温度系数：±50ppm/℃；",
+    "name": "JER1206F1R040",
+    "package": "1206",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "D554CC95569B02A455FAE3D181D671EA.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250318/D554CC95569B02A455FAE3D181D671EA.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/img_3.jpg"
+    ],
+    "price": "1+：0.2687\n10+：0.2111\n30+：0.1823\n100+：0.1607\n500+：0.1434\n1000+：0.1348",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46634439/sch_svg_1.png"
+    ],
+    "weight": 1
+}

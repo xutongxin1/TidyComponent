@@ -1,12 +1,12 @@
 {
-    "MAC": "1A:92:89:88:19:70",
+    "MAC": "",
     "PID": "53938",
     "aliases": [
     ],
-    "coordinate": 215,
+    "coordinate": 0,
     "device_type": "B53",
     "discription": "1uF ±10% 25V",
-    "inventory": "广东仓：4129800\n江苏仓：0",
+    "inventory": "广东仓：4015800\n江苏仓：0",
     "jlcid": "C52923",
     "more_data": "商品目录：贴片电容(MLCC)；容值：1uF；精度：±10%；额定电压：25V；温度系数：X5R；",
     "name": "CL05A105KA5NQNC",

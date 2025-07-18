@@ -6,6 +6,7 @@
 #include <QDir>
 
 #include "ElaApplication.h"
+#include "ElaDxgi.h"
 #include "mainwindow.h"
 #include "iostream"
 
@@ -60,8 +61,29 @@ void LogMessageHandler(QtMsgType type, const QMessageLogContext &context, const 
     std::cout << type_str.toStdString().data() << std::endl;
 }
 
+// 设置DPI缩放的函数
+void setupDpiScaling()
+{
+    // 临时创建QGuiApplication来获取屏幕信息
+    // 注意：这种方法需要在实际的QApplication创建之前
+
+    // 获取系统屏幕信息的替代方法
+#ifdef Q_OS_WIN
+    // Windows平台获取屏幕分辨率
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    // 判断是否为2K分辨率
+    // if ((screenWidth >= 2048 && screenWidth <= 2880) &&
+    //     (screenHeight >= 1152 && screenHeight <= 1800)) {
+    //     qputenv("QT_SCALE_FACTOR", "1.25");
+    //     }
+    qputenv("QT_SCALE_FACTOR", "1.5");
+#endif
+}
 int main(int argc, char *argv[]) {
     qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+    setupDpiScaling();
     qSetMessagePattern(
         "%{time_ yyyy-MM-dd hh:mm:ss} [%{type}]%{if-warning}[%{function}]%{endif}%{if-fatal}[%{function}--%{line}]%{endif}:%{message}");
 

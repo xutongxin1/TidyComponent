@@ -1,0 +1,30 @@
+{
+    "MAC": "D4:3B:46:E5:66:E4",
+    "PID": "148829",
+    "aliases": [
+    ],
+    "coordinate": 212,
+    "device_type": "B53",
+    "discription": "厚膜电阻 4.7Ω ±1% 125mW",
+    "inventory": "广东仓：122900\n江苏仓：71300",
+    "jlcid": "C137513",
+    "more_data": "商品目录：贴片电阻；电阻类型：厚膜电阻；阻值：4.7Ω；精度：±1%；功率：125mW；工作电压：150V；温度系数：±200ppm/℃；工作温度：-55℃~+155℃；",
+    "name": "RC0805FR-074R7L",
+    "package": "0805",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C137513/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "89E4D743C004A82A45145C7A2CC3A578.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250610/89E4D743C004A82A45145C7A2CC3A578.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C137513/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C137513/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C137513/img_2.jpg"
+    ],
+    "price": "1+：0.0449\n10+：0.037\n50+：0.0327\n100+：0.0301\n500+：0.0278\n1000+：0.0266",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C137513/sch_svg_1.png"
+    ],
+    "weight": 0.029999999329447746
+}

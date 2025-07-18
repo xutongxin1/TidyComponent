@@ -1,0 +1,31 @@
+{
+    "MAC": "D4:3B:46:E5:66:E4",
+    "PID": "49133275",
+    "aliases": [
+    ],
+    "coordinate": 121,
+    "device_type": "B53",
+    "discription": "50mΩ 1W 1206 ±1%",
+    "inventory": "广东仓：46070\n江苏仓：0",
+    "jlcid": "C46961736",
+    "more_data": "商品目录：电流采样电阻/分流器；电阻类型：采样电阻；合金电阻；阻值：50mΩ；精度：±1%；功率：1W；温度系数：±50ppm/℃；",
+    "name": "RE1206F1R050",
+    "package": "1206",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "401775B85EF7B3A580BC34DFED100CB2.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250325/401775B85EF7B3A580BC34DFED100CB2.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/img_3.jpg"
+    ],
+    "price": "1+：0.2687\n10+：0.2111\n30+：0.1823\n100+：0.1607\n500+：0.1434\n1000+：0.1348",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C46961736/sch_svg_1.png"
+    ],
+    "weight": 0.029999999329447746
+}
