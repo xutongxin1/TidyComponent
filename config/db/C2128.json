@@ -1,0 +1,31 @@
+{
+    "MAC": "D4:3B:46:E5:66:E4",
+    "PID": "2485",
+    "aliases": [
+    ],
+    "coordinate": 111,
+    "device_type": "B53",
+    "discription": "丝印T4",
+    "inventory": "广东仓：2316750\n江苏仓：272250",
+    "jlcid": "C2128",
+    "more_data": "商品目录：开关二极管；二极管配置：独立式；正向压降(Vf)：1.25V@150mA；直流反向耐压(Vr)：100V；整流电流：150mA；反向电流(Ir)：1uA@75V；反向恢复时间(Trr)：4ns；工作结温范围：-；",
+    "name": "1N4148WS",
+    "package": "SOD-323",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "1457707208178.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20140809/1457707208178.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/img_3.jpg"
+    ],
+    "price": "1+：0.0588\n10+：0.0441\n60+：0.0389\n120+：0.034\n480+：0.032\n1020+：0.0307",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C2128/sch_svg_1.png"
+    ],
+    "weight": 0.03959999978542328
+}
