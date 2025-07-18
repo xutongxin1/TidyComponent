@@ -30,7 +30,7 @@ class ShowInfoModel : public QAbstractTableModel {
 
         bool setData(const QModelIndex &index, const QVariant &value, int role);
         bool m_editModeEnabled = false;
-        component_record_struct *m_record=nullptr;
+        component_record_struct *m_record = nullptr;
 };
 
 inline void ShowInfoModel::setComponentData(component_record_struct *record) {
@@ -43,9 +43,9 @@ inline void ShowInfoModel::setComponentData(component_record_struct *record) {
     // qDebug() << "渲染用时: " << duration << " ms\n";
 }
 inline int ShowInfoModel::rowCount(const QModelIndex &parent) const {
-    if (m_record==nullptr)
+    if (m_record == nullptr)
         return 0;
-    return static_cast<int>(m_record->aliases.size()) + 7; // 5 fields + aliases rows
+    return static_cast<int>(m_record->aliases.size()) + 7 + 2; // 5 fields + aliases rows+2 info
 }
 inline int ShowInfoModel::columnCount(const QModelIndex &parent) const {
     return 2; // Field, Value
@@ -55,7 +55,7 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole|| role == Qt::EditRole) {
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
         if (index.column() == 0) {
             switch (index.row()) {
                 case 0:
@@ -72,11 +72,18 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                     return "立创参考价";
                 case 6:
                     return "立创库存";
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    return "别名" + QString::number(index.row() - 6);
+                case 12:
+                    return "MAC地址";
+                case 13:
+                    return "存储位置";
                 default:
-                    if (index.row() < 12)
-                        return "别名" + QString::number(index.row() - 6);
-                    else
-                        return QVariant();
+                    return QVariant();
             }
         } else {
             switch (index.row()) {
@@ -94,16 +101,21 @@ inline QVariant ShowInfoModel::data(const QModelIndex &index, int role) const {
                     return m_record->price; // price
                 case 6:
                     return m_record->inventory; // inventory
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    return m_record->aliases[index.row() - 7]; // Aliases start from row 5
+                case 12:
+                    return m_record->MAC;
+                case 13:
+                    return m_record->coordinate;
                 default:
-                    if (index.row() < 12)
-                        // For aliases
-                        return m_record->aliases[index.row() - 7]; // Aliases start from row 5
-                    else
-                        return QVariant();
+                    return QVariant();
             }
         }
     }
-
     return QVariant();
 }
 inline Qt::ItemFlags ShowInfoModel::flags(const QModelIndex &index) const {
@@ -113,7 +125,7 @@ inline Qt::ItemFlags ShowInfoModel::flags(const QModelIndex &index) const {
     Qt::ItemFlags flags = QAbstractItemModel::flags(index);
 
     // 只有在编辑模式开启且是指定行时才可编辑
-    if (index.row() >=7 && index.row() < 12) {
+    if (index.row() >= 7 && index.row() < 12) {
         flags |= Qt::ItemIsEditable;
     }
 
@@ -126,7 +138,7 @@ inline bool ShowInfoModel::setData(const QModelIndex &index, const QVariant &val
         return false;
     }
 
-    m_record->aliases[index.row() - 7]=value.toString();
+    m_record->aliases[index.row() - 7] = value.toString();
 
     //更新搜索索引
     m_record->searchKey = m_record->name + m_record->jlcid + m_record->
