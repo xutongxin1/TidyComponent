@@ -252,7 +252,7 @@ class MainWindow : public ElaWindow {
         bool isExistingComponent(const QString &CID) const;
         void reactComponentHash() const;
         void addComponentToLib(const component_record_struct &_addingComponentObj, bool isReacting = false) const;
-        void replaceComponentToLib(component_record_struct _replacingComponentObj) const;
+        void replaceComponentToLib(component_record_struct _replacingComponentObj);
         static void updateSearchKey(component_record_struct &record);
         void updateOneComponent(const QString &CID);
 

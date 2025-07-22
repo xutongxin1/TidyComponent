@@ -379,30 +379,26 @@ void MainWindow::addComponentToLib(const component_record_struct &_addingCompone
         reactComponentHash();
     }
 }
-void MainWindow::replaceComponentToLib(component_record_struct _replacingComponentObj) const {
+void MainWindow::replaceComponentToLib(component_record_struct _replacingComponentObj) {
     // 检查该 jlcid 是否已存在于哈希表中
     if (model->component_record_Hash_cid.contains(_replacingComponentObj.jlcid)) {
         // 如果存在，先在列表中找到并替换
-        for (int i = 0; i < model->component_record.size(); ++i) {
-            if (model->component_record[i].jlcid == _replacingComponentObj.jlcid) {
-                // 替换列表中的元素
-                model->component_record[i].name = _replacingComponentObj.name;
-                model->component_record[i].discription = _replacingComponentObj.discription;
-                model->component_record[i].more_data = _replacingComponentObj.more_data;
-                model->component_record[i].package = _replacingComponentObj.package;
-                model->component_record[i].png_FileUrl = _replacingComponentObj.png_FileUrl;
-                model->component_record[i].sch_svg_FileUrl = _replacingComponentObj.sch_svg_FileUrl;
-                model->component_record[i].pcb_svg_FileUrl = _replacingComponentObj.pcb_svg_FileUrl;
-                model->component_record[i].pdf_url = _replacingComponentObj.pdf_url;
-                model->component_record[i].pdf_name = _replacingComponentObj.pdf_name;
-                model->component_record[i].price = _replacingComponentObj.price;
-                model->component_record[i].inventory = _replacingComponentObj.inventory;
+        component_record_struct *record = model->component_record_Hash_cid.value(_replacingComponentObj.jlcid);
+        record->name = _replacingComponentObj.name;
+        record->discription = _replacingComponentObj.discription;
+        record->more_data = _replacingComponentObj.more_data;
+        record->package = _replacingComponentObj.package;
+        record->png_FileUrl = _replacingComponentObj.png_FileUrl;
+        record->sch_svg_FileUrl = _replacingComponentObj.sch_svg_FileUrl;
+        record->pcb_svg_FileUrl = _replacingComponentObj.pcb_svg_FileUrl;
+        record->pdf_url = _replacingComponentObj.pdf_url;
+        record->pdf_name = _replacingComponentObj.pdf_name;
+        record->price = _replacingComponentObj.price;
+        record->inventory = _replacingComponentObj.inventory;
 
-                // 更新哈希表中的元素
-                reactComponentHash();
-                break;
-            }
-        }
+        // 更新哈希表中的元素
+        reactComponentHash();
+        SaveSingleComponent(*record);
     } else {
         // 如果不存在，直接添加
         addComponentToLib(_replacingComponentObj);
@@ -430,7 +426,6 @@ void MainWindow::updateOneComponent(const QString &CID) {
                    replaceComponentToLib(_tmpComponentObj);
                    updateComponentShowInfo(tableView->selectionModel()->selection(), QItemSelection());
                    model->updateDataWithNoRowChange();
-                   SaveSingleComponent(_tmpComponentObj);
                    _showInfo_updateInfoButton->setEnabled(true);
                    ShowSuccessInfo(CID + "信息更新成功");
                }, [&](const QNetworkReply::NetworkError error, const QString &ErrorInfo) {
