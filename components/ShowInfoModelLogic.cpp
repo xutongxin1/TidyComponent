@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QPainter>
 
 #include "ShowInfoModel.h"
 void MainWindow::updateComponentShowInfo_Clear() {

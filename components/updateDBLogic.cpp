@@ -100,10 +100,10 @@ void MainWindow::loadDataFromFolder() {
             record.pcb_svg_FileUrl.append(value.toString());
         }
 
-        addComponentToLib(record,true);
+        addComponentToLib(record, true);
     }
     loadDeviceConfig();
-    reactComponentHash();// 手动更新组件哈希表
+    reactComponentHash(); // 手动更新组件哈希表
 }
 
 void MainWindow::SaveDataToFolder() {
@@ -201,7 +201,7 @@ void MainWindow::SaveSingleComponent(component_record_struct record) {
     file.close();
 
     // 同步更新设备配置文件
-    if (!record.MAC.isEmpty() && !record.coordinate==0 && record.device_type!=0) {
+    if (!record.MAC.isEmpty() && !record.coordinate == 0 && record.device_type != 0) {
         updateDeviceConfig(record.MAC, record.coordinate, record.device_type);
     }
 }
@@ -259,7 +259,7 @@ bool MainWindow::saveDeviceConfig() {
     for (const DeviceInfo &device : _device_config.devices) {
         QJsonObject deviceObj;
         deviceObj.insert("MAC", device.MAC);
-        if (device.type==DeviceType_A42) {
+        if (device.type == DeviceType_A42) {
             deviceObj.insert("type", "A42");
         } else if (device.type == DeviceType_A21) {
             deviceObj.insert("type", "A21");
@@ -274,7 +274,7 @@ bool MainWindow::saveDeviceConfig() {
             coordArray.append(coord);
         }
         deviceObj.insert("coordinates", coordArray);
-        if (device.B53_N!=0) {
+        if (device.B53_N != 0) {
             deviceObj.insert("B53_N", device.B53_N);
         }
         devicesArray.append(deviceObj);
@@ -318,7 +318,7 @@ void MainWindow::loadDeviceConfig() {
         QJsonObject deviceObj = value.toObject();
         DeviceInfo device;
         device.MAC = deviceObj.value("MAC").toString();
-        if (QString type = deviceObj.value("type").toString(); type== "A42") {
+        if (QString type = deviceObj.value("type").toString(); type == "A42") {
             device.type = DeviceType_A42;
         } else if (type == "A21") {
             device.type = DeviceType_A21;
@@ -332,7 +332,7 @@ void MainWindow::loadDeviceConfig() {
         for (const QJsonValue &coordValue : coordArray) {
             device.coordinates.append(coordValue.toInt());
         }
-        device.B53_N= deviceObj.value("B53_N").toInt(0);
+        device.B53_N = deviceObj.value("B53_N").toInt(0);
         _device_config.devices.append(device);
         _device_config.deviceMap.insert(device.MAC, &_device_config.devices.last());
     }
@@ -362,11 +362,14 @@ bool MainWindow::isExistingComponent(const QString &CID) const {
 void MainWindow::reactComponentHash() const {
     model->component_record_Hash_cid.clear();
     model->component_record_Hash_MACD.clear();
-    for (int i = 0; i < model->component_record.size(); ++i) {
-        component_record_struct &record = model->component_record[i];
+    for (auto &i : model->component_record) {
+        component_record_struct &record = i;
         updateSearchKey(record);
-        model->component_record_Hash_cid.insert(record.jlcid, &model->component_record[i]);
-        model->component_record_Hash_MACD.insert(record.MAC + QString::number(record.coordinate), &model->component_record[i]);
+        model->component_record_Hash_cid.insert(record.jlcid, &i);
+        model->component_record_Hash_MACD.insert(record.MAC + QString::number(record.coordinate), &i);
+        if (record.MAC.isEmpty() && record.coordinate == 0) {
+            qCritical() << "发现数据库错误" << record.jlcid;
+        }
     }
 }
 
@@ -414,7 +417,6 @@ void MainWindow::updateSearchKey(component_record_struct &record) {
         if (!alias.isEmpty()) {
             isAlias = true;
             record.searchKey += alias;
-
         }
     }
     record.isAlias = isAlias;

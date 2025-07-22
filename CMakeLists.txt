@@ -1,6 +1,5 @@
 #你的CMake构建选项应该如下样式
 
-
 #设置最低版本
 cmake_minimum_required(VERSION 3.24)
 #递归查找最近的符合条件的 Git 标签
@@ -172,12 +171,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC thirdLib/QXlsx/QXlsx/header)
 set(ELAWidget "C:/GitProject/TidyComponent/cmake-build-relwithdebinfo/thirdLib/ElaWidgetTools/src/ElaWidgetTools.lib")
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     target_link_libraries(
-            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls QXlsx::QXlsx
+            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
             Qt6::Network ElaWidgetTools Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent Qt6::SerialPort)
 else ()
     target_link_libraries(
-            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets FluControls ElaWidgetTools QXlsx::QXlsx
+            ${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ElaWidgetTools QXlsx::QXlsx
             Qt${QT_VERSION_MAJOR}::Core Qt6::PrintSupport Qt6::SerialPort Qt6::Svg Qt6::HttpServer
             Qt6::Network Qt6::Core5Compat Qt6::Gui Qt6::OpenGL Qt6::Concurrent)
 endif ()

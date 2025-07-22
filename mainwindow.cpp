@@ -14,8 +14,6 @@
 #include "ElaPromotionView.h"
 #include "ElaScrollPageArea.h"
 #include "ElaText.h"
-#include "FluBusyProgressRing.h"
-#include "FluProgressRing.h"
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
 #include "JustWrapDelegate.h"

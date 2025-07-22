@@ -16,6 +16,7 @@
 #include "ElaMenuBar.h"
 #include "ElaPivot.h"
 #include "ElaProgressBar.h"
+#include "ElaProgressRing.h"
 #include "ElaPromotionCard.h"
 #include "ElaPromotionView.h"
 #include "ElaScrollPage.h"
@@ -24,8 +25,6 @@
 #include "ElaTabWidget.h"
 #include "ElaToolButton.h"
 #include "ElaWindow.h"
-#include "FluBusyProgressRing.h"
-#include "FluProgressRing.h"
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
 #include "ElaText.h"
@@ -75,11 +74,11 @@ class MainWindow : public ElaWindow {
         ElaLineEdit *_addComponent_EditBox;
         ElaProgressBar *_addComponent_ProgressBar;
         ElaProgressBar *_addComponentLoadingProgressBar;
-        FluProgressRing *_addComponent_DownloadProgressRing;
+        ElaProgressRing *_addComponent_DownloadProgressRing;
         ElaText *_addComponent_WaitText;
         ElaToolButton *_addComponentButtonNext;
         ElaToolButton *_addComponent_CancelButton;
-        FluBusyProgressRing *_addComponent_busyRing;
+        ElaProgressRing *_addComponent_busyRing;
         ElaText *_addComponent_EditBoxText;
         ElaText *_addComponent_CheckInfoText;
         ElaText *_addComponent_DownloadText;

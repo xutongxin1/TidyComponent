@@ -1,12 +1,11 @@
+#include <QPainter>
 #include <QSvgRenderer>
 
 #include "ElaScrollArea.h"
 #include "GetFileRequestHandler.h"
 #include "GetRequestHandler.h"
 #include "mainwindow.h"
-//
-// Created by xtx on 24-11-14.
-//
+
 QString GetCIDPath(const QString &CID) {
     return INFOPATH + "/" + CID;
 }
@@ -385,7 +384,7 @@ void MainWindow::AddComponentLogic_2() {
         _addComponent_DownloadText->show();
         _addComponent_DownloadProgressRing->show();
         _addComponentButtonNext->setEnabled(false);
-        _addComponent_DownloadProgressRing->setCurValue(0);
+        _addComponent_DownloadProgressRing->setValue(0);
         getFileRequest(_addingComponentObj->pdf_url, [&](const QString &fileUrl) {
                            qDebug() << "下载完成" << fileUrl;
                            _addComponent_ProgressBar->setValue(80);
@@ -396,7 +395,7 @@ void MainWindow::AddComponentLogic_2() {
                            qWarning() << "无法获取元器件数据手册 " << error;
                        }, _addingComponentObj->pdf_name, GetCIDPath(_addingComponent_CID),
                        [&](qint64 bytesReceived, qint64 bytesTotal) {
-                           _addComponent_DownloadProgressRing->setCurValue(bytesReceived * 100 / bytesTotal);
+                           _addComponent_DownloadProgressRing->setValue(bytesReceived * 100 / bytesTotal);
                        });
     }
 }

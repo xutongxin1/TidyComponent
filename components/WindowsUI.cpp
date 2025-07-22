@@ -1,3 +1,6 @@
+#include <QVBoxLayout>
+
+#include "ElaProgressRing.h"
 #include "ElaScrollArea.h"
 #include "ElaScrollBar.h"
 #include "mainwindow.h"
@@ -476,9 +479,9 @@ void MainWindow::InitAddComponentDockUI() {
     addComponentButtonLayout->addWidget(_addComponentButtonNext);
     addComponentButtonLayout->addWidget(_addComponent_CancelButton);
 
-    _addComponent_busyRing = new FluBusyProgressRing;
-    _addComponent_DownloadProgressRing = new FluProgressRing;
-    _addComponent_DownloadProgressRing->setWorking(true);
+    _addComponent_busyRing = new ElaProgressRing;
+    _addComponent_busyRing->setIsBusying(true);
+    _addComponent_DownloadProgressRing = new ElaProgressRing;
 
     QVBoxLayout *addComponentLayout = new QVBoxLayout(_addComponent_DockhArea);
     addComponentLayout->addWidget(_addComponent_EditBoxText);
