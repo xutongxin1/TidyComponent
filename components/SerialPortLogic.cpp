@@ -370,15 +370,15 @@ void MainWindow::CX01Error_SerialRecive(const QString &message, DeviceType devic
         component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
         if (record->isApply == ComponentState_APPLYIN) {
             record->isApply = ComponentState_OUT;
-            record->color = "已取出";
             colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+            record->color = "已取出";
             model->updateColumnWithRoles(0);
             ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有B53设备响应这个操作");
             UpdateApplyLogic();
         } else if (record->isApply == ComponentState_APPLYOUT) {
             record->isApply = ComponentState_Ready;
-            record->color = "就绪";
             colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+            record->color = "就绪";
             model->updateColumnWithRoles(0);
             ShowErrorInfo("MAC:" + MAC + " 坐标:" + coordinate, "没有设备响应这个操作");
             UpdateApplyLogic();

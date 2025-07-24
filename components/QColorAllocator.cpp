@@ -3,6 +3,7 @@
 //
 
 #include "QColorAllocator.h"
+#include <QDebug>
 // 实现部分
 QColorAllocator::QColorAllocator()
 {
@@ -85,16 +86,18 @@ void QColorAllocator::initializeExtendedColors()
 
 QColor QColorAllocator::allocateColor(led_mode_t mode)
 {
+
     QMutexLocker locker(&m_mutex);
 
     QColor selectedColor = selectBestColor(mode);
     m_allocatedColors[mode].insert(selectedColor);
-
+    // qDebug()<< "Allocated color: " << selectedColor.name() << " for mode: " << mode;
     return selectedColor;
 }
 
 bool QColorAllocator::deallocateColor(led_mode_t mode, const QColor& color)
 {
+    // qDebug()<< "Deallocating color: " << color.name() << " for mode: " << mode;
     QMutexLocker locker(&m_mutex);
 
     if (m_allocatedColors.contains(mode)) {
