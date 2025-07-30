@@ -28,6 +28,7 @@
 #include <QSerialPortInfo>
 
 #include "ElaMenuBar.h"
+#include "ImageViewer.h"
 #include "QColorAllocator.h"
 #include "SerialPortManager.h"
 int record_DeviceNum = 0, record_WinNum = 0;
@@ -77,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
 
     getDailySection();
     initAddComponentLogic();
-    colorAllocator=new QColorAllocator();
+    colorAllocator = new QColorAllocator();
 
     //更新tableView的UI比例
     tableView->setColumnWidth(1, 175);
@@ -88,17 +89,20 @@ MainWindow::MainWindow(QWidget *parent) : ElaWindow(parent) {
     // _showInfo_tableView->resizeRowsToContents();
     _showInfo_tableView->setItemDelegateForColumn(1, JustWrapDelegate0);
     _showInfo_tableView->setColumnWidth(0, 100);
-    _enterEditButton->hide();
+    viewer = new ImageViewer("", this);
     if (DEBUG) {
+        _enterEditButton->hide();
         updateTypeStatistics();
         // isConnectedToMesh=true;
-        // // 前20次分配会优先使用基础颜色池中的高对比度颜色
-        // for (int i = 0; i < 25; i++) {
-        //     qDebug() <<allocateNextAvailableCoordinateForType(DeviceType_B53);
-        // }
-        //
-        // // 查看总可用颜色数
-        // qDebug() << "总可用颜色数:" << colorAllocator->getTotalAvailableColors();
+        connect(_enterEditButton, &ElaToolButton::clicked, this, [this]() {
+            // 可以直接指定图片路径
+            QString imagePath = "C:/GitProject/TidyComponent/config/info/C1591/img_0.jpg";
+
+            if (!imagePath.isEmpty()) {
+                ImageViewer *viewer = new ImageViewer(imagePath, this);
+                viewer->exec();
+            }
+        });
     }
     // ui_->label_nowSearch->hide();
     initSerialPort();

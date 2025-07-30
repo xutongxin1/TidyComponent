@@ -28,6 +28,7 @@
 #include "ResizedTableView.h"
 #include "ShowInfoModel.h"
 #include "ElaText.h"
+#include "ImageViewer.h"
 #include "QColorAllocator.h"
 #include "SerialPortManager.h"
 
@@ -204,7 +205,7 @@ class MainWindow : public ElaWindow {
         void CX01Error_SerialRecive(const QString &message, DeviceType device_type);
         void updateComponentShowInfo_Clear();
         void updateComponentShowInfo(const QItemSelection &selected, const QItemSelection &deselected);
-        static void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
+        void AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, const QString &fileURL,
                                   bool isSVG = false);
         void updateComponentColor(component_record_struct *record, QColor color);
         void onShowInfoTableViewDoubleClicked(const QModelIndex &index);
@@ -285,6 +286,7 @@ class MainWindow : public ElaWindow {
         QString version_;
         component_record_struct *_addingComponentObj;
         bool isDownloadPDF = false;
+        ImageViewer *viewer=nullptr;
 };
 
 #endif // MAIN__MAINWINDOW_H_

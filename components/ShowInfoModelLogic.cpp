@@ -273,6 +273,12 @@ void MainWindow::AddCardToShow(ElaPromotionView *view, ElaPromotionCard *card, c
         card->setCardPixmap(QPixmap(fileURL));
     }
 
+    //绑定图片放大功能
+    disconnect(card, &ElaPromotionCard::promotionCardClicked, this, nullptr); //断开现有连接
+    connect(card, &ElaPromotionCard::promotionCardClicked, this, [&,fileURL]() {
+        viewer->updatePicture(fileURL, this);
+        viewer->show();
+    });
     view->appendPromotionCard(card);
 }
 
