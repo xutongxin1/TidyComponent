@@ -3,7 +3,7 @@
 // 1. 仅添加设备的函数
 bool MainWindow::addDevice(const QString &MAC, const DeviceType &type) {
     // 检查MAC是否已存在
-    if (_device_config.deviceMap.contains(MAC)) {
+    if (_device_config.deviceMACHash.contains(MAC)) {
         qWarning() << "设备MAC已存在:" << MAC;
         return false;
     }
@@ -16,12 +16,17 @@ bool MainWindow::addDevice(const QString &MAC, const DeviceType &type) {
 
     // 添加到配置中
     _device_config.devices.append(device);
-    _device_config.deviceMap.insert(MAC, &_device_config.devices.last());
+    reactDeviceMACHash();
 
     qDebug() << "成功添加设备 - MAC:" << MAC << ", Type:" << type;
     return true;
 }
-
+void MainWindow::reactDeviceMACHash() {
+    _device_config.deviceMACHash.clear();
+    for (auto &device : _device_config.devices) {
+        _device_config.deviceMACHash.insert(device.MAC, &device);
+    }
+}
 // 初始化坐标缓存（在构造函数或初始化时调用）
 void MainWindow::initializeCoordinatesCache() {
     _typeCoordinatesCache.clear();
@@ -197,13 +202,13 @@ bool MainWindow::releaseCoordinate(const DeviceType &type, const int &coordinate
 }
 
 // 通过MAC释放坐标
-bool MainWindow::releaseCoordinateByMAC(const QString &MAC, const int &coordinate) {
-    if (!_device_config.deviceMap.contains(MAC)) {
+bool MainWindow::releaseCoordinate(const QString &MAC, const int &coordinate) {
+    if (!_device_config.deviceMACHash.contains(MAC)) {
         qDebug() << "Device not found:" << MAC;
         return false;
     }
 
-    DeviceInfo *device = _device_config.deviceMap[MAC];
+    DeviceInfo *device = _device_config.deviceMACHash[MAC];
     int index = device->coordinates.indexOf(coordinate);
     if (index == -1) {
         qDebug() << "Coordinate not found:" << coordinate << "for device:" << MAC;

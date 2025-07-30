@@ -334,18 +334,18 @@ void MainWindow::loadDeviceConfig() {
         }
         device.B53_N = deviceObj.value("B53_N").toInt(0);
         _device_config.devices.append(device);
-        _device_config.deviceMap.insert(device.MAC, &_device_config.devices.last());
     }
     updateTypeCoordinateTotal();
+    reactDeviceMACHash(); // 更新设备MAC哈希表
 }
 
 // 辅助函数：获取特定MAC的设备信息
 MainWindow::DeviceInfo *MainWindow::getDeviceByMAC(const QString &MAC) const {
-    return _device_config.deviceMap.value(MAC, nullptr);
+    return _device_config.deviceMACHash.value(MAC, nullptr);
 }
 
 // 辅助函数：删除单个元件文件
-void MainWindow::deleteSingleComponent(const QString &jlcid) const {
+void MainWindow::deleteComponentFile(const QString &jlcid) const {
     QString filePath = DBPATH + jlcid + ".json";
     QFile file(filePath);
 

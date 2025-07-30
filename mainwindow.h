@@ -171,7 +171,7 @@ class MainWindow : public ElaWindow {
         // 设备配置管理结构体
         struct DeviceConfig {
             QVector<DeviceInfo> devices;
-            QHash<QString, DeviceInfo *> deviceMap; // 快速查找
+            QHash<QString, DeviceInfo *> deviceMACHash; // 快速查找
             QHash<DeviceType, int> typeCoordinateTotal; // 统计每种类型的坐标数量
         };
         DeviceConfig _device_config;
@@ -214,11 +214,12 @@ class MainWindow : public ElaWindow {
         void SaveSingleComponent(component_record_struct record);
         void SaveSingleComponent(const QString &jlcid);
         void updateDeviceConfig(const QString &MAC, const int &coordinate, const DeviceType &type);
+        void reactDeviceMACHash();
         bool addDevice(const QString &MAC, const DeviceType &type);
         bool saveDeviceConfig();
         void loadDeviceConfig();
         DeviceInfo *getDeviceByMAC(const QString &MAC) const;
-        void deleteSingleComponent(const QString &jlcid) const;
+        void deleteComponentFile(const QString &jlcid) const;
 
         // 缓存每种类型的所有可能坐标
         QHash<DeviceType, QList<int> > _typeCoordinatesCache;
@@ -236,7 +237,7 @@ class MainWindow : public ElaWindow {
         QPair<QString, int> allocateCoordinateForType(const DeviceType &type);
         QPair<QString, int> allocateNextAvailableCoordinateForType(const DeviceType &type);
         bool releaseCoordinate(const DeviceType &type, const int &coordinate);
-        bool releaseCoordinateByMAC(const QString &MAC, const int &coordinate);
+        bool releaseCoordinate(const QString &MAC, const int &coordinate);
 
         // 获取类型的所有设备及其坐标使用情况
         QVector<QPair<QString, int> > getDeviceUsageForType(const DeviceType &type);
@@ -280,6 +281,7 @@ class MainWindow : public ElaWindow {
         void AddComponentLogic_5();
         void cancelAddComponentLogic();
         void initAddComponentLogic();
+        void delComponentLogic(component_record_struct *record);
         QString version_;
         component_record_struct *_addingComponentObj;
         bool isDownloadPDF = false;

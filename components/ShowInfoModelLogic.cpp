@@ -25,6 +25,8 @@ void MainWindow::updateComponentShowInfo(const QItemSelection &selected, const Q
         _apply_LightButton->hide();
         _apply_Light_VoiceButton->hide();
         _returnTipsB53->hide();
+        _delComponentButton->setToolTip("请先选择一个元器件");
+        _delComponentButton->setEnabled(false);
         _showInfo_NoComponentTips->show();
         if (ApplyComponentNum == 0) {
             _noReturnTips->show();

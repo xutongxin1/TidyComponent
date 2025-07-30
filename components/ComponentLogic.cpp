@@ -425,8 +425,7 @@ void MainWindow::AddComponentLogic_4() {
     if (_addComponent_Allocate.first.isEmpty()) {
         cancelAddComponentLogic();
         ShowErrorInfo("该型号可用空间不足，无法添加元器件");
-    }
-    else {
+    } else {
         qDebug() << "分配的坐标：" << _addComponent_Allocate;
         _addComponent_timer->start(100);
         _addingComponentObj->MAC = _addComponent_Allocate.first;
@@ -481,7 +480,7 @@ void MainWindow::cancelAddComponentLogic() {
     // resizeDocks({_infoDockWidget}, {600}, Qt::Vertical);
     resizeDocks({_infoDockWidget}, {400}, Qt::Horizontal);
     if (!_addingComponentObj->MAC.isEmpty() && _addingComponentObj->coordinate != 0) {
-        releaseCoordinateByMAC(_addingComponentObj->MAC, _addingComponentObj->coordinate);
+        releaseCoordinate(_addingComponentObj->MAC, _addingComponentObj->coordinate);
     }
     _addComponentStep = 0;
     if (_addingComponentObj != nullptr) {
@@ -553,4 +552,19 @@ void MainWindow::initAddComponentLogic() {
             cancelAddComponentLogic();
         }
     });
+}
+
+void MainWindow::delComponentLogic(component_record_struct *record) {
+    deleteComponentFile(record->jlcid);
+    releaseCoordinate(record->MAC, record->coordinate);
+    //删除record
+    for (auto it = model->component_record.begin(); it != model->component_record.end(); ++it) {
+        if (it == record) {
+            model->component_record.erase(it);
+            break;
+        }
+    }
+    reactComponentHash();
+    model->updateData();
+    updateComponentShowInfo_Clear();
 }

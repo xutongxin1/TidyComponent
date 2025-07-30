@@ -335,15 +335,14 @@ void MainWindow::initElaWindow() {
     _addComponent_A42_Button->setIconSize(QSize(35, 35));
     _addComponent_A42_Button->setFixedSize(100, 75);
 
-    // _delComponentButton = new ElaToolButton(this);
-    // _delComponentButton->setIsTransparent(false);
-    // _delComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    // _delComponentButton->setBorderRadius(8);
-    // //_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    // _delComponentButton->setText("删除元器件");
-    // _delComponentButton->setElaIcon(ElaIconType::FilterSlash);
-    // _delComponentButton->setIconSize(QSize(35, 35));
-    // _delComponentButton->setFixedSize(100, 75);
+    _delComponentButton = new ElaToolButton(this);
+    _delComponentButton->setIsTransparent(false);
+    _delComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _delComponentButton->setBorderRadius(8);
+    _delComponentButton->setText("删除元器件");
+    _delComponentButton->setElaIcon(ElaIconType::TrashCan);
+    _delComponentButton->setIconSize(QSize(35, 35));
+    _delComponentButton->setFixedSize(100, 75);
 
     QWidget *editArea = new QWidget(this);
     // searchArea->setMinimumHeight(0);
@@ -351,7 +350,7 @@ void MainWindow::initElaWindow() {
     QHBoxLayout *editAreaLayout = new QHBoxLayout(editArea);
     editAreaLayout->addWidget(_addComponent_A42_Button);
     editAreaLayout->addWidget(_addComponent_B53_Button);
-    // editAreaLayout->addWidget(_delComponentButton);
+    editAreaLayout->addWidget(_delComponentButton);
     editAreaLayout->addStretch();
 
     _tabWidget->addTab(homeArea, "首页");
