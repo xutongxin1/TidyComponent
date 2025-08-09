@@ -1,0 +1,30 @@
+{
+    "MAC": "1A:92:89:88:19:70",
+    "PID": "262236",
+    "aliases": [
+    ],
+    "coordinate": 333,
+    "device_type": "B53",
+    "discription": "厚膜电阻 130Ω ±1% 125mW",
+    "inventory": "广东仓：0\n江苏仓：3000",
+    "jlcid": "C273821",
+    "more_data": "商品目录：贴片电阻；电阻类型：厚膜电阻；阻值：130Ω；精度：±1%；功率：125mW；工作电压：150V；温度系数：±100ppm/℃；工作温度：-55℃~+155℃；",
+    "name": "RC0805FR-07130RL",
+    "package": "0805​",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C273821/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "89E4D743C004A82A45145C7A2CC3A578.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20250610/89E4D743C004A82A45145C7A2CC3A578.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C273821/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C273821/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C273821/img_2.jpg"
+    ],
+    "price": "1+：0.0137\n10+：0.0105\n50+：0.0085\n100+：0.0077\n500+：0.0066\n502+：0.0066",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C273821/sch_svg_1.png"
+    ],
+    "weight": 0.029999999329447746
+}
