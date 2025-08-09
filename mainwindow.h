@@ -136,6 +136,7 @@ class MainWindow : public ElaWindow {
         ElaToolButton *_openEDAChromeButton;
         ElaToolButton *_addComponent_B53_Button;
         ElaToolButton * _addComponent_A42_Button;
+        ElaToolButton * _addComponent_A21_Button;
         QPair<QString, int> _addComponent_Allocate;
         bool isConnectedToMesh = false;
         QColorAllocator *colorAllocator;

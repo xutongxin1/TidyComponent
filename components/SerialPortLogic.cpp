@@ -133,8 +133,7 @@ void MainWindow::initSerialPort() {
         stream >> data >> data >> CID;
         if (model->searchType == ComponentTableModel::SEARCH_BOM) {
             ShowWarningInfo(CID, "二维码读取成功，但请先退出BOM表搜索模式");
-        }
-        else if (_addComponentStep == 1) {
+        } else if (_addComponentStep == 1) {
             _addComponent_EditBox->setText(CID);
             ShowInfoInfo(CID, "二维码读取成功");
         } else {
@@ -190,11 +189,12 @@ void MainWindow::CX02_SerialRecive(const QString &message, DeviceType device_typ
     QTextStream stream(&temp);
     QString MAC, coordinate, data;
     stream >> data >> data >> MAC >> coordinate >> data;
-
     qDebug() << "提取的MAC地址:" << MAC;
     qDebug() << "提取的位置:" << coordinate;
     if (_addComponentStep == 4 && (_addComponent_Type == DeviceType_A42 || _addComponent_Type == DeviceType_A21)) {
-        if (MAC == _addingComponentObj->MAC && coordinate.toInt() == _addingComponentObj->coordinate / 10) {
+        if (MAC == _addingComponentObj->MAC &&
+            (_addComponent_Type == DeviceType_A42 && coordinate.toInt() == _addingComponentObj->coordinate / 10) ||
+            _addComponent_Type == DeviceType_A21 && coordinate.toInt() == _addingComponentObj->coordinate) {
             _addComponent_isPutInComponent = true;
         } else {
             ShowWarningInfo("检测到取出但似乎放错了");

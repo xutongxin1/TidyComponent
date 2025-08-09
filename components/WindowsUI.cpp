@@ -335,6 +335,15 @@ void MainWindow::initElaWindow() {
     _addComponent_A42_Button->setIconSize(QSize(35, 35));
     _addComponent_A42_Button->setFixedSize(100, 75);
 
+    _addComponent_A21_Button = new ElaToolButton(this);
+    _addComponent_A21_Button->setIsTransparent(false);
+    _addComponent_A21_Button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _addComponent_A21_Button->setBorderRadius(8);
+    _addComponent_A21_Button->setText("分配A21元器件");
+    _addComponent_A21_Button->setElaIcon(ElaIconType::Plus);
+    _addComponent_A21_Button->setIconSize(QSize(35, 35));
+    _addComponent_A21_Button->setFixedSize(100, 75);
+
     _delComponentButton = new ElaToolButton(this);
     _delComponentButton->setIsTransparent(false);
     _delComponentButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -349,6 +358,7 @@ void MainWindow::initElaWindow() {
     // searchArea->setMaximumHeight(QWIDGETSIZE_MAX);
     QHBoxLayout *editAreaLayout = new QHBoxLayout(editArea);
     editAreaLayout->addWidget(_addComponent_A42_Button);
+    editAreaLayout->addWidget(_addComponent_A21_Button);
     editAreaLayout->addWidget(_addComponent_B53_Button);
     editAreaLayout->addWidget(_delComponentButton);
     editAreaLayout->addStretch();

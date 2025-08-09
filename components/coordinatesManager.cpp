@@ -71,15 +71,9 @@ QList<int> MainWindow::generateAllCoordinatesForType(const DeviceType &type) {
             }
         }
     } else if (type == DeviceType_A21) {
-        // A2: 11, 12, 21, 22
-        for (int row = 1; row <= 2; row++) {
-            // 2行
-            for (int slot = 1; slot <= 2; slot++) {
-                // 每行2个位置
-                int coord = row * 10 + slot;
-                coordinates.append(coord);
-            }
-        }
+        // A21: 1,2
+        coordinates.append(1);
+        coordinates.append(2);
     }
 
     return coordinates;

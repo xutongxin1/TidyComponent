@@ -288,6 +288,7 @@ void MainWindow::AddComponentLogic_0(const DeviceType &type) {
     _addComponent_CancelButton->setEnabled(true);
     _addComponent_B53_Button->setEnabled(false);
     _addComponent_A42_Button->setEnabled(false);
+    _addComponent_A21_Button->setEnabled(false);
     _addComponent_EditBox->clear();
     _addComponent_EditBox->setFocus();
     _addComponentButtonNext->setEnabled(false);
@@ -459,6 +460,7 @@ void MainWindow::AddComponentLogic_5() {
         _addComponent_WaitText->hide();
         _addComponent_B53_Button->setEnabled(true);
         _addComponent_A42_Button->setEnabled(true);
+        _addComponent_A21_Button->setEnabled(true);
         _addComponent_DockhArea->hide();
         _showInfo_Widget->show();
         _infoDockWidget->setWindowTitle("元器件信息");
@@ -473,6 +475,7 @@ void MainWindow::cancelAddComponentLogic() {
     _addComponent_timer->stop();
     _addComponent_B53_Button->setEnabled(true);
     _addComponent_A42_Button->setEnabled(true);
+    _addComponent_A21_Button->setEnabled(true);
     _addComponent_DockhArea->hide();
     _showInfo_Widget->show();
     _infoDockWidget->setWindowTitle("元器件信息");
@@ -497,6 +500,9 @@ void MainWindow::initAddComponentLogic() {
     });
     connect(_addComponent_A42_Button, &ElaToolButton::clicked, this, [&] {
         AddComponentLogic_0(DeviceType_A42);
+    });
+    connect(_addComponent_A21_Button, &ElaToolButton::clicked, this, [&] {
+        AddComponentLogic_0(DeviceType_A21);
     });
     connect(_addComponent_EditBox, &ElaLineEdit::textChanged, this, [&] {
         if (_addComponentStep == 1) {
