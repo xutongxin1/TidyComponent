@@ -91,6 +91,15 @@ void MainWindow::initSerialPort() {
                 cid = parts[2];
             }
 
+#ifdef DEBUG
+            if (_addComponentStep == 3) {
+                if (cid == _addingComponentObj->jlcid) {
+                    _addComponent_isNFC_Write_success = true;
+                }
+                //TODO:写入错误处理
+            }
+#endif
+
             qDebug() << "提取的CID:" << cid;
             if (model->component_record_Hash_cid.contains(cid)) {
                 component_record_struct *record = model->component_record_Hash_cid.value(cid);
@@ -109,8 +118,7 @@ void MainWindow::initSerialPort() {
                     }
                     // search(); //刷新搜索结果
                 }
-            }
-            else {
+            } else {
                 qDebug() << "尝试找一个不存在的cid" << cid;
             }
         }
@@ -238,9 +246,24 @@ void MainWindow::CX02_SerialRecive(const QString &message, DeviceType device_typ
                     //A42不会存在异常行为
                 }
             }
+        } else if (device_type == DeviceType_A21) {
+            if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+                if (record->isApply == ComponentState_APPLYOUT) {
+                    //A21不会对放回成功发出说明
+                    // ShowSuccessInfo("ID:" + record->jlcid, "元器件取出成功");
+                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                }
+                record->color = "已取出";
+                record->isApply = ComponentState_OUT;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+                //21不会存在异常行为
+            }
         }
     }
 }
+
 void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_type) {
     qDebug() << "元器件放回响应:" << message;
     QString temp = message;
@@ -301,6 +324,23 @@ void MainWindow::CX03_SerialRecive(const QString &message, DeviceType device_typ
                     //A42不会存在异常行为
                 }
             }
+        } else if (device_type == DeviceType_A21) {
+            if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+                component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+                if (record->isApply == ComponentState_APPLYIN) {
+                    //A21不会对放回成功发出说明
+                    // ShowSuccessInfo("ID:" + record->jlcid, "元器件放回成功");
+                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                    if (_searchBox->text() == record->jlcid) {
+                        _searchBox->setText(""); //清空搜索框
+                    }
+                }
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+                //A21不会存在异常行为
+            }
         }
     }
 }
@@ -359,6 +399,29 @@ void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_typ
                 } else {
                     // ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(i), "系统错误，刚刚是否有未经授权的操作?");
                 }
+            }
+        }
+    } else if (device_type == DeviceType_A21) {
+        if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+            if (record->isApply == ComponentState_APPLYIN) {
+                //A21不会对超时发出警告
+                // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
+                colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                record->color = "已取出";
+                record->isApply = ComponentState_OUT;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else if (record->isApply == ComponentState_APPLYOUT) {
+                //A21不会对超时发出警告
+                // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
+                colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else {
+                // ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(i), "系统错误，刚刚是否有未经授权的操作?");
             }
         }
     }
