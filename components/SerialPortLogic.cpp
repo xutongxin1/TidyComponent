@@ -110,6 +110,9 @@ void MainWindow::initSerialPort() {
                     // search(); //刷新搜索结果
                 }
             }
+            else {
+                qDebug() << "尝试找一个不存在的cid" << cid;
+            }
         }
     });
     serialManager->connectPattern("0xC001 20 ", [&](const QString &message) {

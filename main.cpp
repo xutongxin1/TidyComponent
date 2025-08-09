@@ -78,11 +78,11 @@ void setupDpiScaling()
     //     (screenHeight >= 1152 && screenHeight <= 1800)) {
     //     qputenv("QT_SCALE_FACTOR", "1.25");
     //     }
-    // qputenv("QT_SCALE_FACTOR", "1.75");
+    // qputenv("QT_SCALE_FACTOR", "1.6");
 #endif
 }
 int main(int argc, char *argv[]) {
-    qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+    // qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
     setupDpiScaling();
     qSetMessagePattern(
         "%{time_ yyyy-MM-dd hh:mm:ss} [%{type}]%{if-warning}[%{function}]%{endif}%{if-fatal}[%{function}--%{line}]%{endif}:%{message}");
