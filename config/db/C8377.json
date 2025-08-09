@@ -1,0 +1,31 @@
+{
+    "MAC": "71:63:AB:72:AB:3C",
+    "PID": "8871",
+    "aliases": [
+    ],
+    "coordinate": 1,
+    "device_type": "A21",
+    "discription": "1x3P 5.08mm 排数:1 每排P数:3",
+    "inventory": "广东仓：12840\n江苏仓：24390",
+    "jlcid": "C8377",
+    "more_data": "商品目录：插拔式接线端子；连接器类型：板端/插座-闭口；固定方式：-；结构：1x3P；间距：5.08mm；颜色：绿色；安装方式：弯针；总PIN数：3P；排数：1；每排PIN数：3；额定电流：20A；额定电压：450V；线规 - AWG：-；线规 - 平方毫米：-；工作温度：-40℃~+105℃；连线类型：-；出线方向(竖直为基准)：-；",
+    "name": "WJ2EDGRC-5.08-3P",
+    "package": "弯插,P=5.08mm​",
+    "pcb_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/pcb_svg_1.png"
+    ],
+    "pdf_FileUrl": "",
+    "pdf_name": "4D8AF133EBD88DD18E5AA0CE5EC77AA3.pdf",
+    "pdf_url": "https://atta.szlcsc.com//upload/public/pdf/source/20240813/4D8AF133EBD88DD18E5AA0CE5EC77AA3.pdf",
+    "png_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/img_0.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/img_1.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/img_2.jpg",
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/img_3.jpg"
+    ],
+    "price": "1+：0.4042\n10+：0.3234\n25+：0.2796\n100+：0.2492\n500+：0.225\n1000+：0.2129",
+    "sch_svg_FileUrl": [
+        "C:/GitProject/TidyComponent/cmake/config/info/C8377/sch_svg_1.png"
+    ],
+    "weight": 1.2400000095367432
+}
