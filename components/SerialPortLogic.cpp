@@ -377,28 +377,26 @@ void MainWindow::CX04_SerialRecive(const QString &message, DeviceType device_typ
             }
         }
     } else if (device_type == DeviceType_A42) {
-        for (int i = coordinate.toInt() * 10 + 1; i <= coordinate.toInt() * 10 + 2; i++) {
-            if (model->component_record_Hash_MACD.contains(QString(MAC + QString::number(i)))) {
-                component_record_struct *record = model->component_record_Hash_MACD.value(MAC + QString::number(i));
-                if (record->isApply == ComponentState_APPLYIN) {
-                    //A42不会对超时发出警告
-                    // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
-                    colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
-                    record->color = "已取出";
-                    record->isApply = ComponentState_OUT;
-                    model->updateColumnWithRoles(0);
-                    UpdateApplyLogic();
-                } else if (record->isApply == ComponentState_APPLYOUT) {
-                    //A42不会对超时发出警告
-                    // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
-                    colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
-                    record->color = "就绪";
-                    record->isApply = ComponentState_Ready;
-                    model->updateColumnWithRoles(0);
-                    UpdateApplyLogic();
-                } else {
-                    // ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(i), "系统错误，刚刚是否有未经授权的操作?");
-                }
+        if (model->component_record_Hash_MACD.contains(QString(MAC + coordinate))) {
+            component_record_struct *record = model->component_record_Hash_MACD.value(MAC + coordinate);
+            if (record->isApply == ComponentState_APPLYIN) {
+                //A42不会对超时发出警告
+                // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未放回");
+                colorAllocator->deallocateColor(LED_MODE_FLASH_FAST_3, record->color);
+                record->color = "已取出";
+                record->isApply = ComponentState_OUT;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else if (record->isApply == ComponentState_APPLYOUT) {
+                //A42不会对超时发出警告
+                // ShowWarningInfo("ID:" + record->jlcid, "元器件超时未取出");
+                colorAllocator->deallocateColor(LED_MODE_STATIC, record->color);
+                record->color = "就绪";
+                record->isApply = ComponentState_Ready;
+                model->updateColumnWithRoles(0);
+                UpdateApplyLogic();
+            } else {
+                // ShowErrorInfo("MAC:" + MAC + " 坐标:" + QString::number(i), "系统错误，刚刚是否有未经授权的操作?");
             }
         }
     } else if (device_type == DeviceType_A21) {
